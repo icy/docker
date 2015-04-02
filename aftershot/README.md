@@ -5,35 +5,35 @@
 
 1. Build the image
 
-    $ git checkout https://github.com/icy/docker.git icy-docker
-    $ cd icy-docker/aftershot/
-    $ docker build --rm=true -t aftershot .
+      $ git checkout https://github.com/icy/docker.git icy-docker
+      $ cd icy-docker/aftershot/
+      $ docker build --rm=true -t aftershot .
 
 2. Run the docker
 
-    $ mkdir -pv /home/aftershot/{local,global,catalogs}
+      $ mkdir -pv /home/aftershot/{local,global,catalogs}
 
-    $ docker run \
-      -d -P \
-        -e _UID=314 \
-        -e _GID=314 \
-        -v /home/aftershot/local/:/home/aftershot/.AfterShotPro/ \
-        -v /home/aftershot/global/:/home/aftershot/.config/Corel/ \
-        -v /home/aftershot/catalogs/:/home/aftershot/catalogs/ \
-        -v /home/pictures/:/home/pictures/ \
-        ... \
-      aftershot:latest
+      $ docker run \
+        -d -P \
+          -e _UID=314 \
+          -e _GID=314 \
+          -v /home/aftershot/local/:/home/aftershot/.AfterShotPro/ \
+          -v /home/aftershot/global/:/home/aftershot/.config/Corel/ \
+          -v /home/aftershot/catalogs/:/home/aftershot/catalogs/ \
+          -v /home/pictures/:/home/pictures/ \
+          ... \
+        aftershot:latest
 
 3. Get the `NAT`ed port number with
 
-    $ docker ps
-    f8d385... aftershot:latest   ...  0.0.0.0:49162->22/tcp  ...
-    # 49162 is the port that you need
+      $ docker ps
+      f8d385... aftershot:latest   ...  0.0.0.0:49162->22/tcp  ...
+      # 49162 is the port that you need
 
 4. Execute AfterShotPro via `ssh`
 
-    $ ssh -X aftershot@localhost -p PORT AfterShotPro
-    # Enter the password 'aftershot'
+      $ ssh -X aftershot@localhost -p PORT AfterShotPro
+      # Enter the password 'aftershot'
 
 ### In-depth details
 
