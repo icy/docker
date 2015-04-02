@@ -3,7 +3,7 @@
 
 ### Instructions
 
-1. Build the image
+Build the image
 
 ````
 $ git checkout https://github.com/icy/docker.git icy-docker
@@ -11,7 +11,7 @@ $ cd icy-docker/aftershot/
 $ docker build --rm=true -t aftershot .
 ````
 
-2. Run the docker
+Run the docker
 
 ````
 $ mkdir -pv /home/aftershot/{local,global,catalogs}
@@ -28,7 +28,7 @@ $ docker run \
   aftershot:latest
 ````
 
-3. Get the `NAT`ed port number with
+Get the `NAT`ed port number with
 
 ````
 $ docker ps
@@ -36,7 +36,7 @@ f8d385... aftershot:latest   ...  0.0.0.0:49162->22/tcp  ...
 # 49162 is the port that you need
 ````
 
-4. Execute AfterShotPro via `ssh`
+Execute AfterShotPro via `ssh`
 
 ````
 $ ssh -X aftershot@localhost -p PORT AfterShotPro
