@@ -49,9 +49,10 @@ $ ssh -X aftershot@localhost -p PORT AfterShotPro
 
 1. A place to store global settings: user registration key,
     path to catalogs and/or cache directory, bla bla.
-   The path is `$HOME/.config/Corel/`.
+   The path is `$HOME/.config/Corel/`. You can't change this path.
 2. A place for local settings: list of plugins, cache tuning information,
    temporary folders, ...; the path is `$HOME/.AfterShotPro/` by default.
+   This path can be changed by user.
 3. A place to store all catalogs' information. This depends on your settings.
 
 That's why you need to mount host directories to a running `docker`
