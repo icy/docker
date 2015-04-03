@@ -1,0 +1,2 @@
+more_set_headers "Server: Apache";
+more_set_headers "X-Powered-By: Linux";
