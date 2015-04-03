@@ -7,7 +7,7 @@
 
 It's very easy to use `Docker` on `ArchLinux`.
 
-    # Log in into your `root` shell.
+    # Log in to your `root` shell.
 
     $ pacman -S docker
     $ mkdir -pv /home/locker/data/
@@ -43,7 +43,7 @@ You need to add yourself to `docker` group
     $ exit
     # Exit from your `root` session and start with your shell
 
-    # Log in into `docker` group
+    # Log in to `docker` group
     $ newgrp docker
 
 You need to check out this repository
