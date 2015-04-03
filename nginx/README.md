@@ -19,6 +19,7 @@ No more `sites-available` and `sites-enabled`!
 * `/etc/nginx/misc`: Some useful examples
 * `/etc/nginx/sites/ping.conf`: The `catch-all` site, which provides
     `/ping` to your Elastic Load Balancing
+* `/etc/nginx/sites/*`: Your sites are here
 * `/etc/nginx/nginx.conf`: A global file. You may not need to custom it.
 
 ## Example usage
