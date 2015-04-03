@@ -1,1 +1,1 @@
-keepalive_timeout 0;
+keepalive_timeout 60;
