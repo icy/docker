@@ -7,6 +7,8 @@
 
 It's very easy to use `Docker` on `ArchLinux`.
 
+    # Log in into your `root` shell.
+
     $ pacman -S docker
     $ mkdir -pv /home/locker/data/
 
@@ -35,7 +37,7 @@ You are almost ready
     $ systemctl enable docker
     $ systemctl start docker
 
-You will need youself to `docker` group
+You need to add yourself to `docker` group
 
     $ gpasswd -a YOUR_USERNAME docker
     $ exit
@@ -58,8 +60,7 @@ you can run and log in to your image
     # pacman -Q
     # exit
 
-
-
+You have enjoyed your first `docker` journey.
 
 ## License
 
