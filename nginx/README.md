@@ -22,6 +22,15 @@ No more `sites-available` and `sites-enabled`!
 * `/etc/nginx/sites/*`: Your sites are here
 * `/etc/nginx/nginx.conf`: A global file. You may not need to custom it.
 
+See the `Important notes` section for some details.
+
+## Important notes
+
+If you have some `nginx` proxy settings whose upstream address is
+`127.0.0.1`, you will need to replace that address by the `docker` host
+address or something similar. This is because you only see a `connection
+refused` error when making connection to `127.0.0.1` from within a docker.
+
 ## Example usage
 
 This is a screenshot
