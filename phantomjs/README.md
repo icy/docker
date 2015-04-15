@@ -17,5 +17,9 @@ It's easy. You may need to add fonts into the volume.
 
 Now you are ready to connect to `:1234` on the host machine for testing.
 
+By default, `debug` mode is disabled. You may need that:
+
+    $ docker run -e PHANTOMJS_DEBUG=true -p 1234:8190 -d phantomjs
+
 If you add new fonts to `/usr/share/fonts/`, remember to restart the
 container, because a `fc-cache` command needs to be executed.
