@@ -25,6 +25,7 @@ RUN chown phantomjs:phantomjs /home/phantomjs
 
 RUN apt-get install -y fontconfig
 
+EXPOSE 8190
 VOLUME /usr/share/fonts/
 
 USER phantomjs
