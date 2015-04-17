@@ -3,7 +3,7 @@
 `btsync-1.3` is a great software with clean UI and simple idea.
 
 There are now `btsync-1.4`, `btsync-2.0`. They are for professional
-users who likes a messy `UI` and dummy stupid function.
+users who like a messy `UI` and dummy stupid functions.
 
 We are only novice users.
 
