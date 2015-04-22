@@ -61,3 +61,7 @@ as in the above example.
 And to make sure the `Docker`'s `AfterShotPro` program can read/write
 to your local directory, you need to provide `_UID` and `_GID` variables;
 they are your own `UID` and `GID`. In the examples, they are `314`s.
+
+### Acknowledgement
+
+The idea comes from https://github.com/tomparys/docker-skype-pulseaudio .
