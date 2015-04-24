@@ -33,7 +33,7 @@ pidfile=/var/run/supervisord.pid ; (supervisord pidfile;default supervisord.pid)
 childlogdir=/supervisor/         ; ('AUTO' child log dir, default $TEMP)
 logfile_maxbytes=50MB            ; (max main logfile bytes b4 rotation;default 50MB)
 logfile_backups=10               ; (num of main logfile rotation backups;default 10)
-loglevel=$SUPERVISOR_LOG_LEVEL   ; (log level;default info; others: debug,warn,trace)
+loglevel=$_LOG_LEVEL             ; (log level;default info; others: debug,warn,trace)
 
 ; the below section must remain in the config file for RPC
 ; (supervisorctl/web interface) to work, additional interfaces may be
