@@ -9,8 +9,8 @@ We are only novice users.
 
 ## Environments
 
-* `BTSYNC_NAME`: the device name
-* `BTSYNC_PASSWD`: the password of `admin` account
+* `BTSYNC_NAME`: the device name. Default: Container hostname
+* `BTSYNC_PASSWD`: the password of `admin` account. Default: Random
 * `BTSYNC_INTERVAL`: folder scanning interval. Default: 300 seconds
 
 ## Volume
