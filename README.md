@@ -5,6 +5,7 @@
 3. `nginx`: A fancy custom `nginx` image to use with `Puppet`, `Chef`, ...
 4. `phantomjs`: To run `phantomjs-1.9.8`
 5. `btsync`: To run `btsync-1.3`
+5. `tomcat`: Support `tomcat` application on `Debian/stable` system
 
 ## Quick start on ArchLinux
 
