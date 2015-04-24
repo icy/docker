@@ -3,6 +3,9 @@
 _HOSTNAME="${BTSYNC_NAME:-$HOSTNAME}"
 _INTERVAL="${BTSYNC_INTERVAL:-300}"
 _PASSWD="${BTSYNC_PASSWD:-$RANDOM$RANDOM}"
+_DEBUG="${BTSYNC_DEBUG:-FF}"
+
+echo "$_DEBUG" > /home/btsync/var/debug.txt
 
 cat > /home/btsync/var/btsync.conf <<EOF
 //
