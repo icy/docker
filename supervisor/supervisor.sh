@@ -48,4 +48,16 @@ serverurl=unix:///var/run/supervisor.sock ; use a unix:// URL  for a unix socket
 files = /etc/s.supervisor/*.s
 EOF
 
+# Execute all generators!!!
+while read FILE; do
+  [[ -x "$FILE" ]] || continue
+  bash -n "$FILE" \
+  && {
+    echo >&2 ":: Executing generator '$FILE'..."
+    bash "$FILE"
+  } \
+  || true
+done \
+< <(find /etc/s.supervisor/ -type f -iname "*.sh")
+
 exec /usr/bin/supervisord --configuration /etc/supervisord.conf
