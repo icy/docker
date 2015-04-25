@@ -1,4 +1,4 @@
-FROM debian:stable
+FROM icy/supervisor:latest
 
 MAINTAINER Anh K. Huynh "kyanh@theslinux.org"
 ENV DEBIAN_FRONTEND noninteractive
@@ -17,16 +17,15 @@ RUN cd /usr/ \
 RUN useradd phantomjs
 RUN chmod 755 /usr/bin/phantomjs
 
-ADD phantomjs.sh /
-RUN chmod 755 /phantomjs.sh
-
 RUN mkdir /home/phantomjs
 RUN chown phantomjs:phantomjs /home/phantomjs
 
 RUN apt-get install -y fontconfig
 
+ADD /phantomjs.sh /etc/s.supervisor/
+RUN chmod -c 755 /etc/s.supervisor/phantomjs.sh
+
 EXPOSE 8190
 VOLUME /usr/share/fonts/
 
-USER phantomjs
-CMD ["/phantomjs.sh"]
+CMD ["/supervisor.sh"]
