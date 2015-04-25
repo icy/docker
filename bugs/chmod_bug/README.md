@@ -19,15 +19,22 @@ Build the `icy/chmod_bug` image
 Now create a new container
 
     $ docker run -ti --rm icy/chmod_bug
+
+    The output of ls -ltr /empty/ command:
+    =======================================
     total 4
-    -rw-r--r-- 1 314 314 213 Apr 25 05:40 chmod.sh
+    -rw-r--r-- 1 314 314 355 Apr 25 05:51 chmod.sh
+    =======================================
 
     Expected results
 
-      chmod.sh:           should has permission 755
-      this_will_fail.sh:  should exist
+      chmod.sh:  should have permission 755
+      fail.sh:   should exist
 
-      What have you ever seen in the result of 'ls' command?
+    Actual results
+
+      chmod.sh:  has permission 644
+      fail.sh:   file doesn't exist
 
 ## My environment
 

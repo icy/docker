@@ -1,9 +1,12 @@
 #!/bin/bash
 
+echo The output of 'ls -ltr /empty/' command:
+echo "======================================="
 ls -ltr /empty/
 
+echo "======================================="
 echo
-echo
+
 cat <<EOF
 Expected results
 
