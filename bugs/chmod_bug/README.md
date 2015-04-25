@@ -1,10 +1,10 @@
 ## Possibly a bug of Docker 1.6-4749651
 
 It's impossible to create symbolic link
-on an external volume.
+on an external volume with `RUN ln -s ...`
 
 It's impossible to fix the file permission
-on an external volume.
+on an external volume with `RUN chmod 755 ...`
 
 Reference: https://github.com/docker/docker/issues/12779
 
