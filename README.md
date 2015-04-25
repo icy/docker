@@ -8,6 +8,7 @@
 6. `tomcat`: Support `tomcat` application on `Debian/stable` system
 7. `supervisor`: A container to run multiple processes
 8. `life`: A container for everything
+9. `bugs/chmod_bug`: A problem with `Docker-1.6-4749651`
 
 ## License
 
