@@ -17,4 +17,6 @@ EXPOSE 9001
 VOLUME /supervisor/
 VOLUME /etc/s.supervisor/
 
+RUN ln -s /usr/bin/supervisorctl /usr/bin/s
+
 CMD ["/supervisor.sh"]
