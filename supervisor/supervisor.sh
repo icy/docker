@@ -50,7 +50,7 @@ EOF
 
 # Execute all generators!!!
 while read FILE; do
-  [[ -x "$FILE" ]] || continue
+  chmod -c 755 "$FILE" # FIXME: This is a Docker bug!
   bash -n "$FILE" \
   && {
     echo >&2 ":: Executing generator '$FILE'..."
