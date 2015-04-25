@@ -6,6 +6,8 @@ on an external volume.
 It's impossible to fix the file permission
 on an external volume.
 
+Reference: https://github.com/docker/docker/issues/12779
+
 ## Reproduce the problem
 
 Build the `icy/empty` image
