@@ -7,6 +7,7 @@
 5. `btsync`: To run `btsync-1.3`
 6. `tomcat`: Support `tomcat` application on `Debian/stable` system
 7. `supervisor`: A container to run multiple processes
+8. `life`: A container for everything
 
 ## License
 
