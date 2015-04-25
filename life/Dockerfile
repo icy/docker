@@ -15,4 +15,8 @@ VOLUME /next-generation-shit
 
 EXPOSE 80
 
+RUN echo Docker makes life easier.
+RUN echo Everything can be put in a container.
+RUN echo Let us do it. Put every shit in a shit.
+
 CMD ["/bin/fail"]
