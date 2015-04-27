@@ -12,7 +12,7 @@ For example, if you have a chain
     RUN echo second > /empty/second.txt
     VOLUME /empty/
 
-The final image only contain `/empty/first.txt`, while the second file
+The final image only contains `/empty/first.txt`, while the second file
 `/empty/second.txt` is discarded.
 
 ## VOLUME and COPY
