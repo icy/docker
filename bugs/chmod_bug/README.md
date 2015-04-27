@@ -1,6 +1,6 @@
 ## Possibly a bug of Docker 1.6-4749651
 
-**UPDATE:**
+**UPDATE**
 
 The actual problem is that the `RUN` command doesn't work
 after a `VOLUME` command, while `ADD/COPY` command is fine.
@@ -11,7 +11,7 @@ Details are explained in
 
 Further information is kept for future reference.
 
-* END OF UPDATE**
+**END OF UPDATE**
 
 It's impossible to create symbolic link
 on an external volume with `RUN ln -s ...`
