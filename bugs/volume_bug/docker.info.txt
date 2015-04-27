@@ -1,0 +1,45 @@
+$ docker version
+
+Client version: 1.6.0
+Client API version: 1.18
+Go version (client): go1.4.2
+Git commit (client): 4749651
+OS/Arch (client): linux/amd64
+Server version: 1.6.0
+Server API version: 1.18
+Go version (server): go1.4.2
+Git commit (server): 4749651
+OS/Arch (server): linux/amd64
+
+$ docker info
+
+Containers: 4
+Images: 286
+Storage Driver: devicemapper
+ Pool Name: docker-8:4-9437191-pool
+ Pool Blocksize: 65.54 kB
+ Backing Filesystem: extfs
+ Data file: /dev/loop0
+ Metadata file: /dev/loop1
+ Data Space Used: 4.264 GB
+ Data Space Total: 107.4 GB
+ Data Space Available: 103.1 GB
+ Metadata Space Used: 10.48 MB
+ Metadata Space Total: 2.147 GB
+ Metadata Space Available: 2.137 GB
+ Udev Sync Supported: true
+ Data loop file: /home/locker/data/devicemapper/devicemapper/data
+ Metadata loop file: /home/locker/data/devicemapper/devicemapper/metadata
+ Library Version: 1.02.93 (2015-01-30)
+Execution Driver: native-0.2
+Kernel Version: 3.18.6-1-ARCH
+Operating System: Arch Linux
+CPUs: 4
+Total Memory: 3.563 GiB
+Name: icy
+ID: TEOO:JOAR:QIJU:SZUF:YB4J:OUSB:YZM6:LYFA:FP5V:NVGL:4YZO:CDDB
+
+$ uname -a
+
+Linux icy 3.18.6-1-ARCH #1 SMP PREEMPT Sat Feb 7 08:44:05 CET 2015 x86_64 GNU/Linux
+
