@@ -1,12 +1,23 @@
 ## Possibly a bug of Docker 1.6-4749651
 
+**UPDATE:**
+
+The actual problem is that the `RUN` command doesn't work
+after a `VOLUME` command, while `ADD/COPY` command is fine.
+Details are explained in
+
+1. https://github.com/icy/docker/tree/master/bugs/volume_bug
+2. https://github.com/docker/docker/issues/12779
+
+Further information is kept for future reference.
+
+* END OF UPDATE**
+
 It's impossible to create symbolic link
 on an external volume with `RUN ln -s ...`
 
 It's impossible to fix the file permission
 on an external volume with `RUN chmod 755 ...`
-
-Reference: https://github.com/docker/docker/issues/12779
 
 ## Reproduce the problem
 
