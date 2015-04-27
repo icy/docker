@@ -32,6 +32,7 @@ Build the image and see the result
     $ docker build -t icy/volume_bug .
     $ docker run -ti --rm icy/volume_bug
     /empty/
+    /empty/add_first.txt
     /empty/first.txt
     # no other files
 
