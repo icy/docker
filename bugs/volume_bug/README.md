@@ -18,9 +18,9 @@ The final image only contain `/empty/first.txt`, while the second file
 ## VOLUME and COPY
 
 However, the `COPY` (and `ADD`) instructions can add file after
-`VOLUME` command
+a `VOLUME` command
 
-    # VOLUMe /empty/
+    # VOLUME /empty/
     COPY add_first.txt /empty/
 
 The final image will contain `add_first.txt` as expected.
