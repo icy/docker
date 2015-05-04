@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update
 RUN apt-get install -y curl
 RUN apt-get install -y bzip2
+RUN apt-get install -y fontconfig
 
 RUN cd /usr/ \
     && curl -Lso- \
@@ -20,11 +21,10 @@ RUN chmod 755 /usr/bin/phantomjs
 RUN mkdir /home/phantomjs
 RUN chown phantomjs:phantomjs /home/phantomjs
 
-RUN apt-get install -y fontconfig
-
-ADD /phantomjs.sh /etc/s.supervisor/
+# ADD phantomjs.sh /etc/s.supervisor/
 
 EXPOSE 8190
 VOLUME /usr/share/fonts/
+VOLUME /etc/s.supervisor/
 
 CMD ["/supervisor.sh"]
