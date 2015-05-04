@@ -1,10 +1,7 @@
-FROM debian:stable
+FROM icy/supervisor:latest
 
 MAINTAINER Anh K. Huynh "kyanh@theslinux.org"
-
 ENV DEBIAN_FRONTEND noninteractive
-
-# --force-yes is required for tzdata-java package
 
 RUN apt-get update
 RUN apt-get install -y openjdk-7-jre
@@ -19,21 +16,20 @@ RUN ln -s /usr/share/tomcat7/lib/ /tomcat/lib
 
 RUN mv /etc/tomcat7/ /tomcat/conf
 
-RUN useradd tomcat
+RUN useradd -K UID_MIN=60000 tomcat
 RUN chown root:tomcat /tomcat/
 RUN chown -R root:tomcat /tomcat/conf/
 RUN chown tomcat:tomcat /tomcat/work/ /tomcat/logs/
 
 RUN ln -s /tomcat/ /home/tomcat
 
-ADD ./tomcat.sh /
-RUN chmod 755 /tomcat.sh
+# ADD ./tomcat.sh /etc/s.supervisor/
+# RUN chmod 755 /etc/s.supervisor/tomcat.sh
 
 VOLUME /tomcat/logs/
 VOLUME /tomcat/webapps/
 VOLUME /tomcat/conf/
+VOLUME /etc/s.supervisor/
 
 EXPOSE 8080
-
-USER tomcat
-CMD ["/tomcat.sh"]
+CMD ["/supervisor.sh"]
