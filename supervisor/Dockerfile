@@ -13,7 +13,7 @@ RUN mkdir -pv /etc/s.supervisor/ /supervisor/
 ADD supervisor.sh /
 RUN chmod 700 /supervisor.sh
 
-EXPOSE 9001
+# EXPOSE 9001
 VOLUME /supervisor/
 VOLUME /etc/s.supervisor/
 

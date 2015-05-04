@@ -8,15 +8,7 @@ So we will run a container that run multiple processed inside...
 
 ## Environments
 
-* `SUPERVISOR_PASSWD`: the password for the web console. By default,
-  a random password is generated and printed to `stderr`, which you
-  can retrieve by `docker logs` and `grep` commands.
-
 * `SUPERVISOR_LOG_LEVEL`: logging level. Default: `info`.
-
-## Exposed port
-
-* `9001`: Accessing to web console of `supervisor` daemon
 
 ## Volumes
 

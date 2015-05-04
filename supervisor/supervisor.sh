@@ -21,10 +21,10 @@ cat \
 file=/var/run/supervisor.sock   ; (the path to the socket file)
 chmod=0700                      ; sockef file mode (default 0700)
 
-[inet_http_server]
-port=127.0.0.1:9001
-username=admin
-password=${_PASSWORD}
+;[inet_http_server]
+;port=127.0.0.1:9001
+;username=admin
+;password=${_PASSWORD}
 
 [supervisord]
 nodaemon=true
@@ -38,8 +38,8 @@ loglevel=$_LOG_LEVEL             ; (log level;default info; others: debug,warn,t
 ; the below section must remain in the config file for RPC
 ; (supervisorctl/web interface) to work, additional interfaces may be
 ; added by defining them in separate rpcinterface: sections
-[rpcinterface:supervisor]
-supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+;[rpcinterface:supervisor]
+;supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
 
 [supervisorctl]
 serverurl=unix:///var/run/supervisor.sock ; use a unix:// URL  for a unix socket
