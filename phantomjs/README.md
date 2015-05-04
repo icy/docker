@@ -13,7 +13,7 @@ fonts from `/usr/share/fonts/` (exportable as a volume.)
 It's easy. You may need to add fonts into the volume.
 
     # Build icy/supervisor
-    $ cd supervisor/ && docker build -t icy/docker .
+    $ cd supervisor/ && docker build -t icy/supervisor .
 
     # Build icy/phantomjs
     $ cd phantomjs/ && docker build -t phantomjs .
