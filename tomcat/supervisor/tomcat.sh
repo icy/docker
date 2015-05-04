@@ -1,6 +1,16 @@
 #!/bin/bash
 
+set -e
+
 if [[ "${1:-}" == "start" ]]; then
+  if [[ -n "$TOMCAT_UID" ]]; then
+    usermod -u "$TOMCAT_UID" tomcat
+  fi
+
+  if [[ -n "$TOMCAT_GID" ]]; then
+    groupmod -u "$TOMCAT_GID" tomcat
+  fi
+
   exec \
     /usr/bin/java \
     $TOMCAT_EXTRA \
