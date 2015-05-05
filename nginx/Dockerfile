@@ -9,8 +9,13 @@ RUN apt-get install -y wget
 RUN apt-get install -y build-essential libpcre3-dev
 RUN apt-get install -y git
 RUN apt-get install -y nginx
-
 RUN apt-get install -y libssl-dev
+
+RUN rm -fv /var/cache/apt/*.bin
+RUN rm -fv /var/cache/apt/archives/*.*
+RUN rm -fv /var/lib/apt/lists/*.*
+RUN apt-get autoclean
+
 RUN mkdir -pv /usr/src/build/
 
 RUN wget https://github.com/openresty/echo-nginx-module/archive/v0.57.tar.gz \
@@ -25,6 +30,9 @@ RUN wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
 ADD build.sh /usr/src/build/
 RUN chmod 700 /usr/src/build/build.sh
 RUN cd /usr/src/build && ./build.sh
+
+RUN rm -rf /usr/src/
+
 RUN mkdir -pv /var/www/internal/
 RUN rm -rf /etc/nginx/
 RUN mkdir /etc/nginx/

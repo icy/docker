@@ -8,6 +8,11 @@ RUN apt-get install -y openjdk-7-jre
 RUN apt-get install -y tomcat7
 RUN apt-get install -y tomcat7-admin
 
+RUN rm -fv /var/cache/apt/*.bin
+RUN rm -fv /var/cache/apt/archives/*.*
+RUN rm -fv /var/lib/apt/lists/*.*
+RUN apt-get autoclean
+
 RUN mkdir -pv /tomcat/webapps/ /tomcat/work/ /tomcat/logs/
 
 RUN ln -s /usr/share/tomcat7-admin/manager/ /tomcat/webapps/

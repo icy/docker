@@ -6,6 +6,12 @@ ENV DEBIAN_FRONTEND noninteractive
 # http://syncapp.bittorrent.com/1.3.109/btsync_x64-1.3.109.tar.gz
 RUN apt-get update
 RUN apt-get install -y curl
+
+RUN rm -fv /var/cache/apt/*.bin
+RUN rm -fv /var/cache/apt/archives/*.*
+RUN rm -fv /var/lib/apt/lists/*.*
+RUN apt-get autoclean
+
 RUN cd /usr/bin/ \
   && curl -Ls http://syncapp.bittorrent.com/1.3.109/btsync_x64-1.3.109.tar.gz \
     | tar -xzf - btsync

@@ -35,6 +35,12 @@ RUN wget http://dwnld.aftershotpro.com/AfterShot/Patch/1/1_2/AfterShotPro_amd64.
 RUN dpkg -i /usr/src/AfterShot-1.2.0.7.deb
 RUN ldconfig
 
+RUN rm -fv /usr/src/AfterShot-1.2.0.7.deb
+RUN rm -fv /var/cache/apt/*.bin
+RUN rm -fv /var/cache/apt/archives/*.*
+RUN rm -fv /var/lib/apt/lists/*.*
+RUN apt-get autoclean
+
 EXPOSE 22
 
 ADD sshd.sh /

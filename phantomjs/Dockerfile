@@ -8,6 +8,11 @@ RUN apt-get install -y curl
 RUN apt-get install -y bzip2
 RUN apt-get install -y fontconfig
 
+RUN rm -fv /var/cache/apt/*.bin
+RUN rm -fv /var/cache/apt/archives/*.*
+RUN rm -fv /var/lib/apt/lists/*.*
+RUN apt-get autoclean
+
 RUN cd /usr/ \
     && curl -Lso- \
       https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 \
