@@ -38,8 +38,8 @@ loglevel=$_LOG_LEVEL             ; (log level;default info; others: debug,warn,t
 ; the below section must remain in the config file for RPC
 ; (supervisorctl/web interface) to work, additional interfaces may be
 ; added by defining them in separate rpcinterface: sections
-;[rpcinterface:supervisor]
-;supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
 
 [supervisorctl]
 serverurl=unix:///var/run/supervisor.sock ; use a unix:// URL  for a unix socket
