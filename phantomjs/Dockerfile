@@ -20,7 +20,7 @@ RUN cd /usr/ \
         phantomjs-1.9.8-linux-x86_64/bin/phantomjs \
         --strip-components=1
 
-RUN useradd -K UID_MIN=60001 tomcat
+RUN useradd -K UID_MIN=60001 phantomjs
 RUN chmod 755 /usr/bin/phantomjs
 
 RUN mkdir /home/phantomjs
