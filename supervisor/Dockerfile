@@ -1,4 +1,4 @@
-FROM debian:stable
+FROM debian:wheezy
 
 MAINTAINER Anh K. Huynh "kyanh@theslinux.org"
 
