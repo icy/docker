@@ -80,7 +80,7 @@ env \
     printf("groupmod -g %s %s || groupadd -g %s %s\n", id, name, id, name);
     printf("usermod -u %s -g %s %s || useradd -u %s -g %s %s\n", id, id, name, id, id, name);
   }' \
-| bash
+| bash -x
 
 env \
 | grep -E '^[A-Z0-9]+_GID=[0-9]+$' \
@@ -90,6 +90,6 @@ env \
     if (id == 0) { id = 6000; }
     printf("groupmod -g %s %s || groupadd -g %s %s\n", id, name, id, name);
   }' \
-| bash
+| bash -x
 
 exec /usr/bin/supervisord --configuration /etc/supervisord.conf
