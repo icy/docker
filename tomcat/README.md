@@ -5,7 +5,9 @@ Because people often runs `Tomcat` application as `root`,
 
 ## Environments
 
-* `TOMCAT_EXTRA`: extra arguments (e.g, memory settings) for `java`
+* `TOMCAT_EXTRA`: extra arguments (e.g, memory settings) for `java`.
+* `TOMCAT_UID`: The `uid` of `tomcat` account.
+* `TOMCAT_GID`: The `gid` of `tomcat` account.
 
 ## Volumes
 
