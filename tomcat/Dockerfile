@@ -21,7 +21,7 @@ RUN ln -s /usr/share/tomcat7/lib/ /tomcat/lib
 
 RUN mv /etc/tomcat7/ /tomcat/conf
 
-RUN useradd -K UID_MIN=60000 tomcat
+RUN useradd -K UID_MIN=10000 tomcat
 RUN chown root:tomcat /tomcat/
 RUN chown -R root:tomcat /tomcat/conf/
 RUN chown tomcat:tomcat /tomcat/work/ /tomcat/logs/
