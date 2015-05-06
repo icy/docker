@@ -6,6 +6,13 @@ if [[ "${1:-}" == "start" ]]; then
   :
 fi
 
+if [[ -n "$PHANTOMJS_UID" ]]; then
+  usermod -u "$PHANTOMJS_UID" phantomjs
+fi
+
+if [[ -n "$PHANTOMJS_UID" ]]; then
+  groupmod -u "$PHANTOMJS_UID" phantomjs
+fi
 
 cat \
   > /etc/s.supervisor/phantomjs.s \

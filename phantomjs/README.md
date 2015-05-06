@@ -7,6 +7,8 @@ fonts from `/usr/share/fonts/` (exportable as a volume.)
 ## Environment(s)
 
 * `PHANTOMJS_DEBUG`: Turn debug on or off. Default: `false`.
+* `PHANTOMJS_UID`: The `uid` of `phantomjs` account.
+* `PHANTOMJS_GID`: The `gid` of `phantomjs` account.
 
 ## Usage example
 
