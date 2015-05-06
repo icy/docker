@@ -77,6 +77,7 @@ env \
     name = tolower($1);
     id = $2;
     if (id == 0) { id = 6000; }
+    printf("groupmod -g %s %s || groupadd -g %s %s\n", id, name, id, name);
     printf("usermod -u %s -g %s %s || useradd -u %s -g %s %s\n", id, id, name, id, id, name);
   }' \
 | bash
