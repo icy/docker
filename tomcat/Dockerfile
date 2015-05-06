@@ -3,33 +3,24 @@ FROM icy/supervisor:latest
 MAINTAINER Anh K. Huynh "kyanh@theslinux.org"
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update
-RUN apt-get install -y openjdk-7-jre
-RUN apt-get install -y tomcat7
-RUN apt-get install -y tomcat7-admin
-
-RUN rm -fv /var/cache/apt/*.bin
-RUN rm -fv /var/cache/apt/archives/*.*
-RUN rm -fv /var/lib/apt/lists/*.*
-RUN apt-get autoclean
-
-RUN mkdir -pv /tomcat/webapps/ /tomcat/work/ /tomcat/logs/
-
-RUN ln -s /usr/share/tomcat7-admin/manager/ /tomcat/webapps/
-RUN ln -s /usr/share/tomcat7-admin/host-manager/ /tomcat/webapps/
-RUN ln -s /usr/share/tomcat7/lib/ /tomcat/lib
-
-RUN mv /etc/tomcat7/ /tomcat/conf
-
-RUN useradd -K UID_MIN=10000 tomcat
-RUN chown root:tomcat /tomcat/
-RUN chown -R root:tomcat /tomcat/conf/
-RUN chown tomcat:tomcat /tomcat/work/ /tomcat/logs/
-
-RUN ln -s /tomcat/ /home/tomcat
-
-# ADD ./tomcat.sh /etc/s.supervisor/
-# RUN chmod 755 /etc/s.supervisor/tomcat.sh
+RUN apt-get update \
+  && apt-get install -y openjdk-7-jre \
+  && apt-get install -y tomcat7 \
+  && apt-get install -y tomcat7-admin \
+  && rm -fv /var/cache/apt/*.bin \
+  && rm -fv /var/cache/apt/archives/*.* \
+  && rm -fv /var/lib/apt/lists/*.* \
+  && apt-get autoclean \
+  && mkdir -pv /tomcat/webapps/ /tomcat/work/ /tomcat/logs/ \
+  && ln -s /usr/share/tomcat7-admin/manager/ /tomcat/webapps/ \
+  && ln -s /usr/share/tomcat7-admin/host-manager/ /tomcat/webapps/ \
+  && ln -s /usr/share/tomcat7/lib/ /tomcat/lib \
+  && mv /etc/tomcat7/ /tomcat/conf \
+  && useradd -K UID_MIN=10000 tomcat \
+  && chown root:tomcat /tomcat/ \
+  && chown -R root:tomcat /tomcat/conf/ \
+  && chown tomcat:tomcat /tomcat/work/ /tomcat/logs/ \
+  && ln -s /tomcat/ /home/tomcat
 
 VOLUME /tomcat/logs/
 VOLUME /tomcat/webapps/
