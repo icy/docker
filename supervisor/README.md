@@ -9,6 +9,8 @@ So we will run a container that run multiple processed inside...
 ## Environments
 
 * `SUPERVISOR_LOG_LEVEL`: logging level. Default: `info`.
+* `FOOBAR_UID=<NUMBER>`: user to create / modify.
+* `FOOBAR_GID=<NUMBER>`: group to create / modify.
 
 ## Volumes
 

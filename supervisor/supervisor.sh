@@ -2,12 +2,16 @@
 
 if [[ -z "${SUPERVISOR_PASSWD}" ]]; then
   _PASSWORD="$RANDOM.$RANDOM"
-  echo >&2 ":: Supervisor web console: admin's password is $_PASSWORD"
+  # echo >&2 ":: Supervisor web console: admin's password is $_PASSWORD"
 else
   _PASSWORD="${SUPERVISOR_PASSWD}"
 fi
 
 _LOG_LEVEL="${SUPERVISOR_LOG_LEVEL:-info}"
+
+########################################################################
+# The configuration generator
+########################################################################
 
 cat \
   > /etc/supervisord.conf \
@@ -48,7 +52,10 @@ serverurl=unix:///var/run/supervisor.sock ; use a unix:// URL  for a unix socket
 files = /etc/s.supervisor/*.s
 EOF
 
+########################################################################
 # Execute all generators!!!
+########################################################################
+
 while read FILE; do
   chmod -c 755 "$FILE" # FIXME: This is a Docker bug!
   bash -n "$FILE" \
@@ -59,5 +66,29 @@ while read FILE; do
   || true
 done \
 < <(find /etc/s.supervisor/ -type f -iname "*.sh")
+
+########################################################################
+# uid/gid fixing
+########################################################################
+
+env \
+| grep -E '^[A-Z0-9]+_UID=[0-9]+$' \
+| awk -F '_UID=' '{
+    name = tolower($1);
+    id = $2;
+    if (id == 0) { id = 6000; }
+    printf("usermod -u %s %s || useradd -u %s %s\n", id, name, id, name);
+  }' \
+| bash
+
+env \
+| grep -E '^[A-Z0-9]+_GID=[0-9]+$' \
+| awk -F '_GID=' '{
+    name = tolower($1);
+    id = $2;
+    if (id == 0) { id = 6000; }
+    printf("groupmod -g %s %s || groupadd -g %s %s\n", id, name, id, name);
+  }' \
+| bash
 
 exec /usr/bin/supervisord --configuration /etc/supervisord.conf
