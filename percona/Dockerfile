@@ -20,6 +20,7 @@ RUN apt-key adv \
   && rm -fv /var/cache/apt/*.bin \
   && rm -fv /var/cache/apt/archives/*.* \
   && rm -fv /var/lib/apt/lists/*.* \
+  && rm -rf /var/lib/mysql/ /usr/share/doc/ \
   && apt-get autoclean \
   && mkdir /mysql/ \
   && groupmod -g 10003 mysql \
