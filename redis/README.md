@@ -20,7 +20,7 @@ The result container will run `redis` thanks to `supervisor`.
 
 ## Build instruction
 
-It's easy. You may need to add fonts into the volume.
+It's easy.
 
     # Build icy/supervisor
     $ cd supervisor/ && docker build -t icy/supervisor .

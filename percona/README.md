@@ -18,6 +18,18 @@ The result daemon will be launched by `supervisor`.
 
 * `3306`: The favorite `mysql` port.
 
+## Build instruction
+
+It's easy.
+
+    # Build icy/supervisor
+    $ cd supervisor/ && docker build -t icy/supervisor .
+
+    # Build icy/percona
+    $ cd percona/ && docker build -t percona .
+
+Please use the latest `icy/supervisor` image.
+
 ## Notes
 
 1. If `/mysql/` is empty, the container will try to initialize
