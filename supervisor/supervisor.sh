@@ -53,21 +53,6 @@ files = /etc/s.supervisor/*.s
 EOF
 
 ########################################################################
-# Execute all generators!!!
-########################################################################
-
-while read FILE; do
-  chmod -c 755 "$FILE" # FIXME: This is a Docker bug!
-  bash -n "$FILE" \
-  && {
-    echo >&2 ":: Executing generator '$FILE'..."
-    bash "$FILE"
-  } \
-  || true
-done \
-< <(find /etc/s.supervisor/ -type f -iname "*.sh")
-
-########################################################################
 # uid/gid fixing
 ########################################################################
 
@@ -91,5 +76,24 @@ env \
     printf("groupmod -g %s %s || groupadd -g %s %s\n", id, name, id, name);
   }' \
 | bash -x
+
+########################################################################
+# Execute all generators!!!
+########################################################################
+
+while read FILE; do
+  chmod -c 755 "$FILE" # FIXME: This is a Docker bug!
+  bash -n "$FILE" \
+  && {
+    echo >&2 ":: Executing generator '$FILE'..."
+    bash "$FILE"
+  } \
+  || true
+done \
+< <(find /etc/s.supervisor/ -type f -iname "*.sh")
+
+########################################################################
+# Main daemon
+########################################################################
 
 exec /usr/bin/supervisord --configuration /etc/supervisord.conf
