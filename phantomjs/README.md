@@ -10,6 +10,10 @@ fonts from `/usr/share/fonts/` (exportable as a volume.)
 * `PHANTOMJS_UID`: The `uid` of `phantomjs` account.
 * `PHANTOMJS_GID`: The `gid` of `phantomjs` account.
 
+## Expose port
+
+* `8190`: The port for `API` use.
+
 ## Usage example
 
 It's easy. You may need to add fonts into the volume.
