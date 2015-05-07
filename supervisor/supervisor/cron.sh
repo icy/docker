@@ -2,7 +2,7 @@
 
 if [[ "${CRON_ENABLE:-0}" == "0" ]]; then
   rm -f /etc/s.supervisor/cron.s
-  :
+  exit 0
 fi
 
 if [[ "${1:-}" == "start" ]]; then
