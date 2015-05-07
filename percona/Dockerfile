@@ -24,8 +24,7 @@ RUN apt-key adv \
   && apt-get autoclean \
   && mkdir /mysql/ \
   && groupmod -g 10003 mysql \
-  && usermod -u 10003 -g 10003 mysql \
-  && sed -ri 's/^(bind-address|skip-networking)/;\1/' /etc/mysql/my.cnf
+  && usermod -u 10003 -g 10003 mysql
 
 EXPOSE 3306
 VOLUME /mysql

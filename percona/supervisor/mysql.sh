@@ -10,6 +10,9 @@ _mysql_datadir() {
       cp -vf /mysql/my.cnf /etc/mysql/my.cnf || return 1
     fi
 
+    echo >&2 ":: MySQL: Fix bind-address..."
+    sed -ri 's/^(bind-address|skip-networking)/;\1/' /etc/mysql/my.cnf
+
     echo >&2 ":: MySQL: Fix datadir setting in /etc/mysql/my.cnf"
     sed -i \
       -e 's#datadir[[:space:]]*=.*$#datadir = /mysql/#g' \
