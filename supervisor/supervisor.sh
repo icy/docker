@@ -60,6 +60,7 @@ env \
 | grep -E '^[A-Z0-9]+_UID=[0-9]+$' \
 | awk -F '_UID=' '{
     name = tolower($1);
+    if (name == "exim4") { name = "Debian-exim" ;}
     id = $2;
     if (id == 0) { id = 6000; }
     printf("groupmod -g %s %s || groupadd -g %s %s\n", id, name, id, name);
@@ -71,6 +72,7 @@ env \
 | grep -E '^[A-Z0-9]+_GID=[0-9]+$' \
 | awk -F '_GID=' '{
     name = tolower($1);
+    if (name == "exim4") { name = "Debian-exim" ;}
     id = $2;
     if (id == 0) { id = 6000; }
     printf("groupmod -g %s %s || groupadd -g %s %s\n", id, name, id, name);
