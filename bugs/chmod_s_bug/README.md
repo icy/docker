@@ -1,5 +1,7 @@
 ## Description
 
+`devicemapper` and `aufs` behave differently with setgid directory.
+
 The directory `/var/log/exim4` is owned by `Debian-exim:adm`,
 and it's `setgid` (aka `chmod g+s`). When `uid/gid` of `Debian-exim`
 is updated, the user `Debian-exim` may not be able to write to
@@ -45,3 +47,7 @@ drwxr-s--- 2 Debian-exim adm 4096 May  8 10:41 /var/log/exim4//
 total 0
 
 ````
+
+## Docker environments
+
+See `
