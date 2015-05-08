@@ -4,7 +4,9 @@
 Sometimes, that's good enough. Sometimes, you get a head-ache
 with process mangling ([MAKE SURE YOU READ THIS][1]).
 
-So we will run a container that run multiple processed inside...
+So we will run a container that run multiple processed inside.
+
+The container will have `cron` and `exim4` daemon disabled by default.
 
 ## Environments
 
@@ -13,6 +15,11 @@ So we will run a container that run multiple processed inside...
 * `FOOBAR_GID=<NUMBER>`: Group to create / modify.
 * `CRON_ENABLE`: Enable cron daemon. Default: 0
 * `CRON_LOGLEVEL`: Cron logging level. Default: 1
+* `EXIM4_ENABLE`: Enable Exim4 daemon. Default: 0
+* `EXIM4_MAILNAME`: The mail name (See `/etc/mailname`). Default: `$HOSTNAME.`
+* `EXIM4_OTHER_NAMES`: Other local names (white space list). Default: empty.
+* `EXIM4_MINE_CONFIG`: Use your own config mounted on `/etc/mailname`
+      and `/etc/exim4/*`. Default: `0`.
 
 ## Volumes
 

@@ -5,7 +5,8 @@ MAINTAINER Anh K. Huynh "kyanh@theslinux.org"
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update \
-  && apt-get install -y supervisor cron \
+  && apt-get install -y \
+      supervisor cron exim4-daemon-light \
   && rm -fv /var/cache/apt/*.bin \
   && rm -fv /var/cache/apt/archives/*.* \
   && rm -fv /var/lib/apt/lists/*.* \
@@ -17,7 +18,7 @@ RUN apt-get update \
 ADD supervisor.sh /
 RUN chmod 700 /supervisor.sh
 
-ADD supervisor/cron.sh /etc/s.supervisor/
+ADD supervisor/*.sh supervisor/*.s /etc/s.supervisor/
 
 VOLUME /supervisor/
 
