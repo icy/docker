@@ -13,7 +13,8 @@ RUN apt-get update \
   && apt-get autoclean \
   && rm -rf /etc/supervisor/ \
   && mkdir -pv /etc/s.supervisor/ /supervisor/ \
-  && ln -s /usr/bin/supervisorctl /usr/bin/s
+  && ln -s /usr/bin/supervisorctl /usr/bin/s \
+  && chmod -s /var/log/exim4/
 
 ADD supervisor.sh /
 RUN chmod 700 /supervisor.sh
@@ -21,6 +22,7 @@ RUN chmod 700 /supervisor.sh
 ADD supervisor/*.sh supervisor/*.s /etc/s.supervisor/
 
 VOLUME /supervisor/
+VOLUME /var/log/exim4/
 
 ONBUILD COPY supervisor/*.sh supervisor/*.s /etc/s.supervisor/
 ONBUILD COPY cron.d/* /etc/cron.d/

@@ -20,7 +20,7 @@ _exim4_uid_gid_update() {
   groupmod -g "$EXIM4_GID" Debian-exim
   usermod -g "$EXIM4_GID" -u "$EXIM4_UID" Debian-exim
   chown Debian-exim:Debian-exim -Rc /var/spool/exim4/
-  chown Debian-exim:adm -Rc /var/log/exim4
+  chown Debian-exim:Debian-exim -Rc /var/log/exim4/
   # FIXME: Exim4 bug here lolz
   chmod 750 /var/log/exim4
   chown root:Debian-exim  /etc/exim4/passwd.client
