@@ -100,7 +100,7 @@ esac
 
 _D_DATA="$(_mysql_datadir)" || exit 1
 mkdir -pv /var/run/mysqld/
-chown -R mysql:mysql /mysql/ /var/run/mysqld/
+chown -R mysql:mysql /mysql/ /var/run/mysqld/ /var/log/mysql*
 
 # initialize the database if necessary
 su - mysql -s /bin/bash -c "$0 init"
