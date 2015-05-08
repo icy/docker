@@ -92,7 +92,7 @@ while read FILE; do
   } \
   || true
 done \
-< <(find /etc/s.supervisor/ -type f -iname "*.sh")
+< <(find /etc/s.supervisor/ -type f -iname "*.sh" | sort)
 
 ########################################################################
 # Main daemon
