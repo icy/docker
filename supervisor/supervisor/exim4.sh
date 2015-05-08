@@ -22,6 +22,10 @@ _exim4_uid_gid_update() {
   chown Debian-exim:Debian-exim -Rc /var/spool/exim4/
   chown Debian-exim:adm -Rc /var/log/exim4
   chown root:Debian-exim  /etc/exim4/passwd.client
+
+  if [[ ! -f /var/mail/root ]]; then
+    ln -vs /var/mail/mail /var/mail/root
+  fi
 }
 
 _exim4_config_update() {
