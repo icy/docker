@@ -16,6 +16,8 @@ The container will have `cron` and `exim4` daemon disabled by default.
 * `CRON_ENABLE`: Enable cron daemon. Default: 0
 * `CRON_LOGLEVEL`: Cron logging level. Default: 1
 * `EXIM4_ENABLE`: Enable Exim4 daemon. Default: 0
+* `EXIM4_UID`: The `uid` of `Debian-exim` account. Default: `10004`.
+* `EXIM4_GID`: The `gid` of `Debian-exim` account. Default: `10004`.
 * `EXIM4_MAILNAME`: The mail name (See `/etc/mailname`). Default: `$HOSTNAME.`
 * `EXIM4_OTHER_NAMES`: Other local names (white space list). Default: empty.
 * `EXIM4_MINE_CONFIG`: Use your own config mounted on `/etc/mailname`

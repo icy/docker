@@ -14,6 +14,16 @@ fi
 # Configuration generator
 ########################################################################
 
+_exim4_uid_gid_update() {
+  EXIM4_UID="${EXIM4_UID:-10004}"
+  EXIM4_GID="${EXIM4_GID:-10004}"
+  groupmod -g "$EXIM4_GID" Debian-exim
+  usermod -g "$EXIM4_GID" -u "$EXIM4_UID" Debian-exim
+  chown Debian-exim:Debian-exim -Rc /var/spool/exim4/
+  chown Debian-exim:adm -Rc /var/log/exim4
+  chown root:Debian-exim  /etc/exim4/passwd.client
+}
+
 _exim4_config_update() {
   local _other_names
 
@@ -55,6 +65,11 @@ EOF
   /usr/sbin/update-exim4.conf
 }
 
+########################################################################
+# main tasks
+########################################################################
+
+_exim4_uid_gid_update
 _exim4_config_update
 
 cat \
