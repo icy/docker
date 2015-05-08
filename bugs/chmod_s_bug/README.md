@@ -1,3 +1,7 @@
+## Links
+
+See also https://github.com/docker/docker/issues/13084.
+
 ## Description
 
 `devicemapper` and `aufs` behave differently with setgid directory.
