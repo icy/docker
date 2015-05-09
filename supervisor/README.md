@@ -10,11 +10,25 @@ The container will have `cron` and `exim4` daemon disabled by default.
 
 ## Environments
 
+### Core feature
+
 * `SUPERVISOR_LOG_LEVEL`: Logging level. Default: `info`.
 * `FOOBAR_UID=<NUMBER>`: User to create / modify.
 * `FOOBAR_GID=<NUMBER>`: Group to create / modify.
+
+### Cron feature
+
+`cron` is built with custom `debugging` enabled, that helps to
+send a lot of information to standard output devices which will
+be catched by `supervisor`. You can see `cron` log from `/supervisor/`.
+
 * `CRON_ENABLE`: Enable cron daemon. Default: 0
-* `CRON_LOGLEVEL`: Cron logging level. Default: 1
+* `CRON_LOGLEVEL`: Cron debugging level. Default: `load`.
+    Can be a white-space list of
+      `ext`, `sch`, `proc`, `pars`, `load`, `misc`, `test`, `bit`.
+
+### Exim4 feature
+
 * `EXIM4_ENABLE`: Enable Exim4 daemon. Default: 0
 * `EXIM4_UID`: The `uid` of `Debian-exim` account. Default: `10004`.
 * `EXIM4_GID`: The `gid` of `Debian-exim` account. Default: `10004`.

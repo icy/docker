@@ -6,7 +6,11 @@ if [[ "${CRON_ENABLE:-0}" == "0" ]]; then
 fi
 
 if [[ "${1:-}" == "start" ]]; then
-  exec /usr/sbin/cron -f -L "${CRON_LOGLEVEL:-1}"
+  _flags=""
+  for _flag in ${CRON_LOGLEVEL:-load}; do
+    _flags="$_flags -x $_flag"
+  done
+  exec /usr/sbin/cron -f $_flags
   :
 fi
 
