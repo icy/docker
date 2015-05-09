@@ -24,8 +24,7 @@ be catched by `supervisor`. You can see `cron` log from `/supervisor/`.
 
 * `CRON_ENABLE`: Enable cron daemon. Default: 0
 * `CRON_LOGLEVEL`: Cron debugging level. Default: `bit`.
-    Can be a white-space list of
-      `ext`, `sch`, `proc`, `pars`, `load`, `misc`, `test`, `bit`.
+  Available value: `ext`, `sch`, `proc`, `pars`, `load`, `misc`, `test`, `bit`.
 
 ### Exim4 feature
 
