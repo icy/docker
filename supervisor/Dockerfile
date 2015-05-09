@@ -4,7 +4,8 @@ MAINTAINER Anh K. Huynh "kyanh@theslinux.org"
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update \
+RUN set -x \
+  && apt-get update \
   && apt-get install -y \
       supervisor cron exim4-daemon-light \
   \
@@ -19,7 +20,8 @@ RUN apt-get update \
   \
   && chmod -s /var/log/exim4/
 
-RUN apt-get update \
+RUN set -x \
+  && apt-get update \
   && _tmp_pkgs='curl gcc libc6-dev make patch' \
   && apt-get update \
   && apt-get install -y $_tmp_pkgs --no-install-recommends \
