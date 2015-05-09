@@ -23,6 +23,7 @@
 9. `bugs/chmod_bug`: A problem with `Docker-1.6-4749651`
 10. `bugs/chmod_s_bug`: A problem with `Docker/aufs`
 11. `bugs/copy_bug`: A missing feature of `Docker`.
+12. `bugs/volume_bug`: The actual problem of `bugs/chmod_bug`.
 
 ## Personal. May not useful for everyone.
 
