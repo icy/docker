@@ -6,7 +6,7 @@ if [[ "${CRON_ENABLE:-0}" == "0" ]]; then
 fi
 
 if [[ "${1:-}" == "start" ]]; then
-  exec /usr/sbin/cron -f -x ${CRON_LOGLEVEL:-bit}
+  exec /usr/sbin/cron -f -L ${CRON_LOGLEVEL:-1}
   :
 fi
 

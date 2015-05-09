@@ -8,6 +8,10 @@ So we will run a container that run multiple processed inside.
 
 The container will have `cron` and `exim4` daemon disabled by default.
 
+There is also a mininum `syslog` implementation by `gryphius` on `Github`.
+You may need this to get, e.g, all `cron` information and there isn't
+`rsyslog`, `syslog-ng` daemon listening.
+
 ## Environments
 
 ### Core feature
@@ -16,15 +20,18 @@ The container will have `cron` and `exim4` daemon disabled by default.
 * `FOOBAR_UID=<NUMBER>`: User to create / modify.
 * `FOOBAR_GID=<NUMBER>`: Group to create / modify.
 
+### Msyslog feature
+
+* `MSYSLOG_ENABLE`: Enable the mininum `syslog` implementation. Default: `0`.
+
 ### Cron feature
 
-`cron` is built with custom `debugging` enabled, that helps to
-send a lot of information to standard output devices which will
-be catched by `supervisor`. You can see `cron` log from `/supervisor/`.
+`cron` is disabled by default. When being enabled, `cron` daemon
+writes all to `/dev/log`, hence you need `MSYSLOG_ENABLE=1` to see
+`cron` verbose information.
 
 * `CRON_ENABLE`: Enable cron daemon. Default: 0
-* `CRON_LOGLEVEL`: Cron debugging level. Default: `bit`.
-  Available value: `ext`, `sch`, `proc`, `pars`, `load`, `misc`, `test`, `bit`.
+* `CRON_LOGLEVEL`: Cron debugging level. Default: `1`.
 
 ### Exim4 feature
 
