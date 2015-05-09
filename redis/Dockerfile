@@ -13,24 +13,28 @@ ENV REDIS_MAJOR_VERSION 2.8
 ENV REDIS_DOWNLOAD_URL http://download.redis.io/releases/redis-2.8.20.tar.gz
 ENV REDIS_DOWNLOAD_SHA1 45f134113fb3d75b8c37f7968e46565a70800091
 
-RUN apt-get update \
-  && apt-get install -y curl \
-  && buildDeps='gcc libc6-dev make' \
-  && set -x \
-  && apt-get update && apt-get install -y $buildDeps --no-install-recommends \
+RUN set -x \
+  && apt-get update \
+  && buildDeps='gcc libc6-dev make curl' \
+  && apt-get install -y $buildDeps --no-install-recommends \
+  \
   && mkdir -p /usr/src/redis \
   && curl -sSL "$REDIS_DOWNLOAD_URL" -o redis.tar.gz \
-  && echo "$REDIS_DOWNLOAD_SHA1 *redis.tar.gz" | sha1sum -c - \
+  && echo "$REDIS_DOWNLOAD_SHA1 *redis.tar.gz" \
+      | sha1sum -c - \
   && tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
   && rm redis.tar.gz \
+  \
   && make -C /usr/src/redis \
   && make -C /usr/src/redis install \
+  \
   && rm -r /usr/src/redis \
   && apt-get purge -y --auto-remove $buildDeps \
   && rm -fv /var/cache/apt/*.bin \
   && rm -fv /var/cache/apt/archives/*.* \
   && rm -fv /var/lib/apt/lists/*.* \
   && apt-get autoclean \
+  \
   && useradd -K UID_MIN=10002 redis \
   && mkdir /redis \
   && chown redis:redis /redis \
