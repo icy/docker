@@ -1,0 +1,14 @@
+diff --git a/misc.c b/misc.c
+index 5826f4e..f4bb6c5 100644
+--- a/misc.c
++++ b/misc.c
+@@ -589,7 +589,8 @@ log_it(username, xpid, event, detail)
+ 
+ #if DEBUGGING
+ 	if (DebugFlags) {
+-		fprintf(stderr, "log_it: (%s %d) %s (%s)\n",
++		fprintf(stderr, "%02d/%02d-%02d:%02d:%02d (%s %d) %s (%s)\n",
++			t->tm_mon+1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec,
+ 			username, xpid, event, detail);
+ 	}
+ #endif

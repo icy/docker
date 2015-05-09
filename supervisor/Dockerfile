@@ -42,6 +42,7 @@ RUN set -x \
   \
   && echo "#define DEBUGGING 1" >> /usr/src/cron/config.h \
   && sed -i -e 's|#define DEBUGGING.*$|#define DEBUGGING 1|g' /usr/src/cron/cron.h \
+  && curl -L https://raw.githubusercontent.com/icy/docker/master/supervisor/misc.c.patch \
   \
   && make \
   && install -s -c -m  755 -o root cron    /usr/sbin/ \
