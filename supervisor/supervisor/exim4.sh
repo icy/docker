@@ -26,9 +26,7 @@ _exim4_uid_gid_update() {
   chown root:Debian-exim  /etc/exim4/passwd.client
 
   # This is to make sure root can read default email
-  if [[ ! -f /var/mail/root ]]; then
-    ln -vs /var/mail/mail /var/mail/root
-  fi
+  ln -vs /var/mail/mail /var/mail/root || :
 }
 
 _exim4_config_update() {
