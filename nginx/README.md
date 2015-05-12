@@ -2,7 +2,7 @@
 
 This `docker` image is to provide a custom `nginx`. Properties
 
-* The latest stable `nginx-1.6.2`
+* The latest stable `nginx-1.8.0`
 * Hide all `nginx` signatures from its reponse (`4xx` error pages,
     server header, ...)
 * Standard modules:

@@ -5,6 +5,8 @@
 # Date   : 2012 April 10, 2013 Jan 10, 2015 Apr 3
 # License: Fair license
 
+set -x
+
 _NGINX_NAME="nginx-${NGINX_VERSION}"
 _NGINX_FLAGS="
     --prefix=/usr/ \
@@ -29,19 +31,6 @@ _NGINX_FLAGS="
 _NONSTANDARD_MODULES=""
 
 _D_BUILD="/usr/src/build/"
-mkdir -p $_D_BUILD/ $_D_BUILD/modules/
-
-(
-  cd "$_D_BUILD/modules/"
-  find "/usr/src/" -type f -iname "*nginx-module*.tar.gz" \
-  | while read _archive; do
-      tar xfz $_archive;
-    done
-)
-
-cd $_D_BUILD/
-tar xfvz /usr/src/${_NGINX_NAME}.tar.gz
-cd $_D_BUILD/${_NGINX_NAME}/
 
 _NONSTANDARD_MODULES="$( \
   find $_D_BUILD/modules/ \

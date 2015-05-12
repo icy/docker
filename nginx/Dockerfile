@@ -1,47 +1,46 @@
-FROM debian:wheezy
+FROM icy/supervisor:latest
 
 MAINTAINER Anh K. Huynh <kyanh@theslinux.org>
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update
-RUN apt-get install -y wget
-RUN apt-get install -y build-essential libpcre3-dev
-RUN apt-get install -y git
-RUN apt-get install -y nginx
-RUN apt-get install -y libssl-dev
+ENV NGINX_VERSION 1.8.0
+ENV NGINX_CHECKSUM 12bad312764feae50246685ab2e74512d1aa9b2f
 
-RUN rm -fv /var/cache/apt/*.bin
-RUN rm -fv /var/cache/apt/archives/*.*
-RUN rm -fv /var/lib/apt/lists/*.*
-RUN apt-get autoclean
-
-RUN mkdir -pv /usr/src/build/
-
-RUN wget https://github.com/openresty/echo-nginx-module/archive/v0.57.tar.gz \
-      -O /usr/src/echo-nginx-module-v0.57.tar.gz
-RUN wget https://github.com/openresty/headers-more-nginx-module/archive/v0.25.tar.gz \
-      -O /usr/src/headers-more-nginx-module-v0.25.tar.gz
-
-ENV NGINX_VERSION 1.6.2
-RUN wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
-      -O /usr/src/nginx-${NGINX_VERSION}.tar.gz
+RUN set -x \
+  && apt-get update \
+  && apt-get install -y \
+        curl gcc libc6-dev make curl libpcre3-dev git nginx libssl-dev \
+  && mkdir -pv /usr/src/build/modules/ \
+  && cd /usr/src/build/ \
+  && curl -Lso- https://github.com/openresty/echo-nginx-module/archive/v0.57.tar.gz \
+      | tar -xzf - -C /usr/src/build/modules/ \
+  && curl -Lso- https://github.com/openresty/headers-more-nginx-module/archive/v0.25.tar.gz \
+      | tar -xzf - -C /usr/src/build/modules/ \
+  && curl -Lso /usr/src/build/nginx.tar.gz \
+      http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
+  && echo "$NGINX_CHECKSUM *nginx.tar.gz" | sha1sum -c - \
+  && tar -xzf nginx.tar.gz -C /usr/src/build/
 
 ADD build.sh /usr/src/build/
-RUN chmod 700 /usr/src/build/build.sh
-RUN cd /usr/src/build && ./build.sh
-
-RUN rm -rf /usr/src/
-
-RUN mkdir -pv /var/www/internal/
-RUN rm -rf /etc/nginx/
-RUN mkdir /etc/nginx/
-ADD etc/nginx/ /etc/nginx/
-RUN /usr/sbin/nginx -t
-RUN /usr/sbin/nginx -V
-
 ADD nginx.sh /
-RUN chmod 700 /nginx.sh
-EXPOSE 80
 
+RUN set -x \
+  && chmod 700 /nginx.sh \
+  && bash /usr/src/build/build.sh \
+  \
+  && cd / \
+  && rm -rf /usr/src/ /etc/nginx/ \
+  && mkdir -pv /var/www/internal/ \
+  && mkdir /etc/nginx/ \
+  \
+  && apt-get purge -y --auto-remove curl gcc libc6-dev make curl git \
+  && rm -fv /var/cache/apt/*.bin \
+  && rm -fv /var/cache/apt/archives/*.* \
+  && rm -fv /var/lib/apt/lists/*.* \
+  && apt-get autoclean
+
+ADD etc/nginx/ /etc/nginx/
+
+EXPOSE 80
 CMD ["/nginx.sh"]
