@@ -23,10 +23,8 @@ RUN set -x \
   && tar -xzf nginx.tar.gz -C /usr/src/build/
 
 ADD build.sh /usr/src/build/
-ADD nginx.sh /
 
 RUN set -x \
-  && chmod 700 /nginx.sh \
   && bash /usr/src/build/build.sh \
   \
   && cd / \
@@ -43,4 +41,4 @@ RUN set -x \
 ADD etc/nginx/ /etc/nginx/
 
 EXPOSE 80
-CMD ["/nginx.sh"]
+CMD ["/supervisor.sh"]
