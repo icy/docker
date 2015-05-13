@@ -17,12 +17,16 @@ fi
 _exim4_uid_gid_update() {
   EXIM4_UID="${EXIM4_UID:-10004}"
   EXIM4_GID="${EXIM4_GID:-10004}"
+
   groupmod -g "$EXIM4_GID" Debian-exim
   usermod -g "$EXIM4_GID" -u "$EXIM4_UID" Debian-exim
+
+  mkdir -pv /var/log/exim4 /var/spool/exim4/
+  chmod 750 /var/log/exim4 /var/spool/exim4/
+
   chown Debian-exim:Debian-exim -Rc /var/spool/exim4/
   chown Debian-exim:Debian-exim -Rc /var/log/exim4/
-  # FIXME: Exim4 bug here lolz
-  chmod 750 /var/log/exim4
+
   chown root:Debian-exim  /etc/exim4/passwd.client
 
   # This is to make sure root can read default email

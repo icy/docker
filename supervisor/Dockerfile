@@ -8,6 +8,7 @@ RUN set -x \
   && apt-get update \
   && apt-get install -y \
       supervisor cron exim4-daemon-light \
+      curl ca-certificates \
   \
   && rm -fv /var/cache/apt/*.bin \
   && rm -fv /var/cache/apt/archives/*.* \
@@ -18,10 +19,10 @@ RUN set -x \
   && mkdir -pv /etc/s.supervisor/ /supervisor/ \
   && ln -s /usr/bin/supervisorctl /usr/bin/s \
   \
-  && chmod -s /var/log/exim4/
+  && rm -rf /var/log/exim4/ /var/spool/exim4/
 
 RUN set -x \
-  && _tmp_pkgs='python-setuptools curl ca-certificates' \
+  && _tmp_pkgs='python-setuptools' \
   && apt-get update \
   && apt-get install -y $_tmp_pkgs --no-install-recommends \
   \
@@ -42,22 +43,6 @@ RUN set -x \
   && rm -fv /var/cache/apt/archives/*.* \
   && rm -fv /var/lib/apt/lists/*.* \
   && apt-get autoclean
-
-# RUN set -x \
-#   && echo 'LANG="en_US.UTF-8"' > /etc/default/locale
-#   && _tmp_pkgs='locale-purge' \
-#   && apt-get update \
-#   && apt-get install -y $_tmp_pkgs --no-install-recommends \
-#   && echo -e "MANDELETE\nDONTBOTHERNEWLOCALE\nVERBOSE\nen_US\nen_US.UTF-8" \
-#     > /etc/locale.nopurge \
-#   && localepurge \
-#   && rm -rf /usr/share/doc/ \
-#   \
-#   && apt-get purge -y --auto-remove $_tmp_pkgs \
-#   && rm -fv /var/cache/apt/*.bin \
-#   && rm -fv /var/cache/apt/archives/*.* \
-#   && rm -fv /var/lib/apt/lists/*.* \
-#   && apt-get autoclean
 
 ADD supervisor.sh /
 RUN chmod 700 /supervisor.sh
