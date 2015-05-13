@@ -106,3 +106,7 @@ if [[ ! -f "/phpfpm/www/wp-includes/version.php" ]]; then
   curl -Lso- "${WP_URL}" \
   | tar -xzf - --strip-components=1 -C /phpfpm/www/
 fi
+
+if [[ "${WP_FORCE_CHOWN:-}" == "1" ]]; then
+  find /phpfpm/www/ -mindepth 1 -exec chown www-data: {} \;
+fi
