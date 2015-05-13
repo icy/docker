@@ -49,10 +49,10 @@ _random_64_chars() {
 }
 
 _wordpress_config_generate() {
-  export WP_DB_NAME="${WORDPRESS_DB_NAME:-wordpress}"
-  export WP_DB_USER="${WORDPRESS_DB_NAME:-wordpress}"
-  export WP_DB_PASSWD="${WORDPRESS_DB_NAME:-wordpress}"
-  export WP_DB_HOST="${WORDPRESS_DB_HOST:-db}"
+  export WP_DB_NAME="${WP_DB_NAME:-wordpress}"
+  export WP_DB_USER="${WP_DB_USER:-wordpress}"
+  export WP_DB_PASSWD="${WP_DB_PASSWD:-wordpress}"
+  export WP_DB_HOST="${WP_DB_HOST:-db}"
 
   cat \
 <<-EOF
