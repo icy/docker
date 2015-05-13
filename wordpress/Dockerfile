@@ -12,7 +12,7 @@ RUN set -x \
   && rm -fv /var/lib/apt/lists/*.* \
   && apt-get autoclean
 
-VOLUME /phpfpm/www/wp-content/uploads/
+VOLUME /phpfpm/www/wp-content/
 
 ADD supervisor/*.sh /etc/s.supervisor/
 
