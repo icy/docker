@@ -15,7 +15,7 @@ ENV REDIS_DOWNLOAD_SHA1 45f134113fb3d75b8c37f7968e46565a70800091
 
 RUN set -x \
   && apt-get update \
-  && buildDeps='gcc libc6-dev make curl' \
+  && buildDeps='gcc libc6-dev make' \
   && apt-get install -y $buildDeps --no-install-recommends \
   \
   && mkdir -p /usr/src/redis \

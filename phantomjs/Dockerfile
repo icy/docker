@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN set -x \
   && apt-get update \
-  && apt-get install -y curl bzip2 fontconfig \
+  && apt-get install -y bzip2 fontconfig \
   \
   && cd /usr/ \
   && curl -Lso- \

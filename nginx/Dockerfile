@@ -11,7 +11,7 @@ ENV WWW_UID 10005
 RUN set -x \
   && apt-get update \
   && apt-get install -y \
-        curl gcc libc6-dev make curl libpcre3-dev git nginx libssl-dev \
+        gcc libc6-dev make libpcre3-dev git nginx libssl-dev \
   && mkdir -pv /usr/src/build/modules/ \
   && cd /usr/src/build/ \
   && curl -Lso- https://github.com/openresty/echo-nginx-module/archive/v0.57.tar.gz \
@@ -33,7 +33,7 @@ RUN set -x \
   && mkdir -pv /var/www/internal/ \
   && mkdir /etc/nginx/ \
   \
-  && apt-get purge -y --auto-remove curl gcc libc6-dev make curl git \
+  && apt-get purge -y --auto-remove gcc libc6-dev make git \
   && rm -fv /var/cache/apt/*.bin \
   && rm -fv /var/cache/apt/archives/*.* \
   && rm -fv /var/lib/apt/lists/*.* \
