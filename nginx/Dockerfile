@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV NGINX_VERSION 1.8.0
 ENV NGINX_CHECKSUM 12bad312764feae50246685ab2e74512d1aa9b2f
+ENV WWW_UID 10005
 
 RUN set -x \
   && apt-get update \
