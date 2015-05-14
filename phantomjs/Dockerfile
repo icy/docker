@@ -14,7 +14,7 @@ RUN set -x \
         phantomjs-1.9.8-linux-x86_64/bin/phantomjs \
         --strip-components=1 \
   \
-  && apt-get purge -y --auto-remove curl bzip2 \
+  && apt-get purge -y --auto-remove bzip2 \
   && rm -fv /var/cache/apt/*.bin \
   && rm -fv /var/cache/apt/archives/*.* \
   && rm -fv /var/lib/apt/lists/*.* \
