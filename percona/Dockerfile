@@ -28,7 +28,8 @@ RUN set -x \
   && mkdir /mysql/ \
   && groupmod -g 10003 mysql \
   && usermod -u 10003 -g 10003 mysql \
-  && chmod -s /var/log/mysql/
+  \
+  && rm -rf /var/log/mysql/ /var/run/mysqld/ \
 
 EXPOSE 3306
 VOLUME /mysql
