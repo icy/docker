@@ -40,8 +40,12 @@ _NONSTANDARD_MODULES="$( \
       done)"
 
 cd $_D_BUILD/$_NGINX_NAME
-sed -i -e 's# bgcolor=\\"white\\"##g' \-e 's#<center><h1>##g' \
-  -e 's#</h1></center>##g' -e '/NGINX_VER/d' -e '/>nginx</d' \
+sed -i \
+    -e 's# bgcolor=\\"white\\"##g' \
+    -e 's#<center><h1>##g' \
+    -e 's#</h1></center>##g' \
+    -e '/NGINX_VER/d' \
+    -e '/>nginx</d' \
   ./src/http/ngx_http_special_response.c
 
 sh configure \
