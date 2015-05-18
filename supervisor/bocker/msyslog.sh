@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Purpose: Bocker library to support (minimal)Syslog in Supervisor
+# Author : Anh K. Huynh
+# Date   : 2015 May 09th, 2015 May 18th
+
+ed_ship --later \
+  ed_msyslog_damonize \
+  ed_msyslog_generate_config
+
+ed_msyslog_damonize() {
+  if [[ "${MSYSLOG_ENABLE:-0}" == "0" ]]; then
+    rm -f /etc/s.supervisor/msyslog.s
+    exit 0
+  fi
+
+  exec python2 /usr/bin/syslog-stdout.py
+}
+
+ed_msyslog_generate_config() {
+  if [[ "${MSYSLOG_ENABLE:-0}" == "0" ]]; then
+    rm -f /etc/s.supervisor/msyslog.s
+    exit 0
+  fi
+
+  cat > /etc/s.supervisor/msyslog.s \
+<<-EOF
+[eventlistener:stdout]
+command = supervisor_stdout
+buffer_size = 100
+events = PROCESS_LOG
+result_handler = supervisor_stdout:event_handler
+priority = 1
+
+[program:msyslog]
+command=/bocker.sh ed_msyslog_damonize
+stdout_events_enabled = true
+stderr_events_enabled = true
+priority = 10
+EOF
+
+}

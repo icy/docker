@@ -5,8 +5,10 @@
 # Date   : 2015 May 15th
 
 source ../bocker/base.sh
+
 source ./bocker/cron.sh
 source ./bocker/exim4.sh
+source ./bocker/msyslog.sh
 
 ed_cmd '["/supervisor.sh"]'
 
