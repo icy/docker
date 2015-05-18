@@ -6,6 +6,7 @@
 
 source ../bocker/base.sh
 source ./bocker/cron.sh
+source ./bocker/exim4.sh
 
 ed_cmd '["/supervisor.sh"]'
 
