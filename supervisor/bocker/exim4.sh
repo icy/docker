@@ -15,10 +15,16 @@ ed_exim4_daemonize() {
     rm -f /etc/s.supervisor/exim4.s
     exit 0
   fi
+
   exec /usr/sbin/exim4 -v -bdf -q30m
 }
 
 ed_exim4_uid_gid_update() {
+  if [[ "${EXIM4_ENABLE:-0}" == "0" ]]; then
+    rm -f /etc/s.supervisor/exim4.s
+    exit 0
+  fi
+
   EXIM4_UID="${EXIM4_UID:-10004}"
   EXIM4_GID="${EXIM4_GID:-10004}"
 

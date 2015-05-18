@@ -13,10 +13,16 @@ ed_cron_daemonize() {
     rm -f /etc/s.supervisor/cron.s
     exit 0
   fi
+
   exec /usr/sbin/cron -f -L ${CRON_LOGLEVEL:-1}
 }
 
 ed_cron_generate_config() {
+  if [[ "${CRON_ENABLE:-0}" == "0" ]]; then
+    rm -f /etc/s.supervisor/cron.s
+    exit 0
+  fi
+
   cat \
   > /etc/s.supervisor/cron.s \
 <<EOF
