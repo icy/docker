@@ -67,6 +67,15 @@ ed_phpfpm_generate_nginx_config() {
 EOF
 }
 
+# Note: This method is invoked by `supervisore`, as root account,
+# before any real daemons are started. The script will check if
+# there is a file `/etc/nginx/sites/phpfpm.conf`. If `not`, it
+# will invoke `ed_phpfpm_generate_nginx_config` to create a new one.
+#
+# So, if you want to override `ed_phpfpm_generate_nginx_config`,
+# you can simply do that, e.g. with `ed_ship`, in your `Bockerfile`.
+# See an example from `wordpress` Bockerfile.
+#
 ed_phpfpm_generate_config() {
   local _F_CONFIG="/etc/nginx/sites/phpfpm.conf"
 
