@@ -15,42 +15,52 @@ ed_ship --later \
   ed_nginx_generate_config \
   ed_nginx_daemonize
 
-ed_ship ed_nginx_build
-
 ed_bocker() {
-  ed_nginx_download_and_install
+  ed_group \
+    ed_nginx_install_packages \
+    ed_nginx_download_source \
+    ed_nginx_build \
+    ed_nginx_clean_up \
+    ed_nginx_create_generator
+
   ed_add  etc/nginx/ /etc/nginx/
 }
 
 ########################################################################
 
-ed_nginx_download_and_install() {
+ed_nginx_install_packages() {
   apt-get update
   apt-get install -y \
      gcc libc6-dev make libpcre3-dev git nginx libssl-dev
+}
 
+ed_nginx_download_source() {
   mkdir -pv /usr/src/build/modules/
   cd /usr/src/build/
 
   # Download all necessary files
   curl -Lso- https://github.com/openresty/echo-nginx-module/archive/v0.57.tar.gz \
-   | tar -xzf - -C /usr/src/build/modules/
+  | tar -xzf - -C /usr/src/build/modules/
 
   curl -Lso- https://github.com/openresty/headers-more-nginx-module/archive/v0.25.tar.gz \
-   | tar -xzf - -C /usr/src/build/modules/
+  | tar -xzf - -C /usr/src/build/modules/
 
   curl -Lso /usr/src/build/nginx.tar.gz \
-   http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
+    http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 
-  echo "$NGINX_CHECKSUM *nginx.tar.gz" | sha1sum -c -
+  echo "$NGINX_CHECKSUM *nginx.tar.gz" \
+  | sha1sum -c -
 
   tar -xzf nginx.tar.gz -C /usr/src/build/
+}
 
-  # Now building
-  ed_nginx_build
-
+ed_nginx_clean_up() {
+  cd /
+  rm -rf /etc/nginx/ /usr/src/build/
   ed_apt_purge make libpcre3-dev git libssl-dev
+}
 
+ed_nginx_create_generator() {
   # Give a generator to Supervisor
   {
     echo "#!/bin/bash"
