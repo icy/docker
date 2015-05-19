@@ -10,8 +10,6 @@ source ./bocker/cron.sh
 source ./bocker/exim4.sh
 source ./bocker/msyslog.sh
 
-ed_cmd '["/supervisor.sh"]'
-
 # ed_onbuild COPY "supervisor/*.sh supervisor/*.s /etc/s.supervisor/"
 # ed_onbuild COPY "cron.d/* /etc/cron.d/"
 
