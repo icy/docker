@@ -9,7 +9,9 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Bocker method => __ed_ship
 # * The output is /bocker.sh in the result image.
-# * List of methods: ed_apt_clean ed_apt_purge.
+# * List of methods:
+#   - ed_apt_clean
+#   - ed_apt_purge
 #
 # | set -eux
 # | if [[ -f /bocker.sh ]]; then source /bocker.sh; fi
@@ -93,7 +95,19 @@ RUN echo c2V0IC1ldXgKaWYgW1sgLWYgL2JvY2tlci5zaCBdXTsgdGhlbiBzb3VyY2UgL2JvY2tlci5
 
 # Bocker method => __ed_ship
 # * The output is /bocker.sh in the result image.
-# * List of methods: ed_cron_daemonize ed_cron_generate_config ed_exim4_config_update ed_exim4_daemonize ed_exim4_generate_config ed_exim4_uid_gid_update ed_msyslog_damonize ed_msyslog_generate_config ed_supervisor_daemonize ed_supervisor_execute_generators ed_supervisor_fix_uid_gid ed_supervisor_generate_base_config.
+# * List of methods:
+#   - ed_cron_daemonize
+#   - ed_cron_generate_config
+#   - ed_exim4_config_update
+#   - ed_exim4_daemonize
+#   - ed_exim4_generate_config
+#   - ed_exim4_uid_gid_update
+#   - ed_msyslog_damonize
+#   - ed_msyslog_generate_config
+#   - ed_supervisor_daemonize
+#   - ed_supervisor_execute_generators
+#   - ed_supervisor_fix_uid_gid
+#   - ed_supervisor_generate_base_config
 #
 # | set -eux
 # | if [[ -f /bocker.sh ]]; then source /bocker.sh; fi
