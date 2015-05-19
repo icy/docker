@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Purpose: Bocker library to generate Dockerfile for phantomjs image
+# Author : Anh K. Huynh
+# Date   : 2015 May 19th
+
 source ../bocker/base.sh
 
 ed_from   "icy/supervisor:latest"
