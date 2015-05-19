@@ -12,8 +12,8 @@ source ./bocker/msyslog.sh
 
 ed_cmd '["/supervisor.sh"]'
 
-ed_onbuild COPY "supervisor/*.sh supervisor/*.s /etc/s.supervisor/"
-ed_onbuild COPY "cron.d/* /etc/cron.d/"
+# ed_onbuild COPY "supervisor/*.sh supervisor/*.s /etc/s.supervisor/"
+# ed_onbuild COPY "cron.d/* /etc/cron.d/"
 
 ed_ship --later \
   ed_supervisor_generate_base_config \
