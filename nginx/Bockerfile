@@ -1,0 +1,152 @@
+#!/bin/bash
+
+# Purpose: Bocker library to generate Dockerfile for nginx image
+# Author : Anh K. Huynh
+# Date   : 2015 May 19th
+
+source ../bocker/base.sh
+
+ed_from "icy/supervisor:latest"
+ed_env  NGINX_VERSION 1.8.0
+ed_env  NGINX_CHECKSUM 12bad312764feae50246685ab2e74512d1aa9b2f
+ed_env  WWW_UID 10005
+
+ed_ship --later \
+  ed_nginx_generate_config \
+  ed_nginx_daemonize
+
+ed_ship ed_nginx_build
+
+ed_bocker() {
+  ed_nginx_download_and_install
+  ed_add  etc/nginx/ /etc/nginx/
+}
+
+########################################################################
+
+ed_nginx_download_and_install() {
+  apt-get update
+  apt-get install -y \
+     gcc libc6-dev make libpcre3-dev git nginx libssl-dev
+
+  mkdir -pv /usr/src/build/modules/
+  cd /usr/src/build/
+
+  # Download all necessary files
+  curl -Lso- https://github.com/openresty/echo-nginx-module/archive/v0.57.tar.gz \
+   | tar -xzf - -C /usr/src/build/modules/
+
+  curl -Lso- https://github.com/openresty/headers-more-nginx-module/archive/v0.25.tar.gz \
+   | tar -xzf - -C /usr/src/build/modules/
+
+  curl -Lso /usr/src/build/nginx.tar.gz \
+   http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
+
+  echo "$NGINX_CHECKSUM *nginx.tar.gz" | sha1sum -c -
+
+  tar -xzf nginx.tar.gz -C /usr/src/build/
+
+  # Now building
+  ed_nginx_build
+
+  ed_apt_purge make libpcre3-dev git libssl-dev
+
+  # Give a generator to Supervisor
+  {
+    echo "#!/bin/bash"
+    echo "/bocker.sh ed_nginx_generate_config"
+  } \
+  > /etc/s.supervisor/nginx.sh
+}
+
+ed_nginx_build() {
+  _NGINX_NAME="nginx-${NGINX_VERSION}"
+  _NGINX_FLAGS="
+      --prefix=/usr/ \
+      --conf-path=/etc/nginx/nginx.conf
+      --http-log-path=/var/log/nginx/access.log
+      --error-log-path=/var/log/nginx/error.log
+      --lock-path=/var/lock/nginx.lock
+      --pid-path=/run/nginx.pid
+      --http-client-body-temp-path=/var/lib/nginx/body
+      --http-fastcgi-temp-path=/var/lib/nginx/fastcgi
+      --http-proxy-temp-path=/var/lib/nginx/proxy
+      --http-scgi-temp-path=/var/lib/nginx/scgi
+      --http-uwsgi-temp-path=/var/lib/nginx/uwsgi
+      --with-pcre
+      --with-http_ssl_module
+      --with-http_stub_status_module
+      --with-http_realip_module
+      --with-http_gzip_static_module
+      --with-http_sub_module
+    "
+
+  _NONSTANDARD_MODULES=""
+
+  _D_BUILD="/usr/src/build/"
+
+  _NONSTANDARD_MODULES="$( \
+    find $_D_BUILD/modules/ \
+          -mindepth 1 -maxdepth 1 -type d \
+      | while read _d; do \
+          echo -en " --add-module=$_d"; \
+        done)"
+
+  cd $_D_BUILD/$_NGINX_NAME
+  sed -i \
+      -e 's# bgcolor=\\"white\\"##g' \
+      -e 's#<center><h1>##g' \
+      -e 's#</h1></center>##g' \
+      -e '/NGINX_VER/d' \
+      -e '/>nginx</d' \
+    ./src/http/ngx_http_special_response.c
+
+  sh configure \
+    $_NGINX_FLAGS \
+    $_NONSTANDARD_MODULES
+
+  make
+  make install
+}
+
+ed_nginx_daemonize() {
+  /usr/sbin/nginx -t -c /etc/nginx/nginx.conf || exit 1
+  exec /usr/sbin/nginx -c /etc/nginx/nginx.conf
+}
+
+ed_nginx_generate_config() {
+  chown -R www-data:www-data /var/lib/nginx
+
+  cat \
+    > /etc/s.supervisor/nginx.s \
+<<EOF
+[program:nginx]
+command=/bocker.sh ed_nginx_daemonize
+process_name=%(program_name)s
+numprocs=1
+directory=/
+umask=022
+priority=999
+autostart=true
+autorestart=true
+startsecs=1
+startretries=3
+exitcodes=0,2
+stopsignal=TERM
+stopwaitsecs=10
+user=root
+redirect_stderr=true
+stdout_logfile=/supervisor/nginx.log
+stdout_logfile_maxbytes=50MB
+stdout_logfile_backups=10
+stdout_capture_maxbytes=0
+stdout_events_enabled=false
+stderr_logfile=AUTO
+stderr_logfile_maxbytes=50MB
+stderr_logfile_backups=10
+stderr_capture_maxbytes=0
+stderr_events_enabled=false
+environment=
+EOF
+
+}
