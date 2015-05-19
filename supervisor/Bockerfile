@@ -23,9 +23,6 @@ ed_bocker() {
   ed_supervisor_install_base
   ed_supervisor_install_supervisor
   ed_supervisor_install_init_script
-
-  ed_run chmod 700 /supervisor.sh
-  ed_add "supervisor/*.sh supervisor/*.s /etc/s.supervisor/"
 }
 
 ########################################################################
@@ -84,9 +81,15 @@ ed_supervisor_install_supervisor() {
 ed_supervisor_install_init_script() {
   {
     echo "#!/bin/bash"
+
+    echo "/bocker.sh ed_cron_generate_config"
+    echo "/bocker.sh ed_exim4_generate_config"
+    echo "/bocker.sh ed_msyslog_generate_config"
+
     echo "exec /bocker.sh ed_supervisor_daemonize"
   } \
   > /supervisor.sh
+
   chmod 755 /supervisor.sh
 }
 
