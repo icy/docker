@@ -5,12 +5,11 @@
 FROM debian:wheezy
 MAINTAINER Anh K. Huynh <kyanh@theslinux.org>
 
-ENV DEBIAN_FRONTEND noninteractive
-
 # Bocker method => __ed_ship
 # * The output is /bocker.sh in the result image.
 # * List of methods:
 #   - ed_apt_clean
+#   - ed_apt_install
 #   - ed_apt_purge
 #
 # | set -eux
@@ -21,6 +20,11 @@ ENV DEBIAN_FRONTEND noninteractive
 # |     rm -fv /var/cache/apt/archives/*.*;
 # |     rm -fv /var/lib/apt/lists/*.*;
 # |     apt-get autoclean
+# | }
+# | ed_apt_install () 
+# | { 
+# |     apt-get update;
+# |     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $@
 # | }
 # | ed_apt_purge () 
 # | { 
@@ -38,12 +42,14 @@ c2V0IC1ldXgKaWYgW1sgLWYgL2JvY2tlci5zaCBdXTsgdGhlbiBzb3VyY2UgL2JvY2tlci5\
 zaDsgZmkKZWRfYXB0X2NsZWFuICgpIAp7IAogICAgcm0gLWZ2IC92YXIvY2FjaGUvYXB0Ly\
 ouYmluOwogICAgcm0gLWZ2IC92YXIvY2FjaGUvYXB0L2FyY2hpdmVzLyouKjsKICAgIHJtI\
 C1mdiAvdmFyL2xpYi9hcHQvbGlzdHMvKi4qOwogICAgYXB0LWdldCBhdXRvY2xlYW4KfQpl\
-ZF9hcHRfcHVyZ2UgKCkgCnsgCiAgICBhcHQtZ2V0IHB1cmdlIC15IC0tYXV0by1yZW1vdmU\
-gJEA7CiAgICBlZF9hcHRfY2xlYW4KfQplY2hvICcjIS9iaW4vYmFzaCcgPiAvYm9ja2VyLn\
-NoCmVjaG8gJyMgVGhpcyBmaWxlIGlzIGdlbmVyYXRlZCBieSBCb2NrZXIuJyA+PiAvYm9ja\
-2VyLnNoCmRlY2xhcmUgLWYgPj4gL2JvY2tlci5zaAplY2hvICdpZiBbWyAtbiAiJEAiIF1d\
-OyB0aGVuICRAOyBmaTsgJyA+PiAvYm9ja2VyLnNoCmNobW9kIDc1NSAvYm9ja2VyLnNoCg=\
-=\
+ZF9hcHRfaW5zdGFsbCAoKSAKeyAKICAgIGFwdC1nZXQgdXBkYXRlOwogICAgREVCSUFOX0Z\
+ST05URU5EPW5vbmludGVyYWN0aXZlIGFwdC1nZXQgaW5zdGFsbCAteSAtLW5vLWluc3RhbG\
+wtcmVjb21tZW5kcyAkQAp9CmVkX2FwdF9wdXJnZSAoKSAKeyAKICAgIGFwdC1nZXQgcHVyZ\
+2UgLXkgLS1hdXRvLXJlbW92ZSAkQDsKICAgIGVkX2FwdF9jbGVhbgp9CmVjaG8gJyMhL2Jp\
+bi9iYXNoJyA+IC9ib2NrZXIuc2gKZWNobyAnIyBUaGlzIGZpbGUgaXMgZ2VuZXJhdGVkIGJ\
+5IEJvY2tlci4nID4+IC9ib2NrZXIuc2gKZGVjbGFyZSAtZiA+PiAvYm9ja2VyLnNoCmVjaG\
+8gJ2lmIFtbIC1uICIkQCIgXV07IHRoZW4gJEA7IGZpOyAnID4+IC9ib2NrZXIuc2gKY2htb\
+2QgNzU1IC9ib2NrZXIuc2gK\
   | base64 -d | bash
 
 # Bocker method => ed_supervisor_install_base
@@ -52,8 +58,7 @@ OyB0aGVuICRAOyBmaTsgJyA+PiAvYm9ja2VyLnNoCmNobW9kIDc1NSAvYm9ja2VyLnNoCg=\
 # | if [[ -f /bocker.sh ]]; then source /bocker.sh; fi
 # | ed_supervisor_install_base () 
 # | { 
-# |     apt-get update;
-# |     apt-get install -y supervisor cron exim4-daemon-light curl ca-certificates;
+# |     ed_apt_install supervisor cron exim4-daemon-light curl ca-certificates;
 # |     ed_apt_clean;
 # |     rm -rf /etc/supervisor/;
 # |     mkdir -pv /etc/s.supervisor/ /supervisor/;
@@ -64,13 +69,13 @@ OyB0aGVuICRAOyBmaTsgJyA+PiAvYm9ja2VyLnNoCmNobW9kIDc1NSAvYm9ja2VyLnNoCg=\
 #
 RUN echo \
 c2V0IC1ldXgKaWYgW1sgLWYgL2JvY2tlci5zaCBdXTsgdGhlbiBzb3VyY2UgL2JvY2tlci5\
-zaDsgZmkKZWRfc3VwZXJ2aXNvcl9pbnN0YWxsX2Jhc2UgKCkgCnsgCiAgICBhcHQtZ2V0IH\
-VwZGF0ZTsKICAgIGFwdC1nZXQgaW5zdGFsbCAteSBzdXBlcnZpc29yIGNyb24gZXhpbTQtZ\
-GFlbW9uLWxpZ2h0IGN1cmwgY2EtY2VydGlmaWNhdGVzOwogICAgZWRfYXB0X2NsZWFuOwog\
-ICAgcm0gLXJmIC9ldGMvc3VwZXJ2aXNvci87CiAgICBta2RpciAtcHYgL2V0Yy9zLnN1cGV\
-ydmlzb3IvIC9zdXBlcnZpc29yLzsKICAgIGxuIC1zIC91c3IvYmluL3N1cGVydmlzb3JjdG\
-wgL3Vzci9iaW4vczsKICAgIHJtIC1yZiAvdmFyL2xvZy9leGltNC8gL3Zhci9zcG9vbC9le\
-GltNC8KfQplZF9zdXBlcnZpc29yX2luc3RhbGxfYmFzZQo=\
+zaDsgZmkKZWRfc3VwZXJ2aXNvcl9pbnN0YWxsX2Jhc2UgKCkgCnsgCiAgICBlZF9hcHRfaW\
+5zdGFsbCBzdXBlcnZpc29yIGNyb24gZXhpbTQtZGFlbW9uLWxpZ2h0IGN1cmwgY2EtY2Vyd\
+GlmaWNhdGVzOwogICAgZWRfYXB0X2NsZWFuOwogICAgcm0gLXJmIC9ldGMvc3VwZXJ2aXNv\
+ci87CiAgICBta2RpciAtcHYgL2V0Yy9zLnN1cGVydmlzb3IvIC9zdXBlcnZpc29yLzsKICA\
+gIGxuIC1zIC91c3IvYmluL3N1cGVydmlzb3JjdGwgL3Vzci9iaW4vczsKICAgIHJtIC1yZi\
+AvdmFyL2xvZy9leGltNC8gL3Zhci9zcG9vbC9leGltNC8KfQplZF9zdXBlcnZpc29yX2luc\
+3RhbGxfYmFzZQo=\
   | base64 -d | bash
 
 # Bocker method => ed_supervisor_install_supervisor
@@ -79,8 +84,7 @@ GltNC8KfQplZF9zdXBlcnZpc29yX2luc3RhbGxfYmFzZQo=\
 # | if [[ -f /bocker.sh ]]; then source /bocker.sh; fi
 # | ed_supervisor_install_supervisor () 
 # | { 
-# |     apt-get update;
-# |     apt-get install -y python-setuptools --no-install-recommends;
+# |     ed_apt_install python-setuptools;
 # |     curl -Lso /usr/bin/syslog-stdout.py https://raw.githubusercontent.com/icyfork/syslog-stdout/master/syslog-stdout.py;
 # |     mkdir -pv /usr/src/pip/;
 # |     cd /usr/src/pip/;
@@ -94,17 +98,16 @@ GltNC8KfQplZF9zdXBlcnZpc29yX2luc3RhbGxfYmFzZQo=\
 #
 RUN echo \
 c2V0IC1ldXgKaWYgW1sgLWYgL2JvY2tlci5zaCBdXTsgdGhlbiBzb3VyY2UgL2JvY2tlci5\
-zaDsgZmkKZWRfc3VwZXJ2aXNvcl9pbnN0YWxsX3N1cGVydmlzb3IgKCkgCnsgCiAgICBhcH\
-QtZ2V0IHVwZGF0ZTsKICAgIGFwdC1nZXQgaW5zdGFsbCAteSBweXRob24tc2V0dXB0b29sc\
-yAtLW5vLWluc3RhbGwtcmVjb21tZW5kczsKICAgIGN1cmwgLUxzbyAvdXNyL2Jpbi9zeXNs\
-b2ctc3Rkb3V0LnB5IGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9pY3lmb3J\
-rL3N5c2xvZy1zdGRvdXQvbWFzdGVyL3N5c2xvZy1zdGRvdXQucHk7CiAgICBta2RpciAtcH\
-YgL3Vzci9zcmMvcGlwLzsKICAgIGNkIC91c3Ivc3JjL3BpcC87CiAgICBjdXJsIC1Mc28gL\
-SBodHRwczovL2dpdGh1Yi5jb20vaWN5Zm9yay9zdXBlcnZpc29yLXN0ZG91dC9hcmNoaXZl\
-L21hc3Rlci50YXIuZ3ogfCB0YXIgLXh6ZiAtIC1DIC91c3Ivc3JjL3BpcC8gLS1zdHJpcC1\
-jb21wb25lbnRzPTE7CiAgICBweXRob24yIHNldHVwLnB5IGluc3RhbGw7CiAgICBjZCAvOw\
-ogICAgcm0gLXJmIC91c3Ivc3JjL3BpcC87CiAgICBlZF9hcHRfcHVyZ2UgcHl0aG9uLXNld\
-HVwdG9vbHMKfQplZF9zdXBlcnZpc29yX2luc3RhbGxfc3VwZXJ2aXNvcgo=\
+zaDsgZmkKZWRfc3VwZXJ2aXNvcl9pbnN0YWxsX3N1cGVydmlzb3IgKCkgCnsgCiAgICBlZF\
+9hcHRfaW5zdGFsbCBweXRob24tc2V0dXB0b29sczsKICAgIGN1cmwgLUxzbyAvdXNyL2Jpb\
+i9zeXNsb2ctc3Rkb3V0LnB5IGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9p\
+Y3lmb3JrL3N5c2xvZy1zdGRvdXQvbWFzdGVyL3N5c2xvZy1zdGRvdXQucHk7CiAgICBta2R\
+pciAtcHYgL3Vzci9zcmMvcGlwLzsKICAgIGNkIC91c3Ivc3JjL3BpcC87CiAgICBjdXJsIC\
+1Mc28gLSBodHRwczovL2dpdGh1Yi5jb20vaWN5Zm9yay9zdXBlcnZpc29yLXN0ZG91dC9hc\
+mNoaXZlL21hc3Rlci50YXIuZ3ogfCB0YXIgLXh6ZiAtIC1DIC91c3Ivc3JjL3BpcC8gLS1z\
+dHJpcC1jb21wb25lbnRzPTE7CiAgICBweXRob24yIHNldHVwLnB5IGluc3RhbGw7CiAgICB\
+jZCAvOwogICAgcm0gLXJmIC91c3Ivc3JjL3BpcC87CiAgICBlZF9hcHRfcHVyZ2UgcHl0aG\
+9uLXNldHVwdG9vbHMKfQplZF9zdXBlcnZpc29yX2luc3RhbGxfc3VwZXJ2aXNvcgo=\
   | base64 -d | bash
 
 # Bocker method => ed_supervisor_install_init_script
