@@ -4,9 +4,8 @@
 # Author : Anh K. Huynh
 # Date   : 2015 May 19th
 
-source    ../bocker/base.sh
-ed_from   "icy/phpfpm:latest"
-ed_env    WP_VERSION 4.2.2
+ed_reuse  ./Bockerfile.phpfpm
+ed_env    --later WP_VERSION 4.2.2
 ed_volume /phpfpm/www/wp-content/
 
 ed_ship --later \
