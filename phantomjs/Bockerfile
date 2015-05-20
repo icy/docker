@@ -4,9 +4,8 @@
 # Author : Anh K. Huynh
 # Date   : 2015 May 19th
 
-source ../bocker/base.sh
+ed_reuse ../supervisor/Bockerfile
 
-ed_from   "icy/supervisor:latest"
 ed_expose 8190
 ed_volume /usr/share/fonts
 
