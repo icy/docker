@@ -100,7 +100,7 @@ ed_phpfpm_generate_config() {
     > /etc/s.supervisor/phpfpm.s \
 <<EOF
 [program:phpfpm]
-command=/bocker.sh ed_nginx_daemonize
+command=/bocker.sh ed_phpfpm_daemonize
 process_name=%(program_name)s
 numprocs=1
 directory=/
