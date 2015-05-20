@@ -41,8 +41,6 @@ ed_phpfpm_daemonize() {
 }
 
 ed_phpfpm_generate_nginx_config() {
-  export PHPFPM_DOMAIN="${PHPFPM_DOMAIN:-$(hostname -f ||  hostname)}"
-
   cat \
 <<-EOF
   server {
@@ -78,6 +76,7 @@ EOF
 #
 ed_phpfpm_generate_config() {
   local _F_CONFIG="/etc/nginx/sites/phpfpm.conf"
+  export PHPFPM_DOMAIN="${PHPFPM_DOMAIN:-$(hostname -f || hostname)}"
 
   if [[ ! -f "$_F_CONFIG" ]]; then
     echo >&2 ":: Warning: Generating $_F_CONFIG)..."
