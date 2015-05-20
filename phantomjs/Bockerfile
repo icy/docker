@@ -22,8 +22,7 @@ ed_bocker() {
 ########################################################################
 
 ed_phantomjs_install() {
-  apt-get update
-  apt-get install -y bzip2 fontconfig
+  ed_apt_install bzip2 fontconfig
 
   cd /usr/
   curl -Lso- \
