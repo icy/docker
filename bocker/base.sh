@@ -7,8 +7,7 @@
 ed_from debian:wheezy
 ed_maintainer "Anh K. Huynh <kyanh@theslinux.org>"
 
-ed_ship   ed_apt_clean ed_apt_purge
-ed_env    DEBIAN_FRONTEND noninteractive
+ed_ship   ed_apt_clean ed_apt_purge ed_apt_install
 ed_cmd    '["/supervisor.sh"]'
 
 ed_apt_clean() {
@@ -21,4 +20,10 @@ ed_apt_clean() {
 ed_apt_purge() {
   apt-get purge -y --auto-remove $@
   ed_apt_clean
+}
+
+ed_apt_install() {
+  apt-get update
+  DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y --no-install-recommends $@
 }
