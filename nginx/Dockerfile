@@ -721,6 +721,6 @@ XIuc2gKZWNobyAnaWYgW1sgLW4gIiRAIiBdXTsgdGhlbiAkQDsgZmk7ICcgPj4gL2JvY2tl\
 ci5zaApjaG1vZCA3NTUgL2JvY2tlci5zaAo=\
   | base64 -d | bash
 
-ENV --LATER WWW_UID 10005
+ENV WWW_UID 10005
 
 CMD ["/supervisor.sh"]

@@ -1000,8 +1000,8 @@ ID4+IC9ib2NrZXIuc2gKZWNobyAnaWYgW1sgLW4gIiRAIiBdXTsgdGhlbiAkQDsgZmk7ICc\
 gPj4gL2JvY2tlci5zaApjaG1vZCA3NTUgL2JvY2tlci5zaAo=\
   | base64 -d | bash
 
-ENV --LATER WP_VERSION 4.2.2
-ENV --LATER WWW_UID 10005
+ENV WP_VERSION 4.2.2
+ENV WWW_UID 10005
 
 VOLUME /phpfpm/www/
 VOLUME /phpfpm/www/wp-content/
