@@ -4,11 +4,13 @@
 # Author : Anh K. Huynh
 # Date   : 2015 May 15th
 
-source ../bocker/base.sh
+_THIS_DIR="$(dirname ${BASH_SOURCE[0]:-.})"
 
-source ./bocker/cron.sh
-source ./bocker/exim4.sh
-source ./bocker/msyslog.sh
+source $_THIS_DIR/../bocker/base.sh
+
+ed_reuse $_THIS_DIR/bocker/cron.sh
+ed_reuse $_THIS_DIR/bocker/exim4.sh
+ed_reuse $_THIS_DIR/bocker/msyslog.sh
 
 # ed_onbuild COPY "supervisor/*.sh supervisor/*.s /etc/s.supervisor/"
 # ed_onbuild COPY "cron.d/* /etc/cron.d/"
