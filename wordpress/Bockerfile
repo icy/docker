@@ -1,0 +1,129 @@
+#!/bin/bash
+
+# Purpose: Bocker library to generate Dockerfile for wordpress image
+# Author : Anh K. Huynh
+# Date   : 2015 May 19th
+
+source    ../bocker/base.sh
+ed_from   "icy/phpfpm:latest"
+ed_env    WP_VERSION 4.2.2
+ed_volume /phpfpm/www/wp-content/
+
+ed_ship --later \
+  ed_phpfpm_generate_nginx_config \
+  ed_wordpress_generate_wp_config \
+  ed_wordpress_generate_config
+
+ed_bocker() {
+  ed_wordpress_install_generator
+}
+
+########################################################################
+
+ed_wordpress_install_generator() {
+  {
+    echo "#!/bin/bash"
+    echo "/bocker.sh ed_wordpress_generate_config"
+  } \
+  > /etc/s.supervisor/wordpress.sh
+}
+
+ed_phpfpm_generate_nginx_config() {
+  cat \
+<<-EOF
+  # This file was generated for Wordpress/phpfpm.
+  server {
+    listen       80;
+    server_name  ${PHPFPM_DOMAIN} ${PHPFPM_OTHER_DOMAINS:-};
+    root         /phpfpm/www/;
+
+    index index.php index.html;
+
+    error_log   /var/log/nginx/${PHPFPM_DOMAIN}.error.log;
+    access_log  /var/log/nginx/${PHPFPM_DOMAIN}.acces.log main;
+
+    include /etc/nginx/misc/security.conf;
+
+    location / {
+      try_files \$uri \$uri/ /index.php?q=\$uri&\$args;
+    }
+
+    location ~ \.php$ {
+      fastcgi_pass     unix:/phpfpm/var/phpfpm.sock;
+      fastcgi_index    index.php;
+      fastcgi_param    SCRIPT_FILENAME  /phpfpm/www/\$fastcgi_script_name;
+      include          /etc/nginx/fastcgi_params;
+    }
+  }
+EOF
+}
+
+ed_wordpress_generate_wp_config() {
+  export WP_DB_NAME="${WP_DB_NAME:-wordpress}"
+  export WP_DB_USER="${WP_DB_USER:-wordpress}"
+  export WP_DB_PASSWD="${WP_DB_PASSWD:-wordpress}"
+  export WP_DB_HOST="${WP_DB_HOST:-db}"
+
+  ed_wordpress_random_64_chars() {
+    < /dev/urandom \
+    tr -dc '_A-Z-a-z-0-9!@#$%' \
+    | head -c64; echo ""
+  }
+
+  cat \
+<<-EOF
+<?php
+
+define('DB_NAME',     '${WP_DB_NAME}');
+define('DB_USER',     '${WP_DB_USER}');
+define('DB_PASSWORD', '${WP_DB_PASSWD}');
+define('DB_HOST',     '${WP_DB_HOST}');
+
+define('DB_CHARSET', 'utf8');
+define('DB_COLLATE', '');
+
+define('AUTH_KEY',         '$(ed_wordpress_random_64_chars)');
+define('SECURE_AUTH_KEY',  '$(ed_wordpress_random_64_chars)');
+define('LOGGED_IN_KEY',    '$(ed_wordpress_random_64_chars)');
+define('NONCE_KEY',        '$(ed_wordpress_random_64_chars)');
+define('AUTH_SALT',        '$(ed_wordpress_random_64_chars)');
+define('SECURE_AUTH_SALT', '$(ed_wordpress_random_64_chars)');
+define('LOGGED_IN_SALT',   '$(ed_wordpress_random_64_chars)');
+define('NONCE_SALT',       '$(ed_wordpress_random_64_chars)');
+
+\$table_prefix  = 'wp_';
+
+define('WP_DEBUG', false);
+
+if ( !defined('ABSPATH') )
+  define('ABSPATH', dirname(__FILE__) . '/');
+
+require_once(ABSPATH . 'wp-settings.php');
+EOF
+
+}
+
+ed_wordpress_generate_config() {
+  export WP_VERSION="${WP_VERSION:-4.2.2}"
+  export WP_URL="${WP_URL:-https://wordpress.org/wordpress-4.2.2.tar.gz}"
+
+  _F_CONFIG="/phpfpm/www/wp-config.php"
+
+  if [[ ! -f "$_F_CONFIG" ]]; then
+    echo >&2 ":: $FUNCNAME: Generating configuration '$_F_CONFIG'..."
+    ed_wordpress_generate_wp_config > $_F_CONFIG
+  fi
+
+  if [[ -f "/phpfpm/www/wp-includes/version.php" ]]; then
+    echo >&2 ":: $FUNCNAME: Wordpress does exist in /phpfpm/www/."
+  else
+    echo >&2 ":: $FUNCNAME: Downloading wordpress from ${WP_URL}..."
+    curl -Lso- "${WP_URL}" \
+    | tar -xzf - --strip-components=1 -C /phpfpm/www/
+  fi
+
+  if [[ "${WP_FORCE_CHOWN:-}" == "1" ]]; then
+    echo >&2 ":: $FUNCNAME: WP_FORCE_CHOWN is used to fix owner of all files under /phpfpm/www/"
+    find /phpfpm/www/ -mindepth 1 -exec chown www-data: {} \;
+  fi
+}
