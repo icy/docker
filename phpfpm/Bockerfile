@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Purpose: Bocker library to generate Dockerfile for phpfpm image
-# Author : Anh K. Huyny
+# Author : Anh K. Huynh
 # Date   : 2015 May 19th
 
 source    ../bocker/base.sh
