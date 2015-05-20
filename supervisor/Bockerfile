@@ -44,8 +44,7 @@ ed_supervisor_daemonize() {
 ########################################################################
 
 ed_supervisor_install_base() {
-  apt-get update
-  apt-get install -y \
+  ed_apt_install \
       supervisor cron exim4-daemon-light \
       curl ca-certificates
 
@@ -59,8 +58,7 @@ ed_supervisor_install_base() {
 
 ed_supervisor_install_supervisor() {
 
-  apt-get update
-  apt-get install -y python-setuptools --no-install-recommends
+  ed_apt_install python-setuptools
 
   curl -Lso /usr/bin/syslog-stdout.py \
     https://raw.githubusercontent.com/icyfork/syslog-stdout/master/syslog-stdout.py
