@@ -4,11 +4,10 @@
 # Author : Anh K. Huynh
 # Date   : 2015 May 19th
 
-source    ../bocker/base.sh
-ed_from   "icy/nginx:latest"
-ed_env    PHP5_PACKAGES php5-mysql php5-curl php5-gd php5-cgi php-mail php5-fpm
-ed_volume /phpfpm/www/
+__PHPFPM_DIR="$(dirname ${BASH_SOURCE[0]:-.})"
+ed_reuse $__PHPFPM_DIR/../nginx/Bockerfile
 
+ed_volume /phpfpm/www/
 
 ed_ship --later \
   ed_phpfpm_daemonize \
@@ -23,10 +22,17 @@ ed_bocker() {
 ########################################################################
 
 ed_phpfpm_install() {
-  apt-get update
-  apt-get install -y $PHP5_PACKAGES
-  mkdir -p /phpfpm/www/ /phpfpm/var/ /phpfpm/logs/
+  ed_apt_install \
+    php5-mysql \
+    php5-curl \
+    php5-gd \
+    php5-cgi \
+    php-mail \
+    php5-fpm
+
   ed_apt_clean
+
+  mkdir -p /phpfpm/www/ /phpfpm/var/ /phpfpm/logs/
 
   # Give a generator to Supervisor
   {
