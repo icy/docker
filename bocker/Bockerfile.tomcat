@@ -1,0 +1,101 @@
+#!/bin/bash
+
+# Purpose: Create a container with tomcat-7 daemon
+# Author : Anh K. Huynh
+# Date   : 2015 May 21 (ported from the former Dockerfile)
+# Note   : Based-on Docker's library file
+
+ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
+
+ed_expose 8080
+ed_volume /tomcat/webapps/
+ed_volume /tomcat/conf/
+ed_ship   --later \
+            ed_tomcat_daemonize \
+            ed_tomcat_generate_config
+
+ed_bocker() {
+  ed_group \
+    ed_tomcat_install \
+    ed_tomcat_prepare_user
+}
+
+ed_tomcat_install() {
+  ed_apt_install openjdk-7-jre tomcat7 tomcat7-admin
+  ed_apt_clean
+}
+
+ed_tomcat_prepare_user() {
+  # Give a generator to Supervisor
+  {
+    echo "#!/bin/bash"
+    echo "/bocker.sh ed_tomcat_generate_config"
+  } \
+  > /etc/s.supervisor/tomcat.sh
+
+  mkdir -pv /tomcat/webapps/ /tomcat/work/ /tomcat/logs/
+
+  ln -s /usr/share/tomcat7-admin/manager/ /tomcat/webapps/
+  ln -s /usr/share/tomcat7-admin/host-manager/ /tomcat/webapps/
+  ln -s /usr/share/tomcat7/lib/ /tomcat/lib
+
+  mv /etc/tomcat7/ /tomcat/conf
+
+  useradd -K UID_MIN=10000 tomcat
+
+  chown root:tomcat /tomcat/
+  chown -R root:tomcat /tomcat/conf/
+  chown tomcat:tomcat /tomcat/work/ /tomcat/logs/
+
+  ln -s /tomcat/ /home/tomcat
+}
+
+ed_tomcat_daemonize() {
+  exec \
+    /usr/bin/java \
+    $TOMCAT_EXTRA \
+    -Dfile.encoding=UTF-8 \
+    -Djava.util.logging.config.file=/tomcat/conf/logging.properties \
+    -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager \
+    -Djava.endorsed.dirs=/usr/share/tomcat7/endorsed \
+    -classpath /usr/share/tomcat7/bin/bootstrap.jar:/usr/share/tomcat7/bin/tomcat-juli.jar \
+    -Dcatalina.base=/tomcat/ \
+    -Dcatalina.home=/tomcat/ \
+    -Djava.io.tmpdir=/tmp/ \
+    org.apache.catalina.startup.Bootstrap start
+}
+
+ed_tomcat_generate_config() {
+  cat \
+    > /etc/s.supervisor/tomcat.s \
+<<EOF
+[program:tomcat]
+command=/bocker ed_tomcat_daemonize
+process_name=%(program_name)s
+numprocs=1
+directory=/tomcat/
+umask=022
+priority=999
+autostart=true
+autorestart=true
+startsecs=1
+startretries=3
+exitcodes=0,2
+stopsignal=TERM
+stopwaitsecs=10
+user=tomcat
+redirect_stderr=true
+stdout_logfile=/supervisor/tomcat.log
+stdout_logfile_maxbytes=50MB
+stdout_logfile_backups=10
+stdout_capture_maxbytes=0
+stdout_events_enabled=false
+stderr_logfile=AUTO
+stderr_logfile_maxbytes=50MB
+stderr_logfile_backups=10
+stderr_capture_maxbytes=0
+stderr_events_enabled=false
+environment=
+EOF
+
+}
