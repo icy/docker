@@ -9,7 +9,6 @@
 
 ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
 ed_expose 6379
-ed_volume /redis/
 ed_copy   --later redis-2.8.conf /redis/
 
 ed_ship   --later \

@@ -13,10 +13,10 @@ The result container will run `redis` thanks to `supervisor`.
 
 * `6379`: The popular `redis` port
 
-## Volumes
+## Notes:
 
-* `/redis/`: `REDIS_APPENDONLY` should be `yes`
-    so that `redis` data can be mounted on another container.
+`REDIS_APPENDONLY` should be `yes` so that `redis` data (`/redis/`)
+can be mounted on another container.
 
 ## Build instruction
 
