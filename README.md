@@ -1,7 +1,5 @@
 ## List of my Dockers
 
-## Useful for everyone
-
 1. `supervisor`:
     To run multiple processes and to solve reaping problem.
     Support `cron`, basic `exim4` to delivery
