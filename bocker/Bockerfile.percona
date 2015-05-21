@@ -1,9 +1,54 @@
 #!/bin/bash
 
-set -e
+# Purpose: Create an image with Percona
+# Author : Anh K. Huynh
+# Date   : 2015 May 21 (ported from the former Dockerfile)
+# Based on
+#  https://github.com/docker-library/percona/tree/master/5.6
 
-# As Root
-_mysql_datadir() {
+ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
+ed_expose 3306
+ed_ship   --later \
+            ed_percona_init \
+            ed_percona_generate_config \
+            ed_percona_set_datadir \
+            ed_percona_daemonize
+
+ed_bocker() {
+  ed_percona_install
+}
+
+ed_percona_install() {
+  local PERCONA_MAJOR=5.6
+
+  apt-key adv \
+      --keyserver keys.gnupg.net \
+      --recv-keys 430BDF5C56E7C94E848EE60C1C4CBDCDCD2EFD2A
+
+  echo 'deb http://repo.percona.com/apt wheezy main' \
+      > /etc/apt/sources.list.d/percona.list
+
+  ed_apt_install percona-server-server-$PERCONA_MAJOR
+  ed_apt_clean
+
+  mkdir /mysql/
+  groupmod -g 10003 mysql
+  usermod -u 10003 -g 10003 mysql
+
+  # Due to Docker issue (783), these stuff must be removed!
+  rm -rf /var/log/mysql/ /var/run/mysqld/
+
+  # Give a generator to Supervisor
+  {
+    echo "#!/bin/bash"
+    echo "/bocker.sh ed_percona_generate_config"
+  } \
+  > /etc/s.supervisor/percona.sh
+}
+
+########################################################################
+
+ed_percona_set_datadir() {
   if [[ "$UID" == 0 ]]; then
     if [[ -f "/mysql/my.cnf" ]]; then
       echo >&2 ":: MySQL: /mysql/my.conf found. Copying it to /etc/mysql/my.conf"
@@ -28,9 +73,8 @@ _mysql_datadir() {
   echo "$_D_DATA"
 }
 
-# as MySQL
-_mysql_init() {
-  _D_DATA="$(_mysql_datadir)" || exit 1
+ed_percona_init() {
+  _D_DATA="$(ed_percona_set_datadir)" || exit 1
 
   if [[ -d "/mysql/mysql/" ]]; then
     return 0
@@ -61,7 +105,7 @@ _mysql_init() {
 
   cat > "$_f_init" \
 <<-EOSQL
-    DELETE FROM mysql.user;
+    DELETE FROM mysql.user WHERE user='root';
     CREATE USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWD}' ;
     GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION ;
     DROP DATABASE IF EXISTS test ;
@@ -71,45 +115,40 @@ EOSQL
   echo > "$_f_0run"
 }
 
-########################################################################
-# Start-up script
-########################################################################
+ed_percona_daemonize() {
+  if [[ -f "/mysql/docker-init.sql" \
+      && -f "/mysql/docker.first.run" ]]; then
 
-case "${1:-}" in
-  "start")
-    if [[ -f "/mysql/docker-init.sql" \
-        && -f "/mysql/docker.first.run" ]]; then
+    rm -f /mysql/docker.first.run
+    exec /usr/sbin/mysqld \
+        --init-file=/mysql/docker-init.sql
+  fi
 
-      rm -f /mysql/docker.first.run
-      exec /usr/sbin/mysqld --init-file=/mysql/docker-init.sql
-    fi
-
-    exec /usr/sbin/mysqld;
-    exit;
-    ;;
-
-  "init")
-    _mysql_init;
-    exit;
-    ;;
-esac
+  exec /usr/sbin/mysqld;
+}
 
 ########################################################################
 # Supervisor generator
 ########################################################################
 
-_D_DATA="$(_mysql_datadir)" || exit 1
-mkdir -pv /var/run/mysqld/ /var/log/mysql/
-chown -R mysql:mysql /mysql/ /var/run/mysqld/ /var/log/mysql/
+ed_percona_generate_config() {
+  _D_DATA="$(ed_percona_set_datadir)" || exit 1
 
-# initialize the database if necessary
-su mysql -s /bin/bash -c "$0 init"
-if [[ $? -ge 1 ]]; then
-  exit 1
-fi
+  # These directories are removed at the Installation process
+  mkdir -pv /var/run/mysqld/ /var/log/mysql/
+  chown -R mysql:mysql /mysql/ /var/run/mysqld/ /var/log/mysql/
 
-# Percona warning message
-cat <<-EOF
+  # Initialize the database if necessary
+  # NOTE: mysqld is from /usr/sbin/ directory. If "su -" is used,
+  # the `mysqld` command is not found, and script just fails.
+  su mysql -s /bin/bash -c "/bocker.sh ed_percona_init"
+  if [[ $? -ge 1 ]]; then
+    echo >&2 ":: $FUNCNAME: Aborted due to init fails."
+    exit 1
+  fi
+
+  # Percona warning message
+  cat <<-EOF
 ~~~~~~~
 * Percona Server is distributed with several useful UDF (User Defined Function) from Percona Toolkit.
 * Run the following commands to create these functions:
@@ -121,13 +160,13 @@ cat <<-EOF
 * See http://www.percona.com/doc/percona-server/5.6/management/udf_percona_toolkit.html for more details
 ~~~~~~~
 EOF
-# now generator supervisor configuration
 
-cat \
-  > /etc/s.supervisor/mysql.s \
+  # now generator supervisor configuration
+  cat \
+    > /etc/s.supervisor/mysql.s \
 <<EOF
 [program:mysql]
-command=$0 start
+command=/bocker.sh ed_percona_daemonize
 process_name=%(program_name)s
 numprocs=1
 directory=/mysql
@@ -154,3 +193,5 @@ stderr_capture_maxbytes=0
 stderr_events_enabled=false
 environment=
 EOF
+
+}

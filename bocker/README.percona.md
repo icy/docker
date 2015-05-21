@@ -22,13 +22,9 @@ The result daemon will be launched by `supervisor`.
 
 It's easy.
 
-    # Build icy/supervisor
-    $ cd supervisor/ && docker build -t icy/supervisor .
-
-    # Build icy/percona
-    $ cd percona/ && docker build -t percona .
-
-Please use the latest `icy/supervisor` image.
+    $ cd docker/
+    $ bocker ../bocker/Bockerfile.percona > Dockerfile.percona
+    $ docker build -t percona -f Dockerfile.percona .
 
 ## Notes
 
