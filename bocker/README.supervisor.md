@@ -4,12 +4,12 @@
 Sometimes, that's good enough. Sometimes, you get a head-ache
 with process mangling ([MAKE SURE YOU READ THIS][1]).
 
-So we will run a container that run multiple processed inside.
+So we will run a container that runs multiple processed inside.
 
 The container will have `cron` and `exim4` daemon disabled by default.
 
 There is also a mininum `syslog` implementation by `gryphius` on `Github`.
-You may need this to get, e.g, all `cron` information and there isn't
+You may need this to get, e.g, all `cron` information when there isn't
 `rsyslog`, `syslog-ng` daemon listening.
 
 ## Environments
@@ -19,6 +19,9 @@ You may need this to get, e.g, all `cron` information and there isn't
 * `SUPERVISOR_LOG_LEVEL`: Logging level. Default: `info`.
 * `FOOBAR_UID=<NUMBER>`: User to create / modify.
 * `FOOBAR_GID=<NUMBER>`: Group to create / modify.
+
+You can create/modify `uid/gid` of any user. For example, by specifying
+`TOMCAT_UID=1234`, a `tomcat` user will be created and its `uid` is `1234`.
 
 ### Msyslog feature
 
