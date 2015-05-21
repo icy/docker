@@ -20,8 +20,6 @@ ed_bocker() {
   ed_group \
     ed_redis_install
     ed_redis_prepare_user
-
-  ed_add redis-2.8.conf /redis/
 }
 
 ed_redis_install() {
