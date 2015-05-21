@@ -5,6 +5,8 @@
 # Date   : 2015 May 21 (ported from the former Dockerfile)
 
 ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})"/base.sh
+ed_entrypoint '["/usr/bin/pacman"]'
+ed_cmd        '["-V"]'
 
 ed_pacapt_install() {
   ed_apt_install curl ca-certificates
