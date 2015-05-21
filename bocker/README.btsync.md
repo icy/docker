@@ -16,7 +16,7 @@ We are only novice users.
 
 ## Volume
 
-* `/home/btsync/`: contains all `btsync` data.
+* `/btsync/`: contains all `btsync` data.
 
 ## Usage
 
@@ -25,5 +25,5 @@ and `8881` (`data`) ports. A random password is generated and written
 to the `docker` logs, unless you specify one with `BTSYNC_PASSWD`
 environment.
 
-The data volume (`/home/btsync/`) contains all `btsync` variant files
+The data volume (`/btsync/`) contains all `btsync` variant files
 and synchornization folders.

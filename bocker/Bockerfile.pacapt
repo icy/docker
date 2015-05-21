@@ -13,7 +13,7 @@ ed_pacapt_install() {
     https://github.com/icy/pacapt/raw/ng/pacapt
   chmod 755 /usr/bin/pacman
 
-  ed_apt_clean
+  ed_apt_purge curl ca-certificates
 }
 
 ed_bocker() {
