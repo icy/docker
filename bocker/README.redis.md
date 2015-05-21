@@ -22,7 +22,7 @@ can be mounted on another container.
 
 It's easy.
 
-    $ cd docker/
+    $ cd context/
     $ bocker ../bocker/Bockerfile.redis > Dockerfile.redis
     $ docker build -t redis -f Dockerfile.redis .
 

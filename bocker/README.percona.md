@@ -22,7 +22,7 @@ The result daemon will be launched by `supervisor`.
 
 It's easy.
 
-    $ cd docker/
+    $ cd context/
     $ bocker ../bocker/Bockerfile.percona > Dockerfile.percona
     $ docker build -t percona -f Dockerfile.percona .
 

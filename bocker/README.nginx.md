@@ -35,27 +35,25 @@ refused` error when making connection to `127.0.0.1` from within a docker.
 
 This is a screenshot
 
-````
-$ cd docker/
+    $ cd context/
 
-$ bocker ../bocker/Bockerfile           > Dockerfile.nginx
-$ bocker ../bocker/Bockerfile.phpfpm    > Dockerfile.phpfpm
-$ bocker ../bocker/Bockerfile.wordpress > Dockerfile.wordpress
+    $ bocker ../bocker/Bockerfile           > Dockerfile.nginx
+    $ bocker ../bocker/Bockerfile.phpfpm    > Dockerfile.phpfpm
+    $ bocker ../bocker/Bockerfile.wordpress > Dockerfile.wordpress
 
-$ docker build -t nginx     -f Dockerfile.nginx .
-$ docker build -t phpfpm    -f Dockerfile.phpfpm .
-$ docker build -t wordpress -f Dockerfile.wordpress .
+    $ docker build -t nginx     -f Dockerfile.nginx .
+    $ docker build -t phpfpm    -f Dockerfile.phpfpm .
+    $ docker build -t wordpress -f Dockerfile.wordpress .
 
-$ docker run -d -P nginx
-$ docker ps | grep nginx
+    $ docker run -d -P nginx
+    $ docker ps | grep nginx
 
-$ docker ps
-CONTAINER ID  IMAGE        COMMAND      ... PORTS                 ...
-4727aa1286d9  nginx:latest "/nginx.sh"  ... 0.0.0.0:49170->80/tcp ...
+    $ docker ps
+    CONTAINER ID  IMAGE        COMMAND      ... PORTS                 ...
+    4727aa1286d9  nginx:latest "/nginx.sh"  ... 0.0.0.0:49170->80/tcp ...
 
-$ curl -L localhost:49170/ping
-pong
-````
+    $ curl -L localhost:49170/ping
+    pong
 
 ## Author. License
 

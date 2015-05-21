@@ -18,12 +18,9 @@ fonts from `/usr/share/fonts/` (exportable as a volume.)
 
 It's easy. You may need to add fonts into the volume.
 
-    $ cd docker/
-
+    $ cd context/
     $ bocker ../bocker/Bockerfile.phantomjs > Dockerfile.phantomjs
-
     $ docker build -t phantomjs -f Dockerfile.phantomjs .
-
     $ docker run -p 1234:8190 -d phantomjs
 
 Now you are ready to connect to `:1234` on the host machine for testing.
