@@ -8,6 +8,7 @@ __NGINX_DIR="$(dirname ${BASH_SOURCE[0]:-.})"
 ed_reuse $__NGINX_DIR/Bockerfile.supervisor
 
 ed_env  --later WWW_UID 10005
+ed_copy --later etc/nginx/ /etc/nginx/
 
 ed_ship --later \
   ed_nginx_generate_config \
@@ -20,8 +21,6 @@ ed_bocker() {
     ed_nginx_build \
     ed_nginx_clean_up \
     ed_nginx_create_generator
-
-  ed_add  etc/nginx/ /etc/nginx/
 }
 
 ########################################################################
