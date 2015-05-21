@@ -33,7 +33,6 @@
 ## Personal. May not useful for everyone.
 
 1. `pacapt`: A simple Docker image to add `pacapt` to a Debian image;
-2. `aftershot`: To run `aftershot pro 1.2`;
 5. `btsync`: To run `btsync-1.3`;
 8. `life`: A container for everything.
 
