@@ -70,7 +70,7 @@ ed_tomcat_generate_config() {
     > /etc/s.supervisor/tomcat.s \
 <<EOF
 [program:tomcat]
-command=/bocker ed_tomcat_daemonize
+command=/bocker.sh ed_tomcat_daemonize
 process_name=%(program_name)s
 numprocs=1
 directory=/tomcat/
