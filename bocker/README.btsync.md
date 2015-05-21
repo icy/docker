@@ -16,7 +16,8 @@ We are only novice users.
 
 ## Volume
 
-* `/btsync/`: contains all `btsync` data.
+* `/btsync/`: contains all `btsync` data (`/btsync/var`) and user's
+  directories (`/btsync/sync`.)
 
 ## Usage
 
