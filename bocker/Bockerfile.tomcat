@@ -15,23 +15,23 @@ ed_ship   --later \
             ed_tomcat_generate_config
 
 ed_bocker() {
-  ed_group \
-    ed_tomcat_install \
-    ed_tomcat_prepare_user
+  ed_tomcat_install
+  ed_tomcat_prepare_user
 }
 
 ed_tomcat_install() {
   ed_apt_install openjdk-7-jre tomcat7 tomcat7-admin
   ed_apt_clean
-}
 
-ed_tomcat_prepare_user() {
   # Give a generator to Supervisor
   {
     echo "#!/bin/bash"
     echo "/bocker.sh ed_tomcat_generate_config"
   } \
   > /etc/s.supervisor/tomcat.sh
+}
+
+ed_tomcat_prepare_user() {
 
   mkdir -pv /tomcat/webapps/ /tomcat/work/ /tomcat/logs/
 

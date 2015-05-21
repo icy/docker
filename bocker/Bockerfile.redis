@@ -17,9 +17,8 @@ ed_ship   --later \
             ed_redis_generate_config
 
 ed_bocker() {
-  ed_group \
-    ed_redis_install
-    ed_redis_prepare_user
+  ed_redis_install
+  ed_redis_prepare_user
 }
 
 ed_redis_install() {
