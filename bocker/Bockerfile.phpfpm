@@ -5,9 +5,10 @@
 # Date   : 2015 May 19th
 
 __PHPFPM_DIR="$(dirname ${BASH_SOURCE[0]:-.})"
-ed_reuse $__PHPFPM_DIR/Bockerfile.nginx
 
+ed_reuse  $__PHPFPM_DIR/Bockerfile.nginx
 ed_volume /phpfpm/www/
+ed_copy   --later phpfpm.conf.default /phpfpm/
 
 ed_ship --later \
   ed_phpfpm_daemonize \
@@ -16,7 +17,6 @@ ed_ship --later \
 
 ed_bocker() {
   ed_phpfpm_install
-  ed_add phpfpm.conf.default /phpfpm/
 }
 
 ########################################################################
