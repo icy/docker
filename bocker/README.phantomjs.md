@@ -18,7 +18,8 @@ fonts from `/usr/share/fonts/` (exportable as a volume.)
 
 It's easy. You may need to add fonts into the volume.
 
-    $ cd output/
+    $ cd docker/
+
     $ bocker ../bocker/Bockerfile.phantomjs > Dockerfile.phantomjs
 
     $ docker build -t phantomjs -f Dockerfile.phantomjs .

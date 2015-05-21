@@ -22,13 +22,9 @@ The result container will run `redis` thanks to `supervisor`.
 
 It's easy.
 
-    # Build icy/supervisor
-    $ cd supervisor/ && docker build -t icy/supervisor .
-
-    # Build icy/redis
-    $ cd redis/ && docker build -t redis .
-
-Please use the latest `icy/supervisor` image.
+    $ cd docker/
+    $ bocker ../bocker/Bockerfile.redis > Dockerfile.redis
+    $ docker build -t redis -f Dockerfile.redis .
 
 ## Configuration file
 

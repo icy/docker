@@ -36,7 +36,7 @@ refused` error when making connection to `127.0.0.1` from within a docker.
 This is a screenshot
 
 ````
-$ cd output/
+$ cd docker/
 
 $ bocker ../bocker/Bockerfile           > Dockerfile.nginx
 $ bocker ../bocker/Bockerfile.phpfpm    > Dockerfile.phpfpm
