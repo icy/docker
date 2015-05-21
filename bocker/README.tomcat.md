@@ -27,7 +27,11 @@ Because people often runs `Tomcat` application as `root`,
 It's very easy after you build the image
 
     $ git clone https://github.com/icy/docker.git
-    $ cd supervisor/ && docker built -t icy/supervisor .
-    $ cd ../tomcat/  && docker build -t tomcat .
+
+    $ cd docker/docker
+    $ bocker ../bocker/Bockerfile.tomcat > Dockerfile.tomcat
+
+    $ docker build -t tomcat -f Dockerfile.tomcat .
+
     $ docker run -p 8080:8080 -d --name tomcat tomcat
     $ curl http://localhost:8080/ -LIv
