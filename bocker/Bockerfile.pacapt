@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Purpose: A simple image with `pacapt` installed
+# Author : Anh K. Huynh
+# Date   : 2015 May 21 (ported from the former Dockerfile)
+
+ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})"/base.sh
+
+ed_pacapt_install() {
+  ed_apt_install curl ca-certificates
+
+  curl -Lso /usr/bin/pacman \
+    https://github.com/icy/pacapt/raw/ng/pacapt
+  chmod 755 /usr/bin/pacman
+
+  ed_apt_clean
+}
+
+ed_bocker() {
+  ed_pacapt_install
+}
