@@ -36,8 +36,16 @@ refused` error when making connection to `127.0.0.1` from within a docker.
 This is a screenshot
 
 ````
-$ cd icy-docker/nginx/
-$ docker build -t nginx .
+$ cd output/
+
+$ bocker ../bocker/Bockerfile           > Dockerfile.nginx
+$ bocker ../bocker/Bockerfile.phpfpm    > Dockerfile.phpfpm
+$ bocker ../bocker/Bockerfile.wordpress > Dockerfile.wordpress
+
+$ docker build -t nginx     -f Dockerfile.nginx .
+$ docker build -t phpfpm    -f Dockerfile.phpfpm .
+$ docker build -t wordpress -f Dockerfile.wordpress .
+
 $ docker run -d -P nginx
 $ docker ps | grep nginx
 
@@ -45,25 +53,8 @@ $ docker ps
 CONTAINER ID  IMAGE        COMMAND      ... PORTS                 ...
 4727aa1286d9  nginx:latest "/nginx.sh"  ... 0.0.0.0:49170->80/tcp ...
 
-$ curl -vL localhost:49170/ping
-*   Trying 127.0.0.1...
-* Connected to localhost (127.0.0.1) port 49170 (#0)
-> GET /ping HTTP/1.1
-> User-Agent: curl/7.41.0
-> Host: localhost:49170
-> Accept: */*
->
-< HTTP/1.1 200 OK
-< Date: Fri, 03 Apr 2015 09:17:41 GMT
-< Content-Type: application/octet-stream
-< Transfer-Encoding: chunked
-< Connection: close
-< Server: Apache
-< X-Powered-By: Linux
-<
+$ curl -L localhost:49170/ping
 pong
-* Closing connection 0
-
 ````
 
 ## Author. License

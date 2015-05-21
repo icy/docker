@@ -5,7 +5,7 @@
 # Date   : 2015 May 19th
 
 __PHPFPM_DIR="$(dirname ${BASH_SOURCE[0]:-.})"
-ed_reuse $__PHPFPM_DIR/../nginx/Bockerfile
+ed_reuse $__PHPFPM_DIR/Bockerfile.nginx
 
 ed_volume /phpfpm/www/
 

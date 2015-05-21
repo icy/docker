@@ -6,11 +6,10 @@
 
 __SUPERVISOR_DIR="$(dirname ${BASH_SOURCE[0]:-.})"
 
-source $__SUPERVISOR_DIR/../bocker/base.sh
-
-ed_reuse $__SUPERVISOR_DIR/bocker/cron.sh
-ed_reuse $__SUPERVISOR_DIR/bocker/exim4.sh
-ed_reuse $__SUPERVISOR_DIR/bocker/msyslog.sh
+ed_reuse $__SUPERVISOR_DIR/base.sh
+ed_reuse $__SUPERVISOR_DIR/Bockerfile.cron
+ed_reuse $__SUPERVISOR_DIR/Bockerfile.exim4
+ed_reuse $__SUPERVISOR_DIR/Bockerfile.msyslog
 
 # ed_onbuild COPY "supervisor/*.sh supervisor/*.s /etc/s.supervisor/"
 # ed_onbuild COPY "cron.d/* /etc/cron.d/"

@@ -4,7 +4,7 @@
 # Author : Anh K. Huynh
 # Date   : 2015 May 19th
 
-ed_reuse ../supervisor/Bockerfile
+ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
 
 ed_expose 8190
 ed_volume /usr/share/fonts

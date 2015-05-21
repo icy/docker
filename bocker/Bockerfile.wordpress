@@ -4,7 +4,7 @@
 # Author : Anh K. Huynh
 # Date   : 2015 May 19th
 
-ed_reuse  ./Bockerfile.phpfpm
+ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.phpfpm
 ed_env    --later WP_VERSION 4.2.2
 ed_volume /phpfpm/www/wp-content/
 
