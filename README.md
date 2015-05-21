@@ -18,7 +18,7 @@
 
 ## Build instruction
 
-There isn't any `Dockerfile`. Because this project is heavily used
+There isn't any `Dockerfile`. Because this project heavily uses
 `Bockerfile`. A compiler script will generate `Dockerfile` for you.
 
 The compiler is `bocker.sh` script. It comes from `bocker` project
