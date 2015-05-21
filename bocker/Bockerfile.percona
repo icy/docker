@@ -38,6 +38,9 @@ ed_percona_install() {
   # Due to Docker issue (783), these stuff must be removed!
   rm -rf /var/log/mysql/ /var/run/mysqld/
 
+  # This is created by default installation. We don't need it.
+  rm -rf /var/lib/mysql/
+
   # Give a generator to Supervisor
   {
     echo "#!/bin/bash"
