@@ -4,6 +4,10 @@
 # Author : Anh K. Huynh
 # Date   : 2015 May 18th
 
+if [[ -z "${__SUPERVISOR_DIR:-}" ]]; then
+  echo >&2 ":: This library is to be included from Supervisor."
+fi
+
 ed_ship --later \
   ed_exim4_config_update \
   ed_exim4_daemonize \
