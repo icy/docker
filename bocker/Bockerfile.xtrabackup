@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Purpose: Bockerfile to install XtraBackup tool
+# Author : Anh K. Huynh
+# Date   : 2015 May 22
+
+# 1. We need cron daemon from `supervisor`. However
+#    it is disabled by default. Use `CRON_ENABLE=1` to turn it on.
+# 2. We don't have an entrypoint.
+
+ed_reuse      "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
+ed_volume     /xtrabackup/
+
+ed_bocker() {
+  ed_xtrabackup_install
+}
+
+ed_xtrabackup_install() {
+  apt-key adv --keyserver keys.gnupg.net \
+    --recv-keys 1C4CBDCDCD2EFD2A
+
+  echo "deb http://repo.percona.com/apt wheezy main" \
+    > /etc/apt/sources.list.d/xtrabackup.list
+
+  ed_apt_install percona-xtrabackup
+  ed_apt_clean
+}
