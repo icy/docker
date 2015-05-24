@@ -12,7 +12,8 @@ The result daemon will be launched by `supervisor`.
 
 ## Volumes
 
-* `/mysql/`: Where all `mysql` data are stored.
+* `/mysql/`: Where all `mysql` data are stored;
+* `/etc/mysql/`: Configuration directory.
 
 ## Exposed port
 
