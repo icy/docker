@@ -20,8 +20,8 @@ ed_bocker() {
 }
 
 ed_btsync_install() {
-  local _url="http://syncapp.bittorrent.com/1.3.109/btsync_x64-1.3.109.tar.gz"
-  local _checksum="321597f1411583a726451278433e9ef560ef91ca"
+  local _url="${BTSYNC_URL:-http://syncapp.bittorrent.com/1.3.109/btsync_x64-1.3.109.tar.gz}"
+  local _checksum="${BTSYNC_CHECKSUM:-321597f1411583a726451278433e9ef560ef91ca}"
 
   ed_apt_install curl ca-certificates
 
