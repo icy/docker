@@ -5,17 +5,9 @@
 # Date   : 2015 May 25
 # Link   : http://forum.bittorrent.com/topic/38938-latest-desktop-build-20120/
 
-source    "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.btsync"
+ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.btsync"
 
-ed_bocker() {
-  ed_group \
-    ed_btsync2_setup \
-    ed_btsync_install \
-
-  ed_btsync_prepare
-}
-
-ed_btsync2_setup() {
+ed_btsync_env() {
   export BTSYNC_URL="https://download-cdn.getsyncapp.com/2.0.120/linux-x64/BitTorrent-Sync_x64.tar.gz"
   export BTSYNC_CHECKSUM="bf0bbb044bd8c4e1e56e8f35ed173516c80e2b24"
 }

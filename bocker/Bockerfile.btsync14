@@ -5,17 +5,9 @@
 # Date   : 2015 May 25
 # Link   : http://forum.bittorrent.com/topic/34316-latest-14-beta-desktop-build-14111/
 
-source    "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.btsync"
+ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.btsync"
 
-ed_bocker() {
-  ed_group \
-    ed_btsync14_setup \
-    ed_btsync_install \
-
-  ed_btsync_prepare
-}
-
-ed_btsync14_setup() {
+ed_btsync_env() {
   export BTSYNC_URL="http://syncapp.bittorrent.com/1.4.111/btsync_x64-1.4.111.tar.gz"
   export BTSYNC_CHECKSUM="bb2dec020e5d8ec3a0ce18a38ae08ddabd2a7750"
 }
