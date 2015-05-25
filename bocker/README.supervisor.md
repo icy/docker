@@ -6,9 +6,10 @@ with process mangling ([MAKE SURE YOU READ THIS][1]).
 
 So we will run a container that runs multiple processed inside.
 
-The container will have `cron` and `exim4` daemon disabled by default.
+The container will have `cron`, `msyslog` and `exim4` daemon disabled by
+default. The `logrotate` is installed and will be activated by `cron`.
 
-There is also a mininum `syslog` implementation by `gryphius` on `Github`.
+`msyslog` is the mininum `syslog` implementation by `gryphius` on `Github`.
 You may need this to get, e.g, all `cron` information when there isn't
 `rsyslog`, `syslog-ng` daemon listening.
 
