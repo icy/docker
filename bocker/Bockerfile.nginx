@@ -9,6 +9,7 @@ ed_reuse $__NGINX_DIR/Bockerfile.supervisor
 
 ed_env  --later WWW_UID 10005
 ed_copy --later etc/nginx/ /etc/nginx/
+ed_expose 80
 
 ed_ship --later \
   ed_nginx_generate_config \
