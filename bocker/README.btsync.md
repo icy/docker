@@ -19,6 +19,10 @@ We are only novice users.
 * `/btsync/`: contains all `btsync` data (`/btsync/var`) and user's
   directories (`/btsync/sync`.)
 
+## Notes
+
+The `btsync` daemon is running as `btsync` user whose `UID` is `1000`.
+
 ## Usage
 
 When the container is started, it will listen on `8888` (`webui`)
