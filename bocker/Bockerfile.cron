@@ -5,7 +5,7 @@
 # Date   : 2015 May 18th
 
 if [[ -z "${__SUPERVISOR_DIR:-}" ]]; then
-  echo >&2 ":: This library is to be included from Supervisor."
+  echo >&2 ":: This library (Cron) is to be included from Supervisor."
 fi
 
 ed_ship --later \
