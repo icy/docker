@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Purpose: Run tomcat behinds a nginx installation
+# Purpose: Run tomcat behind a nginx installation
 # Author : Anh K. Huynh
 # Note   : This Bockerfile requires `bocker > 1.2.1`
 #          that supports duplicate removal.
