@@ -23,6 +23,9 @@ We are only novice users.
 
 The `btsync` daemon is running as `btsync` user whose `UID` is `1000`.
 
+For `btsync-1.4`, please see `Bockerfile.btsync14`.
+For `btsync-2.0`, please see `README.btsync2.md` and `Bockerfile.btsync2`.
+
 ## Usage
 
 When the container is started, it will listen on `8888` (`webui`)

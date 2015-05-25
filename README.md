@@ -12,7 +12,7 @@
 1. `nginx`: Hardened nginx;
 1. `wordpress`: To run `wordpress` (any version). Use `phpfpm`;
 1. `phpfpm`: A base library to start `phpfpm` daemon;
-1. `btsync`: To run `btsync-1.3`.
+1. `btsync`: To run `btsync-1.3`, `btsync-2.0` or `btsync-1.4`
 
 ## Build instruction
 
