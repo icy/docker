@@ -27,3 +27,23 @@ ed_apt_install() {
   DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends $@
 }
+
+ed_bocker_min_version() {
+  echo "${BOCKER_VERSION:-0.0.0}" \
+  | awk \
+    -vMIN_VERSION="${1:-0.0.0}" \
+    -F. \
+    '
+      {
+        version = 100 * $1 + 10 * $2 + $3;
+
+        if (version >= MIN_VERSION) {
+          exit(0);
+        }
+        else {
+          printf("Bocker version >= %d is required. Your version = %d\n", MIN_VERSION, version) > "/dev/stderr";
+          exit(127);
+        }
+      }
+    '
+}
