@@ -5,4 +5,4 @@ Support `btsync-2.x` daemon. Please refer to `README.btsync.md`
 
 **Importante note:** Think twice before upgrading. New free `btsync-2.x`
 only supports 10 shared folders. Make sure you have back up of all
-data from the `btsync-1.x`.
+data from the `btsync-1.x`. And there is no way to downgrade!
