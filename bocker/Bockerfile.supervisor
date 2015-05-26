@@ -193,6 +193,7 @@ ed_supervisor_config_template() {
     "-d"|"--dir")     shift; _workdir="$1" ;;
     "-u"|"--user")    shift; _user="$1" ;;
     esac
+    shift
   done
 
   if [[ -z "$_name" || -z "$_command" ]]; then
