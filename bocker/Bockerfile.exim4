@@ -89,6 +89,11 @@ EOF
 }
 
 ed_exim4_generate_config() {
+  if [[ "${EXIM4_ENABLE:-0}" == "0" ]]; then
+    rm -f /etc/s.supervisor/exim4.s || true
+    return 0
+  fi
+
   ed_exim4_uid_gid_update
   ed_exim4_config_update
 
