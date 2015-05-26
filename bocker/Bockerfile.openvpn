@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# Purpose: Run OpenVPN configuration
+# Author : Anh K. Huynh
+# Date   : 2015 May 26th
+# Note   : The purpose of this image is to run YOUR configuration,
+#          not to generate new openvpn configuration for you.
+
+ed_reuse   "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
+ed_volume  /etc/openvpn/
+ed_expose  1194/udp
+ed_ship    --later \
+             ed_openvpn_generate_config \
+             ed_openvpn_daemonize
+
+ed_bocker() {
+  ed_openvpn_install_base
+}
+
+ed_openvpn_install_base() {
+  ed_apt_install iptables openvpn
+  ed_apt_clean
+  # rm -rf /etc/openvpn/
+  {
+    echo "#!/bin/bash"
+    echo "/bocker.sh ed_openvpn_generate_config"
+  } \
+  > /etc/s.supervisor/openvpn.sh
+}
+
+# As root
+ed_openvpn_daemonize() {
+  export OPENVPN_CONF="${OPENVPN_CONF:-mine}"
+  cd /etc/openvpn/
+  exec /usr/sbin/openvpn --cd /etc/openvpn --config "/etc/openvpn/${OPENVPN_CONF}.conf" --script-security 2
+}
+
+ed_openvpn_generate_config() {
+  # /sbin/sysctl net.ipv4.ip_forward=1
+  /sbin/iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+  /sbin/iptables -A FORWARD -s 10.8.0.0/24 -j ACCEPT
+
+  cat \
+    > /etc/s.supervisor/openvpn.s \
+<<EOF
+[program:openvpn]
+command=/bocker.sh ed_openvpn_daemonize
+process_name=%(program_name)s
+numprocs=1
+directory=/etc/openvpn/
+umask=022
+priority=999
+autostart=true
+autorestart=true
+startsecs=1
+startretries=3
+exitcodes=0,2
+stopsignal=TERM
+stopwaitsecs=10
+user=root
+redirect_stderr=true
+stdout_logfile=/supervisor/openvpn.log
+stdout_logfile_maxbytes=50MB
+stdout_logfile_backups=10
+stdout_capture_maxbytes=0
+stdout_events_enabled=false
+stderr_logfile=AUTO
+stderr_logfile_maxbytes=50MB
+stderr_logfile_backups=10
+stderr_capture_maxbytes=0
+stderr_events_enabled=false
+environment=
+serverurl=AUTO
+EOF
+}
