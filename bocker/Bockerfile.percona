@@ -170,36 +170,9 @@ ed_percona_generate_config() {
 EOF
 
   # now generator supervisor configuration
-  cat \
-    > /etc/s.supervisor/mysql.s \
-<<EOF
-[program:mysql]
-command=/bocker.sh ed_percona_daemonize
-process_name=%(program_name)s
-numprocs=1
-directory=/mysql
-umask=022
-priority=999
-autostart=true
-autorestart=true
-startsecs=1
-startretries=3
-exitcodes=0,2
-stopsignal=TERM
-stopwaitsecs=10
-user=mysql
-redirect_stderr=true
-stdout_logfile=/supervisor/mysql.log
-stdout_logfile_maxbytes=50MB
-stdout_logfile_backups=10
-stdout_capture_maxbytes=0
-stdout_events_enabled=false
-stderr_logfile=AUTO
-stderr_logfile_maxbytes=50MB
-stderr_logfile_backups=10
-stderr_capture_maxbytes=0
-stderr_events_enabled=false
-environment=
-EOF
-
+  ed_supervisor_config_template \
+    --name "mysql" \
+    --command "/bocker.sh ed_percona_daemonize" \
+    --dir "/mysql/" \
+    --user "mysql"
 }

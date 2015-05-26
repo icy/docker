@@ -92,35 +92,9 @@ ed_exim4_generate_config() {
   ed_exim4_uid_gid_update
   ed_exim4_config_update
 
-  cat \
-    > /etc/s.supervisor/exim4.s \
-<<EOF
-[program:exim4]
-command=/bocker.sh ed_exim4_daemonize
-process_name=%(program_name)s
-numprocs=1
-directory=/
-umask=022
-priority=999
-autostart=true
-autorestart=true
-startsecs=1
-startretries=3
-exitcodes=0,2
-stopsignal=TERM
-stopwaitsecs=10
-user=Debian-exim
-redirect_stderr=true
-stdout_logfile=/supervisor/exim4.log
-stdout_logfile_maxbytes=50MB
-stdout_logfile_backups=10
-stdout_capture_maxbytes=0
-stdout_events_enabled=false
-stderr_logfile=AUTO
-stderr_logfile_maxbytes=50MB
-stderr_logfile_backups=10
-stderr_capture_maxbytes=0
-stderr_events_enabled=false
-environment=
-EOF
+  ed_supervisor_config_template \
+    --name "exim4" \
+    --command "/bocker.sh ed_exim4_daemonize" \
+    --dir "/" \
+    --user "Debian-exim"
 }

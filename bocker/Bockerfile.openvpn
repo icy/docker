@@ -40,36 +40,9 @@ ed_openvpn_generate_config() {
   /sbin/iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
   /sbin/iptables -A FORWARD -s 10.8.0.0/24 -j ACCEPT
 
-  cat \
-    > /etc/s.supervisor/openvpn.s \
-<<EOF
-[program:openvpn]
-command=/bocker.sh ed_openvpn_daemonize
-process_name=%(program_name)s
-numprocs=1
-directory=/etc/openvpn/
-umask=022
-priority=999
-autostart=true
-autorestart=true
-startsecs=1
-startretries=3
-exitcodes=0,2
-stopsignal=TERM
-stopwaitsecs=10
-user=root
-redirect_stderr=true
-stdout_logfile=/supervisor/openvpn.log
-stdout_logfile_maxbytes=50MB
-stdout_logfile_backups=10
-stdout_capture_maxbytes=0
-stdout_events_enabled=false
-stderr_logfile=AUTO
-stderr_logfile_maxbytes=50MB
-stderr_logfile_backups=10
-stderr_capture_maxbytes=0
-stderr_events_enabled=false
-environment=
-serverurl=AUTO
-EOF
+  ed_supervisor_config_template \
+    --name "openvpn" \
+    --command "/bocker.sh ed_openvpn_daemonize" \
+    --dir "/etc/openvpn/" \
+    --user "root"
 }
