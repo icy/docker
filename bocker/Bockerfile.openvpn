@@ -11,7 +11,9 @@ ed_volume  /etc/openvpn/
 ed_expose  1194/udp
 ed_ship    --later \
              ed_openvpn_generate_config \
-             ed_openvpn_daemonize
+             ed_openvpn_daemonize \
+             ed_openvpn_gen_cert \
+             ed_openvpn_config_template
 
 ed_bocker() {
   ed_openvpn_install_base
@@ -49,4 +51,127 @@ ed_openvpn_generate_config() {
     --command "/bocker.sh ed_openvpn_daemonize" \
     --dir "/etc/openvpn/" \
     --user "root"
+}
+
+
+# Author : Anh K. Huynh
+# Date   : 2014 Mar 14th
+#          2014 Dec 19th
+#          2015 May 27th (rewritten for Docker support)
+# Purpose: Generate OpenVPN bundlee
+# Requirements:
+#
+#   - OPENVPN_SUFFIX  : Suffix for client bundle's name
+#   - OPENVPN_GATEWAY : Gateway address
+#
+ed_openvpn_gen_cert_template() {
+  cat \
+<<-EOF
+client
+dev           tun
+proto         udp
+remote        $OPENVPN_GATEWAY 1194
+resolv-retry  infinite
+cipher        BF-CBC
+
+ca            ca.crt
+cert          $CN.crt
+key           $CN.key
+tls-auth      ta.key 1
+key-direction 1
+
+nobind
+persist-key
+persist-tun
+comp-lzo
+verb 3
+
+$(for i in "$@"; do echo $i ;done)
+
+EOF
+}
+
+ed_openvpn_gen_cert() {
+  cd /etc/openvpn/easy-rsa/ || return 1
+
+  local _tmpfile="$(mktemp)"
+  local _archive="/etc/openvpn/easy-rsa/archives/"
+
+  source $PWD/vars
+
+  export CN="${1:-}"
+
+  if [[ -z "$CN" ]]; then
+    echo >&2 ":: Missing CN name. Try '/bocker.sh $FUNCNAME CLIENT-NAME'"
+    return 1
+  fi
+
+  export OPENVPN_GATEWAY="${OPENVPN_GATEWAY:-127.0.0.1}"
+  export OPENVPN_SUFFX="${OPENVPN_SUFFX:-localdomain}"
+  export KEY_CN="${CN}.${OPENVPN_SUFFX}"
+
+
+  if [[ ! -f "keys/$CN.crt" ]]; then
+    mkdir -pv $_archive/
+
+    export EASY_RSA="${EASY_RSA:-.}"
+    "$EASY_RSA/pkitool" --batch "$CN" 1>$_tmpfile 2>&1
+    cat $_tmpfile
+
+    # Detect if there is any error from log file
+    cat $_tmpfile | grep -qEi "(failed)|(error)"
+    if [[ $? -eq 0 ]]; then
+      rm -f $_tmpfile
+      return 1
+    fi
+  fi
+
+  rm -rf "$_archive/$CN/"
+  mkdir "$_archive/$CN/" -pv
+
+  cp /etc/openvpn/ta.key \
+    "keys/$CN.crt" \
+    "keys/$CN.key" \
+    "keys/ca.crt" \
+    "$_archive/$CN/"
+
+  # For desktop users, redirect all traffic
+  ed_openvpn_gen_cert_template "redirect-gateway def1" \
+    > "$_archive/$CN/$CN-PC-redirect.ovpn"
+
+  # For desktop users
+  ed_openvpn_gen_cert_template \
+    > "$_archive/$CN/$CN-PC.ovpn"
+
+  {
+    ed_openvpn_gen_cert_template "redirect-gateway def1"
+    echo "<ca>"
+    cat keys/ca.crt
+    echo "<ca>"
+
+    echo "<cert>"
+    cat "keys/$CN.crt" \
+    | awk '/BEGIN CERTIFICATE/ { x = 1; } x'
+    echo "</cert>"
+
+    echo "<key>"
+    cat "keys/$CN.key"
+    echo "</key>"
+
+    echo "<tls-auth>"
+    cat /etc/openvpn/ta.key
+    echo "</tls-auth>"
+  } \
+  > "$_archive/$CN/$CN-mobile.ovpn"
+
+  # Create tarball
+  cd "$_archive/"
+
+  chmod 600 "$_archive/$CN/"*
+  tar cfz "$CN.tgz" "$CN/"
+  rm -rf "$_archive/$CN/"
+
+  echo >&2 ":: Output file: $_archive/$CN.tgz"
+
+  rm -f $_tmpfile || true
 }
