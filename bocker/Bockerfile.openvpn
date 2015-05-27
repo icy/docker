@@ -13,7 +13,7 @@ ed_ship    --later \
              ed_openvpn_generate_config \
              ed_openvpn_daemonize \
              ed_openvpn_gen_cert \
-             ed_openvpn_config_template
+             ed_openvpn_gen_cert_template
 
 ed_bocker() {
   ed_openvpn_install_base
