@@ -17,6 +17,7 @@ ed_ship --later \
 
 ed_bocker() {
   ed_group \
+    ed_nginx_env \
     ed_nginx_install_packages \
     ed_nginx_download_source \
     ed_nginx_build \
@@ -26,10 +27,12 @@ ed_bocker() {
 
 ########################################################################
 
-ed_nginx_install_packages() {
+ed_nginx_env() {
   export NGINX_VERSION=1.8.0
   export NGINX_CHECKSUM=12bad312764feae50246685ab2e74512d1aa9b2f
+}
 
+ed_nginx_install_packages() {
   ed_apt_install \
      gcc libc6-dev make libpcre3-dev git nginx libssl-dev
 }
