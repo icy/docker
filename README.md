@@ -30,7 +30,7 @@ directory and run `bocker.sh`:
 
       $ cd context/
       $ ../compiler/bocker.sh \
-          ../bocker/Dockerfile.percona > Dockerfile.percona
+          ../bocker/Bockerfile.percona > Dockerfile.percona
 
       # You shouldn't see any warning/error from `bocker.sh`.
       # Now you are ready to build with the generated Dockerfile
