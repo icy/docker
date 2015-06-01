@@ -57,6 +57,6 @@ ed_phantomjs_generate_config() {
   ed_supervisor_config_template \
     --name "phantomjs" \
     --command "/bocker.sh ed_phantomjs_daemonize" \
-    --dir "/phantomjs/" \
+    --dir "/tmp/" \
     --user "phantomjs"
 }
