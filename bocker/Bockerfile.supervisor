@@ -70,12 +70,19 @@ ed_supervisor_install_base() {
 ed_supervisor_install_supervisor() {
   ed_apt_install python-setuptools
 
+  # Minimalistic syslog which just prints all messages received from
+  # /dev/log to standard out. This is useful in docker containers
+  # where you don't want to install a full blown syslog daemon,
+  # in combination with supervisord/supervisor-stdout.
   curl -Lso /usr/bin/syslog-stdout.py \
     https://raw.githubusercontent.com/icyfork/syslog-stdout/master/syslog-stdout.py
 
   mkdir -pv /usr/src/pip/
   cd /usr/src/pip/
 
+  # A simple supervisord event listener to relay process output to
+  # supervisor's stdout. This is useful in situations where the output
+  # will be collected and set to external logging framework, such as Heroku.
   curl -Lso - \
     https://github.com/icyfork/supervisor-stdout/archive/master.tar.gz \
     | tar -xzf - -C /usr/src/pip/ --strip-components=1
