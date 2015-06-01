@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# Purpose: Bockerfile to install MongoDb-3.0
+# Author : Anh K. Huynh
+# Date   : 2015 June 1st
+# Note   : Base on https://github.com/docker-library/ \
+#           mongo/blob/65491bce9f2b6941dbde4ddaf16171dad5fe50d1 \
+#           /3.0/Dockerfile
+
+ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
+ed_volume /mongodb/
+ed_expose 27017
+ed_env    --later MONGODB_UID 10006
+ed_env    --later MONGODB_GID 10006
+ed_ship   --later \
+            ed_mongodb_generate_config \
+            ed_mongodb_daemonize
+
+ed_bocker() {
+  ed_group \
+    ed_mongodb_env \
+    ed_mongodb_install
+}
+
+ed_mongodb_env() {
+  export MONGODB_MAJOR_VERSION=3.0
+}
+
+ed_mongodb_install() {
+  apt-key adv --keyserver keys.gnupg.net \
+    --recv-keys 492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10
+
+  echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/${MONGODB_MAJOR_VERSION} main" \
+    > /etc/apt/sources.list.d/mongodb.list
+
+  ed_apt_install numactl mongodb-org
+
+  rm -rf /var/lib/mongodb/
+  mv /etc/mongod.conf /etc/mongod.conf.orig
+
+  ed_apt_clean
+
+  {
+    echo "#!/bin/bash"
+    echo "/bocker.sh ed_mongodb_generate_config"
+  } \
+  > /etc/s.supervisor/mongodb.sh
+}
+
+ed_mongodb_daemonize() {
+  numa_cli='numactl --interleave=all'
+  numa_cli true >/dev/null 2>&1
+  if [[ $? -ge 1 ]]; then
+    numa_cli=""
+  fi
+
+  exec $numa_cli mongod \
+    --dbpath "${MONGODB_DBPATH:-/mongodb/db/}"
+}
+
+ed_mongodb_generate_config() {
+  # Fix permissions
+  usermod -d /mongodb/ mongodb
+  mkdir -pv /mongodb/db/
+  chown mongodb -R mongodb /mongodb/db/
+
+  # Generate #supervisor configuration
+  ed_supervisor_config_template \
+    --name "mongodb" \
+    --command "/bocker.sh ed_mongodb_daemonize" \
+    --dir "/mongodb/" \
+    --user "mongodb"
+}
