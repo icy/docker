@@ -87,7 +87,7 @@ ed_percona_set_datadir() {
 ed_percona_init() {
   _D_DATA="$(ed_percona_set_datadir)" || exit 1
 
-  if [[ -d "/mysql/mysql/" ]]; then
+  if [[ -f "/mysql/ibdata1" ]]; then
     return 0
   fi
 
@@ -114,11 +114,23 @@ ed_percona_init() {
   touch /mysql/docker-init.sql
   chmod 600 /mysql/docker-init.sql
 
+  # +------+--------------+
+  # | User | Host         |
+  # +------+--------------+
+  # | root | %            | # our new entry         [CREATE]
+  # | root | 127.0.0.1    | # local host entry      [NOOP]
+  # | root | 5186a72fe95f | # container name        [DELETE]
+  # | root | ::1          | # ipv6 support          [DELETE]
+  # | root | localhost    | # localhost entry       [NOOP]
+  # +------+--------------+
+
+  # NOTE: Grant will create new user if not exist.
   cat > "$_f_init" \
 <<-EOSQL
-    DELETE FROM mysql.user WHERE user='root' or user='';
-    CREATE USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWD}' ;
-    GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION ;
+    DELETE FROM mysql.user WHERE user='';
+    DELETE FROM mysql.user WHERE user='root' AND host<>'%' AND host<>'127.0.0.1' AND host<>'localhost';
+    GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWD}';
+    GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION;
     DROP DATABASE IF EXISTS test ;
     FLUSH PRIVILEGES ;
 EOSQL
