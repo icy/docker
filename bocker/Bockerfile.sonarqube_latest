@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Purpose: The mainline (the latest unstable version) of SonarQube
+# Author : Anh K. Huynh
+# Date   : 2015 June 05
+# Ref.   : https://github.com/SonarSource/docker-sonarqube/blob/master/4.5.4/Dockerfile
+
+ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.sonarqube"
+
+ed_sonarqube_env() {
+  export SONARQUBE_VERSION=5.1
+  export SONARQUBE_CHECKSUM='543c7d6ccff2b62ba8195bc1df5ffd4082b61ebf'
+}
