@@ -1,0 +1,82 @@
+#!/bin/bash
+
+# Purpose: The mainline (the latest unstable version) of SonarQube
+# Author : Anh K. Huynh
+# Date   : 2015 June 05
+# Ref.   : https://github.com/SonarSource/docker-sonarqube/blob/master/4.5.4/Dockerfile
+
+ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.supervisor"
+ed_ship   --later \
+            ed_sonarqube_env \
+            ed_sonarqube_daemonize \
+            ed_sonarqube_generate_config
+ed_expose 9000
+
+ed_bocker() {
+  ed_group \
+    ed_sonarqube_env \
+    ed_sonarqube_install
+
+  ed_sonarqube_prepare
+}
+
+ed_sonarqube_env() {
+  export SONARQUBE_VERSION=4.5.4
+  export SONARQUBE_CHECKSUM=755d93b58d8fe88f4e7e99eb11930254128bc5c1
+}
+
+ed_sonarqube_install() {
+  ed_apt_install openjdk-7-jre unzip
+
+  cd /tmp/
+  curl -o sonarqube.zip \
+    -fSL http://dist.sonar.codehaus.org/sonarqube-$SONARQUBE_VERSION.zip
+
+  echo "$SONARQUBE_CHECKSUM *sonarqube.zip" \
+  | sha1sum -c -
+
+  unzip sonarqube.zip
+  mv sonarqube-$SONARQUBE_VERSION /sonarqube
+
+  # Cleanning up
+  rm sonarqube.zip*
+  rm -rf /sonarqube/bin/*
+
+  ed_apt_purge unzip
+}
+
+ed_sonarqube_prepare() {
+  # Create SonarQube user
+  useradd -K UID_MIN=10007 sonarque
+
+  # Install the Supervisor Configuration Generator
+  {
+    echo "#!/bin/bash"
+    echo "/bocker.sh ed_sonarqube_generate_config"
+  } \
+  > "/etc/s.supervisor/sonarqube.sh"
+}
+
+ed_sonarqube_daemonize() {
+  # Get version information and other stuff
+  ed_sonarqube_env
+  exec /usr/bin/java -jar lib/sonar-application-$SONARQUBE_VERSION.jar \
+    -Dsonar.log.console=true \
+    -Dsonar.jdbc.username="${SONARQUBE_JDBC_USERNAME}" \
+    -Dsonar.jdbc.password="${SONARQUBE_JDBC_PASSWORD}" \
+    -Dsonar.jdbc.url="${SONARQUBE_JDBC_URL}" \
+    -Dsonar.web.javaAdditionalOpts="-Djava.security.egd=file:/dev/./urandom" \
+    ${SONARQUBE_OPTIONS}
+}
+
+ed_sonarqube_generate_config() {
+  ed_supervisor_config_template \
+  --name "sonarqube" \
+  --command "/bocker.sh ed_sonarqube_daemonize" \
+  --dir "/sonarqube/" \
+  --user "sonarqube" \
+  --env "SONARQUBE_JDBC_USERNAME=${SONARQUBE_JDBC_USERNAME:-sonarque}" \
+  --env "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD:-sonarque}" \
+  --env "SONARQUBE_JDBC_URL=\"${SONARQUBE_JDBC_URL:-jdbc:mysql:tcp://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8}\"" \
+  --env "SONARQUBE_OPTIONS=${SONARQUBE_OPTIONS:-''}"
+}
