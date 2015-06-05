@@ -88,6 +88,6 @@ ed_sonarqube_generate_config() {
   --user "sonarqube" \
   --env "SONARQUBE_JDBC_USERNAME=${SONARQUBE_JDBC_USERNAME:-sonarqube}" \
   --env "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD:-sonarqube}" \
-  --env "SONARQUBE_JDBC_URL=\"${SONARQUBE_JDBC_URL:-jdbc:mysql:tcp://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8}\"" \
+  --env "SONARQUBE_JDBC_URL=\"${SONARQUBE_JDBC_URL:-jdbc:mysql:tcp://localhost:3306/sonarqube?useUnicode=true&characterEncoding=utf8}\"" \
   --env "SONARQUBE_OPTIONS=${SONARQUBE_OPTIONS:-''}"
 }
