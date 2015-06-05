@@ -191,6 +191,7 @@ ed_supervisor_config_template() {
   local _stop_signal="TERM"
   local _workdir="/tmp/"
   local _user="nobody"
+  local _env=""
 
   while (( $# )); do
     case "$1" in
@@ -199,6 +200,7 @@ ed_supervisor_config_template() {
     "-s"|"--signal")  shift; _command="$1" ;;
     "-d"|"--dir")     shift; _workdir="$1" ;;
     "-u"|"--user")    shift; _user="$1" ;;
+    "-e"|"--env")     shift; _env="$1,$_env" ;;
     esac
     shift
   done
@@ -237,7 +239,7 @@ stderr_logfile_maxbytes=50MB
 stderr_logfile_backups=10
 stderr_capture_maxbytes=0
 stderr_events_enabled=false
-environment=
+environment=${_env%,*}
 serverurl=AUTO
 EOF
 }
