@@ -3,7 +3,7 @@
 # Purpose: The mainline (the latest unstable version) of SonarQube
 # Author : Anh K. Huynh
 # Date   : 2015 June 05
-# Ref.   : https://github.com/SonarSource/docker-sonarqube/blob/master/4.5.4/Dockerfile
+# Ref.   : https://github.com/SonarSource/docker-sonarqube/blob/master/5.1/Dockerfile
 
 ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.sonarqube"
 

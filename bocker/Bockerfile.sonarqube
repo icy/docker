@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Purpose: The mainline (the latest unstable version) of SonarQube
+# Purpose: The mainline (the latest LTS version) of SonarQube
 # Author : Anh K. Huynh
 # Date   : 2015 June 05
 # Ref.   : https://github.com/SonarSource/docker-sonarqube/blob/master/4.5.4/Dockerfile
