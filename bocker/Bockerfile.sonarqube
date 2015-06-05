@@ -79,7 +79,8 @@ ed_sonarqube_generate_config() {
   chown sonarqube:sonarqube -Rc \
     /sonarqube/logs/ \
     /sonarqube/temp/ \
-    /sonarqube/data/
+    /sonarqube/data/ \
+    /sonarqube/
 
   ed_supervisor_config_template \
   --name "sonarqube" \
