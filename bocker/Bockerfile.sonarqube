@@ -48,7 +48,7 @@ ed_sonarqube_install() {
 ed_sonarqube_prepare() {
   # Create SonarQube user
   useradd -K UID_MIN=10007 sonarqube
-  rm -rf /sonarqube/logs/
+  rm -rf /sonarqube/logs/ /sonarqube/temp/
 
   # Install the Supervisor Configuration Generator
   {
@@ -71,8 +71,8 @@ ed_sonarqube_daemonize() {
 }
 
 ed_sonarqube_generate_config() {
-  mkdir -pv /sonarqube/logs/
-  chown sonarqube:sonarqube -Rc /sonarqube/logs/
+  mkdir -pv /sonarqube/logs/ /sonarqube/temp/
+  chown sonarqube:sonarqube -Rc /sonarqube/logs/ /sonarqube/temp/
 
   ed_supervisor_config_template \
   --name "sonarqube" \
