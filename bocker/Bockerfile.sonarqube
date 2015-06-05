@@ -47,7 +47,7 @@ ed_sonarqube_install() {
 
 ed_sonarqube_prepare() {
   # Create SonarQube user
-  useradd -K UID_MIN=10007 sonarque
+  useradd -K UID_MIN=10007 sonarqube
 
   # Install the Supervisor Configuration Generator
   {
@@ -75,8 +75,8 @@ ed_sonarqube_generate_config() {
   --command "/bocker.sh ed_sonarqube_daemonize" \
   --dir "/sonarqube/" \
   --user "sonarqube" \
-  --env "SONARQUBE_JDBC_USERNAME=${SONARQUBE_JDBC_USERNAME:-sonarque}" \
-  --env "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD:-sonarque}" \
+  --env "SONARQUBE_JDBC_USERNAME=${SONARQUBE_JDBC_USERNAME:-sonarqube}" \
+  --env "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD:-sonarqube}" \
   --env "SONARQUBE_JDBC_URL=\"${SONARQUBE_JDBC_URL:-jdbc:mysql:tcp://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8}\"" \
   --env "SONARQUBE_OPTIONS=${SONARQUBE_OPTIONS:-''}"
 }
