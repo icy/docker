@@ -70,6 +70,8 @@ ed_sonarqube_daemonize() {
 }
 
 ed_sonarqube_generate_config() {
+  chown sonarqube:sonarqube -Rc /sonarqube/logs/
+
   ed_supervisor_config_template \
   --name "sonarqube" \
   --command "/bocker.sh ed_sonarqube_daemonize" \
