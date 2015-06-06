@@ -41,7 +41,7 @@ please use the `Bockerfile.sonarqube_latest`.
 
 * `9000`: The `sonarqube` console management.
 
-## Sample compsoe file
+## Sample compose file
 
 You can use the following `.yaml` file thanks to `docker-compose` tool.
 The `percona` image can be build from `Bockerfile.percona`.
@@ -69,6 +69,7 @@ web:
     HOSTNAME: sonar.example.net
   volumes:
   - "/sonarqube/logs/main/:/supervisor/"
+  - "/sonarqube/logs/sonarque/:/sonarqube/logs/"
   links:
   - db
 ````
