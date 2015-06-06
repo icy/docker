@@ -23,7 +23,9 @@ The compiler is `bocker.sh` script. It comes from `bocker` project
 (https://github.com/icy/bocker), which is a submodule of this repository.
 
       $ git clone https://github.com/icy/docker.git
-      $ git submodule update --init
+      $ git submodule update --init       # first run
+      $ # git submodule update --remote   # future run
+      $ # git submodule update --checkout # future run
 
 Now, if you want to have `Dockerfile` for `percona`, go to `context/`
 directory and run `bocker.sh`:
