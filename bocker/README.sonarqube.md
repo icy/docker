@@ -41,7 +41,10 @@ please use the `Bockerfile.sonarqube_latest`.
 
 * `9000`: The `sonarqube` console management.
 
-## Sample compolse file
+## Sample compsoe file
+
+You can use the following `.yaml` file thanks to `docker-compose` tool.
+The `percona` image can be build from `Bockerfile.percona`.
 
 ````
 db:
