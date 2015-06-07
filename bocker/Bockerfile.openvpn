@@ -107,8 +107,8 @@ ed_openvpn_gen_cert() {
   fi
 
   export OPENVPN_GATEWAY="${OPENVPN_GATEWAY:-127.0.0.1}"
-  export OPENVPN_SUFFX="${OPENVPN_SUFFX:-localdomain}"
-  export KEY_CN="${CN}.${OPENVPN_SUFFX}"
+  export OPENVPN_SUFFIX="${OPENVPN_SUFFIX:-localdomain}"
+  export KEY_CN="${CN}.${OPENVPN_SUFFIX}"
 
 
   if [[ ! -f "keys/$CN.crt" ]]; then
