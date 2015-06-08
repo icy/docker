@@ -62,6 +62,15 @@ under `/etc/s.supervisor/YOUR_SCRIPT.sh`.
 You don't need to add make generators executable, because they
 are actually invoked by `Bash`.
 
+## Logging
+
+All logs are written to `/supervisor/` directory. If you want to
+see `cron` logging, or if you application requires `(m)syslog`,
+please use `MSYSLOG_ENABLE=1` to capture on logs written to `/dev/log`.
+
+Some application may still write information to standard paths,
+e.g, `(Percona) MySQL` will write to `/var/log/mysql/*`.
+
 ## Note
 
 To avoid long typing, a symbolic link `/usr/bin/s` is created
