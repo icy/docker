@@ -138,7 +138,6 @@ ed_supervisor_fix_uid_gid() {
 
 ed_supervisor_execute_generators() {
   while read FILE; do
-    chmod -c 755 "$FILE" # FIXME: This is a Docker bug!
     bash -n "$FILE" \
     && {
       echo >&2 ":: $FUNCNAME => $FILE..."

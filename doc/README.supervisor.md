@@ -53,6 +53,15 @@ Before starting the main daemon, the script `/supervisor.sh` will
 execute every `*.sh` found under `/etc/s.supervisor/` directory.
 The purpose is to create a dynamic configuration for `supervisor`.
 
+The generators will be executed as `root` user, and it can do very
+powerful thing. For example, creating new user, fix file permission.
+And if you really want to have some hooks, put your code under in a
+`Bash` script on host machine and mount that file to a suitable location
+under `/etc/s.supervisor/YOUR_SCRIPT.sh`.
+
+You don't need to add make generators executable, because they
+are actually invoked by `Bash`.
+
 ## Note
 
 To avoid long typing, a symbolic link `/usr/bin/s` is created
