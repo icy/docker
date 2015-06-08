@@ -15,6 +15,10 @@
 1. `btsync`: To run `btsync-1.3`, `btsync-2.0` or `btsync-1.4`;
 1. `sonarqube`: To run `SonarQube` system (The `LTS` or latest version.)
 
+## Documentation
+
+See `README.*` under `doc/` directory.
+
 ## Build instruction
 
 There isn't any `Dockerfile`. Because this project heavily uses
