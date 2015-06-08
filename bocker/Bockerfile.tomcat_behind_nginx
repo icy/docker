@@ -13,7 +13,7 @@ cat >&2 <<'EOF'
 :: >>> You should use linking feature instead.
 EOF
 
-ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})"/base.sh
+ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.base
 # This is a method from `base.sh`
 ed_bocker_min_version 120 || exit 127
 

@@ -4,7 +4,7 @@
 # Author : Anh K. Huynh
 # Date   : 2015 May 21 (ported from the old Dockerfile)
 
-ed_reuse    "$(dirname ${BASH_SOURCE[0]:-.})/base.sh"
+ed_reuse    "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.base"
 ed_expose   8888
 ed_volume   /btsync/
 

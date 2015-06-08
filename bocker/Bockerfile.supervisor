@@ -6,7 +6,7 @@
 
 __SUPERVISOR_DIR="$(dirname ${BASH_SOURCE[0]:-.})"
 
-ed_reuse $__SUPERVISOR_DIR/base.sh
+ed_reuse $__SUPERVISOR_DIR/Bockerfile.base
 # FIXME: Supervisor requires three components `cron`, `exim4`, `msyslog`.
 # FIXME: If any of them is dropped, please modify the init script
 # FIXME:  (`ed_supervisor_install_init_script`)
