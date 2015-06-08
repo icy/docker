@@ -66,9 +66,9 @@ are actually invoked by `Bash`.
 
 All logs are written to `/supervisor/` directory. If you want to
 see `cron` logging, or if you application requires `(m)syslog`,
-please use `MSYSLOG_ENABLE=1` to capture on logs written to `/dev/log`.
+please use `MSYSLOG_ENABLE=1` to capture logs written to `/dev/log`.
 
-Some application may still write information to standard paths,
+Some applications may still write information to standard paths,
 e.g, `(Percona) MySQL` will write to `/var/log/mysql/*`.
 
 ## Note
