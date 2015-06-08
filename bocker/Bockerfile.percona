@@ -22,12 +22,17 @@ ed_ship   --later \
 ed_volume   /mysql/ /etc/mysql/
 
 ed_bocker() {
-  ed_percona_install
+  ed_group \
+    ed_percona_env \
+    ed_percona_install
   ed_xtrabackup_install
 }
 
+ed_percona_env() {
+  export PERCONA_MAJOR=5.6
+}
+
 ed_percona_install() {
-  local PERCONA_MAJOR=5.6
 
   apt-key adv \
       --keyserver keys.gnupg.net \
