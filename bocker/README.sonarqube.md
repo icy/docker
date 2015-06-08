@@ -41,6 +41,15 @@ please use the `Bockerfile.sonarqube_latest`.
 
 * `9000`: The `sonarqube` console management.
 
+## SonarQube extensions
+
+`SonarQube` puts its extensions, e.g, [java plugin][3] under `ROOT/extensions/`
+directory.
+
+Make sure you mount that directory from the host mahince to avoid data lost
+when your container is restarted. See the sample `docker-compose` configuration
+below.
+
 ## Sample compose file
 
 You can use the following `.yaml` file thanks to `docker-compose` tool.
@@ -70,9 +79,11 @@ web:
   volumes:
   - "/sonarqube/logs/main/:/supervisor/"
   - "/sonarqube/logs/sonarque/:/sonarqube/logs/"
+  - "/sonarqube/extensions/:/sonarqube/extensions/"
   links:
   - db
 ````
 
 [2]: https://github.com/icy/bocker/
 [1]: https://github.com/SonarSource/docker-sonarqube/blob/master/4.5.4/Dockerfile
+[3]: http://docs.sonarqube.org/display/PLUG/Java+Plugin
