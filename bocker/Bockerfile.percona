@@ -92,7 +92,6 @@ ed_percona_init() {
   fi
 
   local _f_init='/mysql/docker-init.sql'
-  local _f_0run='/mysql/docker.first.run'
 
   if [[ -f "$_f_init" ]]; then
     return 0
@@ -134,15 +133,10 @@ ed_percona_init() {
     DROP DATABASE IF EXISTS test ;
     FLUSH PRIVILEGES ;
 EOSQL
-
-  echo > "$_f_0run"
 }
 
 ed_percona_daemonize() {
-  if [[ -f "/mysql/docker-init.sql" \
-      && -f "/mysql/docker.first.run" ]]; then
-
-    rm -f /mysql/docker.first.run
+  if [[ -f "/mysql/docker-init.sql" ]]; then
     exec /usr/sbin/mysqld \
         --init-file=/mysql/docker-init.sql
   fi
