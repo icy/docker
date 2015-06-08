@@ -4,7 +4,8 @@
     To run multiple processes and to solve reaping problem.
     Support `cron`, basic `exim4` to delivery
     email inside/from container to the world, and a minimal `syslog`
-    implementation to catch application events;
+    implementation to catch application events; This base `Bockerfile`
+    is used to build every other `Bockerfile`;
 1. `phantomjs`: To run `phantomjs-1.9.8`;
 1. `tomcat`: Support `tomcat-7` application on `Debian/stable` system;
 1. `redis`: Daemonize `redis-2.8.20`;
