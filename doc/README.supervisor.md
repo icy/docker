@@ -59,7 +59,7 @@ And if you really want to have some hooks, put your code under in a
 `Bash` script on host machine and mount that file to a suitable location
 under `/etc/s.supervisor/YOUR_SCRIPT.sh`.
 
-You don't need to add make generators executable, because they
+You don't need to make generators executable, because they
 are actually invoked by `Bash`.
 
 ## Logging
