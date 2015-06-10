@@ -1,6 +1,6 @@
 ## Supervisor Buildfile for Docker
 
-`Docker` containers naturally contains only one process.
+`Docker` container naturally contains only one process.
 Sometimes, that's good enough. Sometimes, you get a head-ache
 with process mangling ([MAKE SURE YOU READ THIS][1]).
 
