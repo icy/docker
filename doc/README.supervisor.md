@@ -65,7 +65,7 @@ are actually invoked by `Bash`.
 ## Logging
 
 All logs are written to `/supervisor/` directory. If you want to
-see `cron` logging, or if you application requires `(m)syslog`,
+see `cron` logging, or if your application requires `(m)syslog`,
 please use `MSYSLOG_ENABLE=1` to capture logs written to `/dev/log`.
 
 Some applications may still write information to standard paths,
