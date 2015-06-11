@@ -185,6 +185,18 @@ ed_percona_generate_config() {
     mysql -e "CREATE FUNCTION murmur_hash RETURNS INTEGER SONAME 'libmurmur_udf.so'"
 
 * See http://www.percona.com/doc/percona-server/5.6/management/udf_percona_toolkit.html for more details
+
+~~~~~~~
+
+* Remember to import timezone information to 'mysql' database.
+
+* This can be done by executing the following command within container
+
+    mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
+
+  ('mysql_tzinfo_to_sql' command is available in your container.)
+
+* See also https://dev.mysql.com/doc/refman/5.6/en/time-zone-support.html.
 ~~~~~~~
 EOF
 
