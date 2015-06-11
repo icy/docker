@@ -14,7 +14,8 @@ ed_ship   --later \
             ed_percona_init \
             ed_percona_generate_config \
             ed_percona_set_datadir \
-            ed_percona_daemonize
+            ed_percona_daemonize \
+            ed_percona_generate_init_sql
 
 # By exporting these volumes, backup program can use them.
 # (See for example, https://www.percona.com/doc/percona-xtrabackup/2.2/.)
@@ -105,18 +106,22 @@ ed_percona_init() {
   echo >&2 ":: MySQL: Unable to locate the base data directory /mysql/mysql/."
   echo >&2 ":: MySQL: Going to initialize a new database set."
 
+  echo >&2 ':: MySQL: Running mysql_install_db...'
+  mysql_install_db --datadir="/mysql/"
+  echo >&2 ':: MySQL: Finished mysql_install_db.'
+
+  touch "$_f_init"
+  chmod 600 "$_f_init"
+
+  ed_percona_generate_init_sql > "$_f_init"
+}
+
+ed_percona_generate_init_sql() {
   if [[ -z "$MYSQL_ROOT_PASSWD" ]]; then
     MYSQL_ROOT_PASSWD="#$RANDOM#$RANDOM#"
     echo >&2 ":: MySQL: No password is provided. A random password will be used."
     echo >&2 ":: MySQL: You can find this password in '$_f_init'."
   fi
-
-  echo >&2 ':: MySQL: Running mysql_install_db...'
-  mysql_install_db --datadir="/mysql/"
-  echo >&2 ':: MySQL: Finished mysql_install_db.'
-
-  touch /mysql/docker-init.sql
-  chmod 600 /mysql/docker-init.sql
 
   # +------+--------------+
   # | User | Host         |
