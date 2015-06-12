@@ -60,7 +60,7 @@ ed_nginx_download_source() {
 ed_nginx_clean_up() {
   cd /
   rm -rf /etc/nginx/ /usr/src/build/
-  ed_apt_purge make libpcre3-dev git libssl-dev
+  ed_apt_purge gcc libc6-dev make libpcre3-dev git libssl-dev
 }
 
 ed_nginx_create_generator() {
