@@ -1,0 +1,115 @@
+#!/bin/bash
+
+# Purpose: Create a container with Jetty daemon
+# Author : Anh K. Huynh
+# Date   : 2015 June 16th
+# Ref.   : https://github.com/appropriate/docker-jetty/blob/7946910db1db4f4a206379f023ad82f2c9b107e9/9.2-jre7/Dockerfile
+
+ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
+
+ed_expose 8080
+ed_ship   --later \
+            ed_jetty_env_custom \
+            ed_jetty_generate_config \
+            ed_jetty_daemonize
+
+ed_bocker() {
+  ed_group \
+    ed_jetty_env \
+    ed_jetty_install
+
+  ed_group \
+    ed_jetty_env_custom
+    ed_jetty_prepare
+}
+
+ed_jetty_env() {
+  export JETTY_VERSION="9.2.11.v20150529"
+  export JETTY_CHECKSUM="d1f9970a8741bacd910b44754f86b1234ef4a076"
+  export JETTY_URL="http://eclipse.org/downloads/download.php?file=/jetty/stable-9/dist/jetty-distribution-${JETTY_VERSION}.tar.gz&r=1"
+}
+
+ed_jetty_env_custom() {
+  export JETTY_HOME="${JETTY_HOME:-/jetty/}"
+  export JETTY_BASE="${JETTY_BASE:-/var/lib/jetty/}"
+  export JETTY_ARGS="${JETTY_ARGS:-}"
+  export JETTY_LOGS="${JETTY_LOGS:-$JETTY_HOME/logs/}"
+  export JETTY_RUN="${JETTY_RUN:-/run/jetty/}"
+  export JETTY_STATE="${JETTY_STATE:-$JETTY_RUN/jetty.state}"
+
+  export JAVA_OPTIONS="${JAVA_OPTIONS:-}"
+  export TMPDIR="${TMPDIR:-/tmp/jetty/}"
+}
+
+ed_jetty_install() {
+  local _modules=
+
+  ed_apt_install openjdk-7-jre
+
+  cd /tmp/
+  curl -LsSo jetty.tgz "$JETTY_URL"
+  echo "$JETTY_CHECKSUM *jetty.tgz" \
+  | sha1sum -c -
+
+  mkdir /jetty/
+  cd /jetty/
+
+  tar -xzf /tmp/jetty.tgz --strip-components=1
+  # clean up
+  rm -rf \
+    /jetty/demo-base \
+    /jetty/javadoc \
+    /tmp/jetty.tgz
+
+  ed_apt_clean
+}
+
+ed_jetty_prepare() {
+  useradd -K UID_MIN=10008 jetty
+
+  export JETTY_HOME="${JETTY_HOME:-/jetty/}"
+  export JETTY_BASE="${JETTY_BASE:-/var/lib/jetty/}"
+
+  echo >&2 ":: Disabling Jetty logging support"
+  sed -i -e '/jetty-logging/d' "$JETTY_HOME/etc/jetty.conf"
+
+  echo >&2 ":: Get the list of modules in the default 'start.ini'..."
+  echo >&2 ":: ... and build new base with those modules, then add setuid"
+
+  mkdir -pv "$JETTY_BASE"
+  cd "$JETTY_BASE"
+  _modules="$(grep -- ^--module= "$JETTY_HOME/start.ini" | cut -d= -f2 | paste -d, -s)"
+  java -jar "$JETTY_HOME/start.jar" --add-to-startd="$_modules,setuid"
+
+  # Give a generator to Supervisor
+  {
+    echo "#!/bin/bash"
+    echo "/bocker.sh ed_jetty_generate_config"
+  } \
+  > /etc/s.supervisor/jetty.sh
+}
+
+ed_jetty_generate_config() {
+  ed_jetty_env_custom
+
+  mkdir -pv "$JETTY_RUN" "$TMPDIR" "$JETTY_LOGS"
+  chown jetty:jetty -Rc "$JETTY_RUN" "$TMPDIR" "$JETTY_LOGS"
+
+  ed_supervisor_config_template \
+    --name "jetty" \
+    --command "/bocker.sh ed_jetty_daemonize" \
+    --dir "$JETTY_BASE" \
+    --user "jetty" \
+    --env "JETTY_HOME=\"${JETTY_HOME}\"" \
+    --env "JETTY_BASE=\"${JETTY_BASE}\"" \
+    --env "JETTY_ARGS=\"${JETTY_ARGS}\"" \
+    --env "JETTY_LOGS=\"${JETTY_LOGS}\"" \
+    --env "JETTY_RUN=\"${JETTY_RUN}\"" \
+    --env "JETTY_STATE=\"${JETTY_STATE}\"" \
+    --env "TMPDIR=\"${TMPDIR}\"" \
+    --env "JAVA_OPTIONS=\"${JAVA_OPTIONS}\""
+}
+
+ed_jetty_daemonize() {
+  exec /jetty/bin/jetty.sh run
+}
