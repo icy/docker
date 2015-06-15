@@ -79,7 +79,7 @@ ed_jetty_prepare() {
   mkdir -pv "$JETTY_BASE"
   cd "$JETTY_BASE"
   _modules="$(grep -- ^--module= "$JETTY_HOME/start.ini" | cut -d= -f2 | paste -d, -s)"
-  java -jar "$JETTY_HOME/start.jar" --add-to-startd="$_modules,setuid"
+  java -jar "$JETTY_HOME/start.jar" --add-to-startd="$_modules"
 
   # Give a generator to Supervisor
   {
