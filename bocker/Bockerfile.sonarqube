@@ -83,12 +83,12 @@ ed_sonarqube_generate_config() {
     /sonarqube/
 
   ed_supervisor_config_template \
-  --name "sonarqube" \
-  --command "/bocker.sh ed_sonarqube_daemonize" \
-  --dir "/sonarqube/" \
-  --user "sonarqube" \
-  --env "SONARQUBE_JDBC_USERNAME=${SONARQUBE_JDBC_USERNAME:-sonarqube}" \
-  --env "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD:-sonarqube}" \
-  --env "SONARQUBE_JDBC_URL=\"${SONARQUBE_JDBC_URL:-jdbc:mysql://localhost:3306/sonarqube?useUnicode=true&characterEncoding=utf8}\"" \
-  --env "SONARQUBE_OPTIONS=${SONARQUBE_OPTIONS:-''}"
+    --name "sonarqube" \
+    --command "/bocker.sh ed_sonarqube_daemonize" \
+    --dir "/sonarqube/" \
+    --user "sonarqube" \
+    --env "SONARQUBE_JDBC_USERNAME=${SONARQUBE_JDBC_USERNAME:-sonarqube}" \
+    --env "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD:-sonarqube}" \
+    --env "SONARQUBE_JDBC_URL=\"${SONARQUBE_JDBC_URL:-jdbc:mysql://localhost:3306/sonarqube?useUnicode=true&characterEncoding=utf8}\"" \
+    --env "SONARQUBE_OPTIONS=${SONARQUBE_OPTIONS:-''}"
 }
