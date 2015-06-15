@@ -13,11 +13,6 @@ ed_ship --later \
   ed_msyslog_generate_config
 
 ed_msyslog_damonize() {
-  if [[ "${MSYSLOG_ENABLE:-0}" == "0" ]]; then
-    rm -f /etc/s.supervisor/msyslog.s || true
-    return 0
-  fi
-
   exec python2 /usr/bin/syslog-stdout.py
 }
 

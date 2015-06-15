@@ -15,11 +15,6 @@ ed_ship --later \
   ed_exim4_uid_gid_update
 
 ed_exim4_daemonize() {
-  if [[ "${EXIM4_ENABLE:-0}" == "0" ]]; then
-    rm -f /etc/s.supervisor/exim4.s || true
-    return 0
-  fi
-
   exec /usr/sbin/exim4 -v -bdf -q30m
 }
 

@@ -13,11 +13,6 @@ ed_ship --later \
   ed_cron_generate_config
 
 ed_cron_daemonize() {
-  if [[ "${CRON_ENABLE:-0}" == "0" ]]; then
-    rm -f /etc/s.supervisor/cron.s || true
-    return 0
-  fi
-
   exec /usr/sbin/cron -f -L ${CRON_LOGLEVEL:-1}
 }
 
