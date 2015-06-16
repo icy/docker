@@ -31,7 +31,7 @@ ed_jetty_env() {
 
 ed_jetty_env_custom() {
   export JETTY_HOME="${JETTY_HOME:-/jetty/}"
-  export JETTY_BASE="${JETTY_BASE:-/var/lib/jetty/}"
+  export JETTY_BASE="${JETTY_BASE:-${JETTY_HOME}/var/}"
   export JETTY_ARGS="${JETTY_ARGS:-}"
   export JETTY_LOGS="${JETTY_LOGS:-$JETTY_HOME/logs/}"
   export JETTY_RUN="${JETTY_RUN:-/run/jetty/}"
@@ -68,7 +68,7 @@ ed_jetty_prepare() {
   useradd -K UID_MIN=10008 jetty
 
   export JETTY_HOME="${JETTY_HOME:-/jetty/}"
-  export JETTY_BASE="${JETTY_BASE:-/var/lib/jetty/}"
+  export JETTY_BASE="${JETTY_BASE:-/jetty/var/}"
 
   echo >&2 ":: Disabling Jetty logging support"
   sed -i -e '/jetty-logging/d' "$JETTY_HOME/etc/jetty.conf"
