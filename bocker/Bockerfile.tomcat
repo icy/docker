@@ -71,7 +71,7 @@ ed_tomcat_generate_config() {
   sed -i -e "s#autoDeploy=[^ ]\+#autoDeploy=\"${TOMCAT_AUTO_DEPLOY:-false}\"#g" \
     /tomcat/conf/server.xml
 
-  sed -i -e "s#unpackWARs=[^ ]\+#autoDeploy=\"${TOMCAT_UNPACK_WAR:-true}\"#g" \
+  sed -i -e "s#unpackWARs=[^ ]\+#unpackWARs=\"${TOMCAT_UNPACK_WAR:-true}\"#g" \
     /tomcat/conf/server.xml
 
   ed_supervisor_config_template \
