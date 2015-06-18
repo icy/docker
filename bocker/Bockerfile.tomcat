@@ -43,10 +43,6 @@ ed_tomcat_prepare_user() {
 
   useradd -K UID_MIN=10000 tomcat
 
-  chown root:tomcat /tomcat/
-  chown -R root:tomcat /tomcat/conf/
-  chown tomcat:tomcat /tomcat/work/ /tomcat/logs/
-
   ln -s /tomcat/ /home/tomcat
 }
 
@@ -67,6 +63,16 @@ ed_tomcat_daemonize() {
 
 ed_tomcat_generate_config() {
   ed_tomcat_update_admin_password
+
+  chown root:tomcat /tomcat/
+  chown -R root:tomcat /tomcat/conf/
+  chown tomcat:tomcat /tomcat/work/ /tomcat/logs/
+
+  sed -i -e "s#autoDeploy=[^ ]\+#autoDeploy=\"${TOMCAT_AUTO_DEPLOY:-false}\"#g" \
+    /tomcat/conf/server.xml
+
+  sed -i -e "s#unpackWARs=[^ ]\+#autoDeploy=\"${TOMCAT_UNPACK_WAR:-true}\"#g" \
+    /tomcat/conf/server.xml
 
   ed_supervisor_config_template \
     --name "tomcat" \

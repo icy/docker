@@ -8,6 +8,8 @@ Because people often runs `Tomcat` application as `root`,
 * `TOMCAT_EXTRA`: extra arguments (e.g, memory settings) for `java`;
 * `TOMCAT_UID`: The `uid` of `tomcat` account;
 * `TOMCAT_GID`: The `gid` of `tomcat` account;
+* `TOMCAT_AUTO_DEPLOY`: Auto-deploy the application or not. Default: `false`;
+* `TOMCAT_UNPACK_WAR`: Unpack `.war` file to application directory. Default: `true`;
 * `TOMCAT_ADMIN_PASSWD`: The password of `admin` account of the
    `host manager` application. If this password is provided, the
    file `/tomcat/conf/tomcat-users.xml` will be updated.
