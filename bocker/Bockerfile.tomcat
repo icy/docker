@@ -8,11 +8,11 @@
 ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
 
 ed_expose 8080
-ed_volume /tomcat/webapps/
-ed_volume /tomcat/conf/
 ed_ship   --later \
             ed_tomcat_daemonize \
-            ed_tomcat_generate_config
+            ed_tomcat_generate_config \
+            ed_tomcat_update_admin_password \
+            ed_tomcat_reload_context
 
 ed_bocker() {
   ed_tomcat_install
@@ -66,9 +66,65 @@ ed_tomcat_daemonize() {
 }
 
 ed_tomcat_generate_config() {
+  ed_tomcat_update_admin_password
+
   ed_supervisor_config_template \
     --name "tomcat" \
     --command "/bocker.sh ed_tomcat_daemonize" \
     --dir "/tomcat/" \
     --user "tomcat"
+}
+
+# Reload a tomcat context. If $TOMCAT_ADMIN_PASSWD is provided,
+# it will be usead. If 'not', the script tries to detect administrator
+# password from `/tomcat/conf/tomcat-users.xml` file; the pattern is
+#
+#     name="admin" password="YOUR_PASSWORD"
+#
+# Double quote (") is required in this pattern.
+#
+ed_tomcat_reload_context() {
+  local _fconfig="/tomcat/conf/tomcat-users.xml"
+
+  if [[ ! -f "$_fconfig" ]]; then
+    echo >&2 ":: $FUNCNAME: Configuration file not found: '$_fconfig'."
+    return 1
+  fi
+
+  if [[ -n "${TOMCAT_ADMIN_PASSWD:-}" ]]; then
+    _password="$TOMCAT_ADMIN_PASSWD"
+  else
+    _password="$( \
+      cat "$_fconfig" \
+      | grep -oE 'name="admin" +password="[^"]+"' \
+      | tail -1 \
+      | awk -F '"' '{print $4}'
+      )"
+  fi
+
+  curl -LSs "http://localhost:8080/manager/text/reload?path=${1:-/}" -u "admin:$_password"
+}
+
+# Update /tomcat/tomcat-users.xml if $TOMCAT_ADMIN_PASSWD is provided.
+ed_tomcat_update_admin_password() {
+  local _fconfig="/tomcat/conf/tomcat-users.xml"
+
+  if [[ -z "${TOMCAT_ADMIN_PASSWD:-}" ]]; then
+    return
+  fi
+
+  cat > "$_fconfig" <<EOF
+<?xml version='1.0' encoding='utf-8'?>
+<tomcat-users>
+  <role rolename="admin"/>
+  <role rolename="admin-gui"/>
+  <role rolename="admin-script"/>
+  <role rolename="manager"/>
+  <role rolename="manager-gui"/>
+  <role rolename="manager-script"/>
+  <role rolename="manager-jmx"/>
+  <role rolename="manager-status"/>
+  <user name="admin" password="${TOMCAT_ADMIN_PASSWD}" roles="admin,manager,admin-gui,admin-script,manager-gui,manager-script,manager-jmx,manager-status" />
+</tomcat-users>
+EOF
 }

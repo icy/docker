@@ -5,22 +5,26 @@ Because people often runs `Tomcat` application as `root`,
 
 ## Environments
 
-* `TOMCAT_EXTRA`: extra arguments (e.g, memory settings) for `java`.
-* `TOMCAT_UID`: The `uid` of `tomcat` account.
-* `TOMCAT_GID`: The `gid` of `tomcat` account.
-
-## Volumes
-
-* `/tomcat/logs/`: where `tomcat` writes its logs
-* `/tomcat/conf/`: global configuration for `tomcat`
-* `/tomcat/webapps/`: path to your web applications. There are two
-    default things: `manager` and `host-manager`
+* `TOMCAT_EXTRA`: extra arguments (e.g, memory settings) for `java`;
+* `TOMCAT_UID`: The `uid` of `tomcat` account;
+* `TOMCAT_GID`: The `gid` of `tomcat` account;
+* `TOMCAT_ADMIN_PASSWD`: The password of `admin` account of the
+   `host manager` application. If this password is provided, the
+   file `/tomcat/conf/tomcat-users.xml` will be updated.
 
 ## Exposed ports
 
 * `8080`: the common port for `tomcat`. If you update any configuration
   from `/tomcat/conf/server.xml`, you need to use this port. Otherwise,
-  container linking may not work
+  container linking may not work.
+
+## Notes
+
+To reload a context, e.g, `/mycontext`, use the following command
+
+    $ /bocker.sh ed_tomcat_reload_context /mycontext
+
+See also the definition of `ed_tomcat_reload_context`.
 
 ## Usage
 
