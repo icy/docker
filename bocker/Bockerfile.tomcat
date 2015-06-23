@@ -68,10 +68,13 @@ ed_tomcat_generate_config() {
   chown -R root:tomcat /tomcat/conf/
   chown tomcat:tomcat /tomcat/work/ /tomcat/logs/
 
-  sed -i -e "s#autoDeploy=[^ ]\+#autoDeploy=\"${TOMCAT_AUTO_DEPLOY:-false}\"#g" \
+  export TOMCAT_AUTO_DEPLOY="${TOMCAT_AUTO_DEPLOY,,}"
+  export TOMCAT_UNPACK_WAR="{TOMCAT_UNPACK_WAR,,}"
+
+  sed -i -e "s#autoDeploy=[^ >]\+#autoDeploy=\"${TOMCAT_AUTO_DEPLOY:-false}\"#g" \
     /tomcat/conf/server.xml
 
-  sed -i -e "s#unpackWARs=[^ ]\+#unpackWARs=\"${TOMCAT_UNPACK_WAR:-true}\"#g" \
+  sed -i -e "s#unpackWARs=[^ >]\+#unpackWARs=\"${TOMCAT_UNPACK_WAR:-true}\"#g" \
     /tomcat/conf/server.xml
 
   ed_supervisor_config_template \
