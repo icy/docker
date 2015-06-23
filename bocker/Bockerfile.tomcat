@@ -142,7 +142,7 @@ EOF
 
 # Reload a Tomcat context (default: /)
 ed_tomcat_reload() {
-  echo >&2 ":: Reloading tomcat instance..."
+  echo >&2 ":: Reloading tomcat context '${1:-/}'..."
   curl -sSL \
     -u "admin:${TOMCAT_ADMIN_PASSWD:-xxx}" \
     "http://localhost:8080/manager/text/reload?path=${1:-/}"
