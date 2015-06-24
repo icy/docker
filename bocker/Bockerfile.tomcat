@@ -71,7 +71,7 @@ ed_tomcat_generate_config() {
   chown tomcat:tomcat /tomcat/work/ /tomcat/logs/
 
   export TOMCAT_AUTO_DEPLOY="${TOMCAT_AUTO_DEPLOY,,}"
-  export TOMCAT_UNPACK_WAR="{TOMCAT_UNPACK_WAR,,}"
+  export TOMCAT_UNPACK_WAR="${TOMCAT_UNPACK_WAR,,}"
 
   sed -i -e "s#autoDeploy=[^ >]\+#autoDeploy=\"${TOMCAT_AUTO_DEPLOY:-false}\"#g" \
     /tomcat/conf/server.xml
