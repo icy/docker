@@ -22,7 +22,7 @@ ed_bocker() {
 }
 
 ed_tomcat_install() {
-  ed_apt_install openjdk-7-jre tomcat7 tomcat7-admin
+  ed_apt_install openjdk-7-jre tomcat7 tomcat7-admin xmlstarlet
   ed_apt_clean
 
   # Give a generator to Supervisor

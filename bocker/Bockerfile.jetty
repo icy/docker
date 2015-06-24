@@ -44,7 +44,7 @@ ed_jetty_env_custom() {
 ed_jetty_install() {
   local _modules=
 
-  ed_apt_install openjdk-7-jre
+  ed_apt_install openjdk-7-jre xmlstarlet
 
   cd /tmp/
   curl -LsSo jetty.tgz "$JETTY_URL"
