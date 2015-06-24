@@ -191,6 +191,7 @@ ed_supervisor_config_template() {
   local _workdir="/tmp/"
   local _user="nobody"
   local _env=""
+  local _logname="${_name}"
 
   while (( $# )); do
     case "$1" in
@@ -200,6 +201,7 @@ ed_supervisor_config_template() {
     "-d"|"--dir")     shift; _workdir="$1" ;;
     "-u"|"--user")    shift; _user="$1" ;;
     "-e"|"--env")     shift; _env="$1,$_env" ;;
+    "-l"|"--log")     shift; _logname="$1" ;;
     esac
     shift
   done
@@ -228,7 +230,7 @@ stopsignal=$_stop_signal
 stopwaitsecs=10
 user=$_user
 redirect_stderr=true
-stdout_logfile=/supervisor/$_name.log
+stdout_logfile=/supervisor/${_logname}.log
 stdout_logfile_maxbytes=50MB
 stdout_logfile_backups=10
 stdout_capture_maxbytes=0
