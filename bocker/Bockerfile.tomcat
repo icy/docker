@@ -66,12 +66,8 @@ ed_tomcat_daemonize() {
 ed_tomcat_generate_config() {
   ed_tomcat_update_admin_password
 
-  chown root:tomcat /tomcat/
-  chown -R root:tomcat /tomcat/conf/
-  chown tomcat:tomcat /tomcat/work/ /tomcat/logs/
-
-  export TOMCAT_AUTO_DEPLOY="${TOMCAT_AUTO_DEPLOY,,}"
-  export TOMCAT_UNPACK_WAR="${TOMCAT_UNPACK_WAR,,}"
+  TOMCAT_AUTO_DEPLOY="${TOMCAT_AUTO_DEPLOY:-false}"
+  TOMCAT_UNPACK_WAR="${TOMCAT_UNPACK_WAR:-true}"
 
   if [[ -w "/tomcat/conf/server.xml" ]]; then
     local _tmpfile="$(mktemp)"
@@ -90,6 +86,12 @@ ed_tomcat_generate_config() {
     sed -i -r -e "s#(1catalina.org.apache.juli.FileHandler.prefix)\s*=.+#\1 = catalina__${HOSTNAME}.#g" "$_flogging"
     sed -i -r -e "s#(2localhost.org.apache.juli.FileHandler.prefix)\s*=.+#\1 = localhost_${HOSTNAME}.#g" "$_flogging"
   fi
+
+  chown root:tomcat /tomcat/
+  chown -R root:tomcat /tomcat/conf/
+  chown tomcat:tomcat /tomcat/work/ /tomcat/logs/
+
+  find /tomcat/conf/ -type f -exec chmod 640 -c {} \;
 
   ed_supervisor_config_template \
     --name "tomcat" \
