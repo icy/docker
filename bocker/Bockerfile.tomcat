@@ -73,11 +73,23 @@ ed_tomcat_generate_config() {
   export TOMCAT_AUTO_DEPLOY="${TOMCAT_AUTO_DEPLOY,,}"
   export TOMCAT_UNPACK_WAR="${TOMCAT_UNPACK_WAR,,}"
 
-  sed -i -e "s#autoDeploy=[^ >]\+#autoDeploy=\"${TOMCAT_AUTO_DEPLOY:-false}\"#g" \
-    /tomcat/conf/server.xml
+  if [[ -w "/tomcat/conf/server.xml" ]]; then
+    local _tmpfile="$(mktemp)"
+    xmlstarlet ed \
+      -u "/Server/Service/Engine/Host/@unpackWARs" -v "${TOMCAT_UNPACK_WAR,,}" \
+      -u "/Server/Service/Engine/Host/@autoDeploy" -v "${TOMCAT_AUTO_DEPLOY,,}" \
+      -d "/Server/Service/Engine/Host/Valve[@className='org.apache.catalina.valves.AccessLogValve']" \
+      /tomcat/conf/server.xml \
+      > $_tmpfile
 
-  sed -i -e "s#unpackWARs=[^ >]\+#unpackWARs=\"${TOMCAT_UNPACK_WAR:-true}\"#g" \
-    /tomcat/conf/server.xml
+    mv -fv $_tmpfile /tomcat/conf/server.xml
+  fi
+
+  local _flogging="/tomcat/conf/logging.properties"
+  if [[ -w "$_flogging" ]]; then
+    sed -i -r -e "s#(1catalina.org.apache.juli.FileHandler.prefix)\s*=.+#\1 = catalina__${HOSTNAME}.#g" "$_flogging"
+    sed -i -r -e "s#(2localhost.org.apache.juli.FileHandler.prefix)\s*=.+#\1 = localhost_${HOSTNAME}.#g" "$_flogging"
+  fi
 
   ed_supervisor_config_template \
     --name "tomcat" \
@@ -106,12 +118,8 @@ ed_tomcat_reload_context() {
   if [[ -n "${TOMCAT_ADMIN_PASSWD:-}" ]]; then
     _password="$TOMCAT_ADMIN_PASSWD"
   else
-    _password="$( \
-      cat "$_fconfig" \
-      | grep -oE 'name="admin" +password="[^"]+"' \
-      | tail -1 \
-      | awk -F '"' '{print $4}'
-      )"
+    _password="$(xmlstarlet sel -t \
+      -m "/tomcat-users/user[@name='admin']" -v "@password" -o '' "$_fconfig")"
   fi
 
   curl -LSs "http://localhost:8080/manager/text/reload?path=${1:-/}" -u "admin:$_password"
@@ -122,7 +130,13 @@ ed_tomcat_update_admin_password() {
   local _fconfig="/tomcat/conf/tomcat-users.xml"
 
   if [[ -z "${TOMCAT_ADMIN_PASSWD:-}" ]]; then
+    echo 1>&2 ":: $FUNCNAME: \$TOMCAT_ADMIN_PASSWD is empty."
     return
+  fi
+
+  if [[ ! -w "$_fconfig" ]]; then
+    echo 1>&2 ":: $FUNCNAME: File not writable '$_fconfig'."
+    return 0
   fi
 
   cat > "$_fconfig" <<EOF
