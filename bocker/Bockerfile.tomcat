@@ -97,8 +97,7 @@ ed_tomcat_generate_config() {
     --name "tomcat" \
     --command "/bocker.sh ed_tomcat_daemonize" \
     --dir "/tomcat/" \
-    --user "tomcat" \
-    --log "tomcat_${HOSTNAME}"
+    --user "tomcat"
 }
 
 # Reload a tomcat context. If $TOMCAT_ADMIN_PASSWD is provided,
