@@ -13,7 +13,6 @@ ed_ship   --later \
             ed_tomcat_generate_config \
             ed_tomcat_update_admin_password \
             ed_tomcat_reload_context \
-            ed_tomcat_reload \
             ed_tomcat_restart
 
 ed_bocker() {
