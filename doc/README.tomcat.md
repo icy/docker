@@ -48,10 +48,10 @@ included `/tomcat/server.xml`, `/tomcat/tomcat-users.xml`, `/tomcat/logging.prop
 The main things are
 
 1. Disabling access log;
-1. Fix log prefixes, by using `catalina__${HOSTNAME}.` and `localhost_${HOSTNAME}`
+1. Fixing log prefixes, by using `catalina__${HOSTNAME}.` and `localhost_${HOSTNAME}`
    for log files under `/tomcat/logs/`. This is useful when you scale your
    infrastructure and share the same logging volumes between `tomcat` containers
-1. Update password of `admin` account of `host manager` application.
+1. Updating password of `admin` account of `host manager` application.
    The whole file `/tomcat/conf/tomcat-users.xml` will be updated,
    unless you make `TOMCAT_ADMIN_PASSWD` environment empty, and/or
    make that file `read-only`.
