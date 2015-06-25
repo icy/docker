@@ -11,8 +11,8 @@ Because people often runs `Tomcat` application as `root`,
 * `TOMCAT_AUTO_DEPLOY`: Auto-deploy the application or not. Default: `false`;
 * `TOMCAT_UNPACK_WAR`: Unpack `.war` file to application directory. Default: `true`;
 * `TOMCAT_ADMIN_PASSWD`: The password of `admin` account of the
-   `host manager` application. If this password is provided, the
-   file `/tomcat/conf/tomcat-users.xml` will be updated.
+   `host manager` application. The file `/tomcat/conf/tomcat-users.xml`
+   will be updated. A random password is generated if the variable is empty.
 
 ## Exposed ports
 
@@ -52,15 +52,13 @@ The main things are
    for log files under `/tomcat/logs/`. This is useful when you scale your
    infrastructure and share the same logging volumes between `tomcat` containers
 1. Updating password of `admin` account of `host manager` application.
-   The whole file `/tomcat/conf/tomcat-users.xml` will be updated,
-   unless you make `TOMCAT_ADMIN_PASSWD` environment empty, and/or
-   make that file `read-only`.
+   The whole file `/tomcat/conf/tomcat-users.xml` will be updated
+   unless you make that file `read-only`.
 
 ### Security notes
 
-Unless you provide `TOMCAT_ADMIN_PASSWD`, the hots manager application
-(`/manager/*`) is inaccessible. When it is enabled, you should use another
-protection layer to make sure `/manager/` isn't visible by the world.
+The host manager application (`/manager/*`) is world accessible.
+You should use another layer to protect the application.
 
 ## Usage
 

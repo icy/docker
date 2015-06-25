@@ -131,14 +131,15 @@ ed_tomcat_reload_context() {
 ed_tomcat_update_admin_password() {
   local _fconfig="/tomcat/conf/tomcat-users.xml"
 
-  if [[ -z "${TOMCAT_ADMIN_PASSWD:-}" ]]; then
-    echo 1>&2 ":: $FUNCNAME: \$TOMCAT_ADMIN_PASSWD is empty."
-    return
-  fi
-
   if [[ ! -w "$_fconfig" ]]; then
     echo 1>&2 ":: $FUNCNAME: File not writable '$_fconfig'."
     return 0
+  fi
+
+  if [[ -z "${TOMCAT_ADMIN_PASSWD:-}" ]]; then
+    echo 1>&2 ":: $FUNCNAME: \$TOMCAT_ADMIN_PASSWD is empty."
+    echo 1>&2 ":: $FUNCNAME: Random password will be generated."
+    TOMCAT_ADMIN_PASSWD="$(</dev/urandom tr -dc '_A-Z-a-z-0-9@#$%' | head -c16; echo "$RANDOM";)"
   fi
 
   cat > "$_fconfig" <<EOF
