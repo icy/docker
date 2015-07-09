@@ -6,7 +6,7 @@
 
 ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.phpfpm
 ed_env    --later WP_VERSION 4.2.2
-ed_volume /phpfpm/www/wp-content/
+# ed_volume /phpfpm/www/wp-content/
 
 ed_ship --later \
   ed_phpfpm_generate_nginx_config \
