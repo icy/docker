@@ -49,11 +49,11 @@ ed_phantomjs_fix_permission() {
 }
 
 ed_phantomjs_daemonize() {
-  fc-cache
   exec /usr/bin/phantomjs --webdriver=8190 --debug=${PHANTOMJS_DEBUG:-false}
 }
 
 ed_phantomjs_generate_config() {
+  fc-cache
   ed_supervisor_config_template \
     --name "phantomjs" \
     --command "/bocker.sh ed_phantomjs_daemonize" \
