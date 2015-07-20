@@ -35,7 +35,7 @@ Because people often runs `Tomcat` application as `root`,
 
 1. To reload a context, e.g, `/mycontext`, use the following command
 
-      $ /bocker.sh ed_tomcat_reload_context /mycontext
+        $ /bocker.sh ed_tomcat_reload_context /mycontext
 
    If no argument is provided, the root context (`/`) will be reloaded;
 1. To restart a running `tomcat` intsance, please use `s restart tomcat`,
