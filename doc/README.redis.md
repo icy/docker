@@ -18,6 +18,12 @@ The result container will run `redis` thanks to `supervisor`.
 `REDIS_APPENDONLY` should be `yes` so that `redis` data (`/redis/`)
 can be mounted on another container.
 
+When `redis` daemon starts, it will try to find configuration from `/redis`/
+directory. If the file (`/redis/redis-2.8.conf`) is found, it will be used.
+Otherwise, default settings will be copied from the default file
+(located at `/etc/redis-2.8.conf`) and a new file `/redis/redis-2.8.conf`
+is created.
+
 ## Build instruction
 
 It's easy.
