@@ -9,7 +9,7 @@
 
 ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
 ed_expose 6379
-ed_copy   --later redis-2.8.conf /redis/
+ed_copy   --later redis-2.8.conf /etc/
 
 ed_ship   --later \
             ed_redis_daemonize \
@@ -67,8 +67,14 @@ ed_redis_prepare_user() {
 }
 
 ed_redis_daemonize() {
+  local _fconfig="/redis/redis-${REDIS_MAJOR_VERSION:-2.8}.conf"
+
+  if [[ ! -f "$_fconfig" ]]; then
+    cp -fv "/etc/redis-${REDIS_MAJOR_VERSION:-2.8}.conf" $_fconfig
+  fi
+
   exec /usr/local/bin/redis-server \
-    /redis/redis-${REDIS_MAJOR_VERSION:-2.8}.conf \
+    $_fconfig \
     --loglevel "${REDIS_LOGLEVEL:-warning}" \
     --appendonly "${REDIS_APPENDONLY:-yes}"
 }
