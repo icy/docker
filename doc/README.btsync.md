@@ -1,11 +1,7 @@
-## btsync-1.3 buildfile for Docker
+## btsync Buildfile for Docker
 
-`btsync-1.3` is a great software with clean UI and simple idea.
-
-There are now `btsync-1.4`, `btsync-2.0`. They are for professional
-users who like a messy `UI` and dummy stupid functions.
-
-We are only novice users.
+This documentation guides you to build Docker images for `btsync`
+version `1.3`, `1.4` and `2.x`.
 
 ## Environments
 
