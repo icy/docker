@@ -53,7 +53,9 @@ After you build `Docker` image, you can launch it, for example
           -e "BTSYNC_PASSWD=foobar" \
           -e "BTSYNC_DEBUG=00" \
           -p "8888:8888" \
-          -v $HOME/data/btsync13:/btsync/ my_btsync13
+          -v $HOME/data/btsync13/sync/:/btsync/sync/ \
+          -v $HOME/data/btsync13/var/:/btsync/var/ \
+          my_btsync13
 
 When the container is started, it will listen on `8888` (`webui`)
 and `8881` (`data`) ports. A random password is generated and written
