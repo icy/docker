@@ -98,6 +98,8 @@ ed_supervisor_install_supervisor() {
 ed_supervisor_install_init_script() {
   {
     echo "#!/bin/bash"
+    echo "source /bocker.sh :"
+    echo "ed_supervisor_reset_all_environments"
     echo "exec /bocker.sh ed_supervisor_daemonize"
   } \
   > /supervisor.sh
@@ -245,4 +247,25 @@ stderr_events_enabled=false
 environment=${_env%,*}
 serverurl=AUTO
 EOF
+}
+
+ed_supervisor_reset_all_environments() {
+  while read env; do
+    unset $env
+  done < \
+    <( \
+      env \
+      | grep -E '^[^ ]' \
+      | awk -F= '{print $1}' \
+      | grep -v '^_$' \
+      | grep -v '^PATH$' \
+      | grep -v '^HOME$' \
+      | grep -v '^HOSTNAME$' \
+      | grep -v '^PWD$' \
+      | grep -v '^LOGNAME$' \
+      | grep -v '^SHELL$' \
+      | grep -v '^USER$' \
+      | grep -v '^LANG$'
+      | grep -v '^LC_NAME$'
+    )
 }
