@@ -265,7 +265,7 @@ ed_supervisor_reset_all_environments() {
       | grep -v '^LOGNAME$' \
       | grep -v '^SHELL$' \
       | grep -v '^USER$' \
-      | grep -v '^LANG$'
+      | grep -v '^LANG$' \
       | grep -v '^LC_NAME$'
     )
 }
