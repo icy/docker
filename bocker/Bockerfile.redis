@@ -91,5 +91,5 @@ ed_redis_generate_config() {
     --dir "/redis/" \
     --user "redis" \
     --env "REDIS_LOGLEVEL=${REDIS_LOGLEVEL:-warning}" \
-    --env "REDIS_APPENDONLY=${REDIS_APPENDONLY:-warning}"
+    --env "REDIS_APPENDONLY=${REDIS_APPENDONLY:-yes}"
 }
