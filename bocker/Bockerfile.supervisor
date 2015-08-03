@@ -46,6 +46,7 @@ ed_supervisor_daemonize() {
   ed_exim4_generate_config
   ed_msyslog_generate_config
 
+  ed_supervisor_reset_all_environments
   exec /usr/bin/supervisord --configuration /etc/supervisord.conf
 }
 
@@ -98,8 +99,6 @@ ed_supervisor_install_supervisor() {
 ed_supervisor_install_init_script() {
   {
     echo "#!/bin/bash"
-    echo "source /bocker.sh :"
-    echo "ed_supervisor_reset_all_environments"
     echo "exec /bocker.sh ed_supervisor_daemonize"
   } \
   > /supervisor.sh
