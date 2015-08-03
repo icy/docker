@@ -26,5 +26,6 @@ ed_cron_generate_config() {
     --name "cron" \
     --command "/bocker.sh ed_cron_daemonize" \
     --dir "/" \
-    --user "root"
+    --user "root" \
+    --env "CRON_LOGLEVEL=${CRON_LOGLEVEL:-1}"
 }

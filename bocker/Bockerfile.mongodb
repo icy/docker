@@ -69,5 +69,6 @@ ed_mongodb_generate_config() {
     --name "mongodb" \
     --command "/bocker.sh ed_mongodb_daemonize" \
     --dir "/mongodb/" \
-    --user "mongodb"
+    --user "mongodb" \
+    --env "MONGODB_DBPATH=${MONGODB_DBPATH:-/mongodb/db/}"
 }

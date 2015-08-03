@@ -50,7 +50,8 @@ ed_openvpn_generate_config() {
     --name "openvpn" \
     --command "/bocker.sh ed_openvpn_daemonize" \
     --dir "/etc/openvpn/" \
-    --user "root"
+    --user "root" \
+    --env "OPENVPN_CONF=${OPENVPN_CONF:-mine}"
 }
 
 

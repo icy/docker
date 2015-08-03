@@ -89,5 +89,7 @@ ed_redis_generate_config() {
     --name "redis" \
     --command "/bocker.sh ed_redis_daemonize" \
     --dir "/redis/" \
-    --user "redis"
+    --user "redis" \
+    --env "REDIS_LOGLEVEL=${REDIS_LOGLEVEL:-warning}" \
+    --env "REDIS_APPENDONLY=${REDIS_APPENDONLY:-warning}"
 }

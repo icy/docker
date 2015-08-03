@@ -60,5 +60,6 @@ ed_phantomjs_generate_config() {
     --name "phantomjs" \
     --command "/bocker.sh ed_phantomjs_daemonize" \
     --dir "/tmp/" \
-    --user "phantomjs"
+    --user "phantomjs" \
+    --env "PHANTOMJS_DEBUG=${PHANTOMJS_DEBUG:-false}"
 }
