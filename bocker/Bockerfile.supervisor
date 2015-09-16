@@ -199,7 +199,7 @@ ed_supervisor_config_template() {
     case "$1" in
     "-n"|"--name")    shift; _name="$1" ;;
     "-c"|"--command") shift; _command="$1" ;;
-    "-s"|"--signal")  shift; _command="$1" ;;
+    "-s"|"--signal")  shift; _stop_signal="$1" ;;
     "-d"|"--dir")     shift; _workdir="$1" ;;
     "-u"|"--user")    shift; _user="$1" ;;
     "-e"|"--env")     shift; _env="$1,$_env" ;;
