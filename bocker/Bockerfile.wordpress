@@ -38,8 +38,7 @@ ed_phpfpm_generate_nginx_config() {
 
     index index.php index.html;
 
-    error_log   /var/log/nginx/${PHPFPM_DOMAIN}.error.log;
-    access_log  /var/log/nginx/${PHPFPM_DOMAIN}.acces.log main;
+    access_log   off;
 
     include /etc/nginx/misc/security.conf;
 
@@ -125,4 +124,7 @@ ed_wordpress_generate_config() {
     echo >&2 ":: $FUNCNAME: WP_FORCE_CHOWN is used to fix owner of all files under /phpfpm/www/"
     find /phpfpm/www/ -mindepth 1 -exec chown www-data: {} \;
   fi
+
+  mkdir -pv /phpfpm/www/wp-content/cache/
+  chown www-data: -R /phpfpm/www/wp-content/cache/
 }
