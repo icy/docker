@@ -5,6 +5,11 @@
 # Date   : 2015 May 21 (ported from the former Dockerfile)
 # Based on
 #  https://github.com/docker-library/percona/tree/master/5.6
+#
+# TODO   :
+#   * Add logging support
+#   * Mount variant directory (/var/run/mysqld/)
+#
 
 ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
 source    "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.xtrabackup
