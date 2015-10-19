@@ -42,7 +42,7 @@ ed_percona_install() {
 
   apt-key adv \
       --keyserver keys.gnupg.net \
-      --recv-keys 430BDF5C56E7C94E848EE60C1C4CBDCDCD2EFD2A
+      --recv-keys 1C4CBDCDCD2EFD2A
 
   echo 'deb http://repo.percona.com/apt wheezy main' \
       > /etc/apt/sources.list.d/percona.list
