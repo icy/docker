@@ -72,7 +72,7 @@ ed_supervisor_install_base() {
   mkdir -p /tmp/src/
   cd /tmp/src/
 
-  curl -Los "$SUPERVISOR_URL" -o "supervisord.tar.gz"
+  curl -sSL "$SUPERVISOR_URL" -o "supervisord.tar.gz"
   echo "$SUPERVISOR_SHA1 *supervisord.tar.gz" \
   | sha1sum -c -
 
