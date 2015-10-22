@@ -7,7 +7,7 @@
 ed_from debian:wheezy
 ed_maintainer "Anh K. Huynh <kyanh@theslinux.org>"
 
-ed_ship   ed_apt_clean ed_apt_purge ed_apt_install
+ed_ship   ed_apt_clean ed_apt_purge ed_apt_install ed_apt_remove
 ed_cmd    '["/supervisor.sh"]'
 
 ed_apt_clean() {
