@@ -113,17 +113,16 @@ ed_supervisor_install_supervisor() {
   echo "$SUPERVISOR_SHA1 *supervisord.tar.gz" \
   | sha1sum -c -
 
-  ed_apt_remove supervisor
+  # ed_apt_remove supervisor
 
   tar -xzf supervisord.tar.gz --strip-components=1
-  python2 setup.py install
+  python2 setup.py install --prefix=/usr/
 
   cd /tmp/
   rm -rf /tmp/src/
 
   # FIXME: Remove some other packages...
-  ed_apt_remove python-setuptools
-  ed_apt_purge $_packages
+  ed_apt_purge python-setuptools $_packages
 }
 
 ed_supervisor_install_init_script() {
