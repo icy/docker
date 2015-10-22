@@ -63,7 +63,7 @@ ed_supervisor_env()  {
 
 ed_supervisor_install_base() {
   ed_apt_install \
-      supervisor cron exim4-daemon-light \
+      cron exim4-daemon-light \
       logrotate \
       curl ca-certificates
 
@@ -76,9 +76,9 @@ ed_supervisor_install_base() {
 }
 
 ed_supervisor_install_supervisor() {
-  local _packages="python-pip gcc libc6-dev make g++ python-dev"
+  local _packages="python-setuptools python-pip gcc libc6-dev make g++ python-dev"
 
-  ed_apt_install python-setuptools $_packages
+  ed_apt_install supervisor $_packages
 
   # Minimalistic syslog which just prints all messages received from
   # /dev/log to standard out. This is useful in docker containers
@@ -113,16 +113,19 @@ ed_supervisor_install_supervisor() {
   echo "$SUPERVISOR_SHA1 *supervisord.tar.gz" \
   | sha1sum -c -
 
-  # ed_apt_remove supervisor
+  # FIXME: Remove the system package !!!!
+  rm -rf $(find /usr/ -type d | fgrep -- supervisor-)
 
   tar -xzf supervisord.tar.gz --strip-components=1
-  python2 setup.py install --prefix=/usr/
+  python2 setup.py install
+  # FIXME: This is due to very old version of python-setuptools :(
+  # FIXME: When we move to a new version of OS, this will change a lot!!!
+  mv /usr/local/bin/* /usr/bin/ -fv
 
   cd /tmp/
   rm -rf /tmp/src/
 
-  # FIXME: Remove some other packages...
-  ed_apt_purge python-setuptools $_packages
+  ed_apt_purge $_packages
 }
 
 ed_supervisor_install_init_script() {
