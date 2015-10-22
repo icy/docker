@@ -76,9 +76,9 @@ ed_supervisor_install_base() {
 }
 
 ed_supervisor_install_supervisor() {
-  local _packages="python-setuptools python-pip gcc libc6-dev make g++ python-dev"
+  local _packages="python-pip gcc libc6-dev make g++ python-dev"
 
-  ed_apt_install $_packages
+  ed_apt_install python-setuptools $_packages
 
   # Minimalistic syslog which just prints all messages received from
   # /dev/log to standard out. This is useful in docker containers
@@ -121,6 +121,8 @@ ed_supervisor_install_supervisor() {
   cd /tmp/
   rm -rf /tmp/src/
 
+  # FIXME: Remove some other packages...
+  ed_apt_remove python-setuptools
   ed_apt_purge $_packages
 }
 
