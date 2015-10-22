@@ -69,19 +69,6 @@ ed_supervisor_install_base() {
 
   ed_apt_clean
 
-  mkdir -p /tmp/src/
-  cd /tmp/src/
-
-  curl -sSL "$SUPERVISOR_URL" -o "supervisord.tar.gz"
-  echo "$SUPERVISOR_SHA1 *supervisord.tar.gz" \
-  | sha1sum -c -
-
-  tar -xzf supervisord.tar.gz --strip-components=1
-  python2 setup.py install
-
-  cd /tmp/
-  rm -rf /tmp/src/
-
   rm -rf /etc/supervisor/
   mkdir -pv /etc/s.supervisor/ /supervisor/
   ln -s /usr/bin/supervisorctl /usr/bin/s
@@ -112,6 +99,20 @@ ed_supervisor_install_supervisor() {
 
   cd /
   rm -rf /usr/src/pip/
+
+  # Special patch of #supervisord with #fluentd support
+  mkdir -p /tmp/src/
+  cd /tmp/src/
+
+  curl -sSL "$SUPERVISOR_URL" -o "supervisord.tar.gz"
+  echo "$SUPERVISOR_SHA1 *supervisord.tar.gz" \
+  | sha1sum -c -
+
+  tar -xzf supervisord.tar.gz --strip-components=1
+  python2 setup.py install
+
+  cd /tmp/
+  rm -rf /tmp/src/
 
   ed_apt_purge python-setuptools
 }
