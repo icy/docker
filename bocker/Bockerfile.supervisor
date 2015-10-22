@@ -111,6 +111,8 @@ ed_supervisor_install_supervisor() {
   echo "$SUPERVISOR_SHA1 *supervisord.tar.gz" \
   | sha1sum -c -
 
+  ed_apt_remove supervisor
+
   tar -xzf supervisord.tar.gz --strip-components=1
   python2 setup.py install
 
