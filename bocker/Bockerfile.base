@@ -28,6 +28,11 @@ ed_apt_install() {
     apt-get install -y --no-install-recommends $@
 }
 
+ed_apt_remove() {
+  DEBIAN_FRONTEND=noninteractive \
+    apt-get remove -y $@
+}
+
 ed_bocker_min_version() {
   echo "${BOCKER_VERSION:-0.0.0}" \
   | awk \
