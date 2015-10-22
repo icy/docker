@@ -5,7 +5,7 @@
 # Date   : 2015 Jul 21st
 
 ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
-ed_expose 8888
+ed_expose 8888 24224
 ed_ship   --later \
             ed_fluentd_generate_config \
             ed_fluentd_default_config \
@@ -77,8 +77,13 @@ ed_fluentd_default_config() {
 # in the next container/daemon restarting.
 #
 
-# POST http://localhost:8888/<tag>?json=<json>
-# POST http://localhost:8888/td.myapp.login?json={"user"%3A"me"}
+<source>
+  type forward
+  port 24224
+  bind 0.0.0.0
+</source>
+
+# curl -X POST "http://localhost:8888/debug.test" -d 'json={"user":"test"}'
 <source>
   type http
   port 8888
