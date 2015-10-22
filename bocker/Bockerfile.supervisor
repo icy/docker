@@ -252,8 +252,9 @@ exitcodes=0,2
 stopsignal=$_stop_signal
 stopwaitsecs=10
 user=$_user
-redirect_stderr=true
-stdout_logfile=fluent:$_name
+redirect_stderr=fase
+stdout_logfile=fluent:$_name.stdout
+stderr_logfile=fluent:$_name.stderr
 environment=${_env%,*}
 serverurl=AUTO
 EOF
