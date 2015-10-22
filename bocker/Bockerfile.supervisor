@@ -76,7 +76,7 @@ ed_supervisor_install_base() {
 }
 
 ed_supervisor_install_supervisor() {
-  ed_apt_install python-setuptools
+  ed_apt_install python-setuptools python-pip
 
   # Minimalistic syslog which just prints all messages received from
   # /dev/log to standard out. This is useful in docker containers
@@ -100,6 +100,9 @@ ed_supervisor_install_supervisor() {
   cd /
   rm -rf /usr/src/pip/
 
+  # Fluent module is required!!!
+  pip install fluent-logger
+
   # Special patch of #supervisord with #fluentd support
   mkdir -p /tmp/src/
   cd /tmp/src/
@@ -114,7 +117,7 @@ ed_supervisor_install_supervisor() {
   cd /tmp/
   rm -rf /tmp/src/
 
-  ed_apt_purge python-setuptools
+  ed_apt_purge python-setuptools python-pip
 }
 
 ed_supervisor_install_init_script() {
