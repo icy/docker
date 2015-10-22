@@ -76,7 +76,7 @@ ed_supervisor_install_base() {
 }
 
 ed_supervisor_install_supervisor() {
-  local _packages="python-setuptools python-pip gcc libc6-dev make g++"
+  local _packages="python-setuptools python-pip gcc libc6-dev make g++ python-dev"
 
   ed_apt_install $_packages
 
