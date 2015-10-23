@@ -59,6 +59,7 @@ ed_supervisor_daemonize() {
 ed_supervisor_env()  {
   export SUPERVISOR_URL="https://github.com/icyfork/supervisor/archive/v3.1.3_fluentd.tar.gz?patch=2015-Oct-23"
   export SUPERVISOR_SHA1="01c59a890a911b0df5ce958398a4ca95e9c281cd"
+  export SUPERVISOR_VERSION="3.1.3"
 }
 
 ed_supervisor_install_base() {
@@ -126,6 +127,8 @@ ed_supervisor_install_supervisor() {
   rm -rf /tmp/src/
 
   ed_apt_purge $_packages
+
+  test "$(supervisord --version)" = "$SUPERVISOR_VERSION"
 }
 
 ed_supervisor_install_init_script() {
