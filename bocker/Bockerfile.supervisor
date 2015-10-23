@@ -114,7 +114,7 @@ ed_supervisor_install_supervisor() {
   | sha1sum -c -
 
   # FIXME: Remove the system package !!!!
-  rm -rf $(find /usr/ -type d | fgrep -- supervisor-)
+  rm -rf /usr/lib/python*/dist-packages/supervisor/
 
   tar -xzf supervisord.tar.gz --strip-components=1
   python2 setup.py install
