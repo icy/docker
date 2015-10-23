@@ -58,7 +58,7 @@ ed_supervisor_daemonize() {
 
 ed_supervisor_env()  {
   export SUPERVISOR_URL="https://github.com/icyfork/supervisor/archive/v3.1.3_fluentd.tar.gz?patch=2015-Oct-23"
-  export SUPERVISOR_SHA1="c482efbe92ace1a3baac67ad8b1b67b78d909232"
+  export SUPERVISOR_SHA1="01c59a890a911b0df5ce958398a4ca95e9c281cd"
 }
 
 ed_supervisor_install_base() {
@@ -196,7 +196,7 @@ chmod=0700                      ; sockef file mode (default 0700)
 
 [supervisord]
 nodaemon=true
-logfile=fluent:${SUPERVISOR_FLUENT_TAG_HOST_PORT-docker:parent:24224}
+logfile=fluent:${SUPERVISOR_FLUENT_TAG_HOST_PORT:-docker:parent:24224}
 pidfile=/var/run/supervisord.pid ; (supervisord pidfile;default supervisord.pid)
 childlogdir=/supervisor/         ; ('AUTO' child log dir, default $TEMP)
 logfile_maxbytes=50MB            ; (max main logfile bytes b4 rotation;default 50MB)
