@@ -57,8 +57,8 @@ ed_supervisor_daemonize() {
 ########################################################################
 
 ed_supervisor_env()  {
-  export SUPERVISOR_URL="https://github.com/icyfork/supervisor/archive/v3.1.3_fluentd.tar.gz?patch=2015-Oct-24"
-  export SUPERVISOR_SHA1="114aeb3c5a5a7fa53ddb3732012ce268b282fb54"
+  export SUPERVISOR_URL="https://github.com/icyfork/supervisor/archive/v3.1.3_fluentd.tar.gz?patch=2015-Oct-25"
+  export SUPERVISOR_SHA1="d018f1c7da708fd7167cd59b331ab1a387ea1fac"
   export SUPERVISOR_VERSION="3.1.3"
 }
 
