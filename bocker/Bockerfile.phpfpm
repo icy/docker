@@ -106,5 +106,5 @@ ed_phpfpm_generate_config() {
     --name "phpfpm" \
     --command "/bocker.sh ed_phpfpm_daemonize" \
     --dir "/phpfpm/" \
-    --user "phpfpm"
+    --user "www-data"
 }
