@@ -26,7 +26,12 @@ ed_exim4_uid_gid_update() {
   usermod -g "$EXIM4_GID" -u "$EXIM4_UID" Debian-exim
 
   mkdir -pv /var/log/exim4 /var/spool/exim4/
-  chmod 750 /var/log/exim4 /var/spool/exim4/
+  chmod 750 /var/spool/exim4/
+
+  # This is to help fluentd support...
+  chmod 755 /var/log/exim4/
+  touch /var/log/exim4/mainlog
+  chmod 644 /var/log/exim4/mainlog
 
   chown Debian-exim:Debian-exim -Rc /var/spool/exim4/
   chown Debian-exim:Debian-exim -Rc /var/log/exim4/
