@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Purpose: Run tail and forward all logs to upstream
+# Author : Anh K. Huynh
+# Date   : 2015 Nov 02nd
+# Note   : Upstream hostname is required to be `parent`.
+#          Please create a link or host entry to support this. E.g
+#
+#              docker run ... -link fluentd:parent
+#              docker run ... --add-host parent:x.y.z.t
+
+ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.fluentd
+ed_reset  expose
+
+ed_bocker() {
+  ed_copy ./etc/td-agent/ /fluentd/
+}
+
+ed_fluentd_default_config() {
+  local _dirs="/fluentd/forward-buffer/ /fluentd/forward-failed/"
+
+  mkdir -pv 1>&2 $_dirs
+  chown fluentd: $_dirs
+
+  echo "@include /fluentd/conf.d/*.conf"
+}
