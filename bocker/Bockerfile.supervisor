@@ -86,7 +86,7 @@ ed_supervisor_install_supervisor() {
   # where you don't want to install a full blown syslog daemon,
   # in combination with supervisord/supervisor-stdout.
   curl -Lso /usr/bin/syslog-stdout.py \
-    https://raw.githubusercontent.com/icyfork/syslog-stdout/master/syslog-stdout.py
+    https://raw.githubusercontent.com/icyfork/syslog-stdout/master/syslog-stdout.py#b1fb623f9aaaef83411d3821dc014bbbc983e622
 
   mkdir -pv /usr/src/pip/
   cd /usr/src/pip/
