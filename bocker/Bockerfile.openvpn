@@ -83,7 +83,7 @@ resolv-retry  infinite
 cipher        BF-CBC
 EOF
 
-  if [[ "$_mobile" == "yes" ]]; then
+  if [[ "$_mobile" != "yes" ]]; then
     cat <<-EOF
 ca            ca.crt
 cert          $CN.crt
