@@ -20,7 +20,7 @@ ed_fluentd_default_config() {
   local _dirs="/fluentd/forward-buffer/ /fluentd/forward-failed/"
 
   # Avoid some issues with fluentd starting up
-  mkdir -pv /var/log/nginx /var/log/exim4/
+  mkdir -pv /var/log/nginx /var/log/exim4/ /tomcat/logs/
 
   mkdir -pv 1>&2 $_dirs
   chown fluentd: $_dirs
