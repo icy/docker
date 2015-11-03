@@ -13,17 +13,32 @@ ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.fluentd
 ed_reset  expose
 
 ed_bocker() {
-  ed_copy ./etc/td-agent/ /fluentd/
+  ed_copy ./etc/td-agent/ /etc/td-agent/
 }
 
 ed_fluentd_default_config() {
   local _dirs="/fluentd/forward-buffer/ /fluentd/forward-failed/"
+  local _last_dest="/fluentd/conf.d/98_forward_all_to_parent.conf"
 
-  # Avoid some issues with fluentd starting up
-  mkdir -pv 1>&2 /var/log/nginx /var/log/exim4/ /tomcat/logs/
+  {
+    # Avoid some issues with fluentd starting up
+    mkdir -pv /var/log/nginx /var/log/exim4/ /tomcat/logs/
 
-  mkdir -pv 1>&2 $_dirs
-  chown fluentd: $_dirs
+    mkdir -pv$_dirs
+    chown fluentd: $_dirs
+
+    if [[ ! -f /fluentd/conf.d/00_base.conf ]]; then
+      echo ":: Transfeering default files to /fluentd/conf.d/..."
+      cp -fv /etc/td-agent/conf.d/* /fluentd/conf.d/
+    fi
+
+    if [[ "${FLUENTD_MONSTER_TESTING:-1}" == "1" ]]; then
+      echo '<match **>'   >  $_last_dest
+      echo 'type stdout'  >> $_last_dest
+      echo '</match>'     >> $_last_dest
+    fi
+  } \
+    1>&2
 
   echo "@include /fluentd/conf.d/*.conf"
 }
