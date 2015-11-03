@@ -148,7 +148,7 @@ ed_openvpn_gen_cert() {
     ed_openvpn_gen_cert_template "redirect-gateway def1"
     echo "<ca>"
     cat keys/ca.crt
-    echo "<ca>"
+    echo "</ca>"
 
     echo "<cert>"
     cat "keys/$CN.crt" \
