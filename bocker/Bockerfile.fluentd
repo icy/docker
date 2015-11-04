@@ -48,11 +48,8 @@ ed_fluentd_generate_config() {
   chown root:fluentd -Rc /etc/td-agent/
   chown fluentd:fluentd -Rc /fluentd/
 
-  if [[ -f "/fluentd/agent.conf" ]]; then
-    cat /fluentd/agent.conf > /etc/td-agent/agent.conf
-  else
-    ed_fluentd_default_config > /etc/td-agent/agent.conf
-    cp /etc/td-agent/agent.conf /fluentd/agent.conf
+  if [[ ! -f "/fluentd/__.skip" ]]; then
+    ed_fluentd_default_config > /fluentd/agent.conf
   fi
 
   ed_supervisor_config_template \
@@ -65,7 +62,7 @@ ed_fluentd_generate_config() {
 ed_fluentd_daemonize() {
   exec /opt/td-agent/embedded/bin/ruby \
     /usr/sbin/td-agent \
-    -c /etc/td-agent/agent.conf \
+    -c /fluentd/agent.conf \
     --log /fluentd/td-agent.log
 }
 
