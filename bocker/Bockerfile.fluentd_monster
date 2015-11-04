@@ -28,7 +28,7 @@ ed_fluentd_default_config() {
     chown fluentd: $_dirs
 
     if [[ ! -f /fluentd/conf.d/00_base.conf ]]; then
-      echo ":: Transfeering default files to /fluentd/conf.d/..."
+      echo ":: Transferring default files to /fluentd/conf.d/..."
       cp -fv /etc/td-agent/conf.d/* /fluentd/conf.d/
     fi
 
