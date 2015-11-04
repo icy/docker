@@ -32,6 +32,12 @@ ed_fluentd_default_config() {
       cp -fv /etc/td-agent/conf.d/* /fluentd/conf.d/
     fi
 
+    rm -f /fluentd/conf.d/49_add_ident.conf
+    if [[ -f "/fluentd/conf.d/49_add_ident.conf.sh" ]]; then
+      bash /fluentd/conf.d/49_add_ident.conf.sh \
+        > /fluentd/conf.d/49_add_ident.conf
+    fi
+
     if [[ "${FLUENTD_MONSTER_TESTING:-1}" == "1" ]]; then
       echo '<match **>'   >  $_last_dest
       echo 'type stdout'  >> $_last_dest
