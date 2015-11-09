@@ -25,7 +25,7 @@ ed_ship   --later \
 # By exporting these volumes, backup program can use them.
 # (See for example, https://www.percona.com/doc/percona-xtrabackup/2.2/.)
 # It isn't a good idea to use the same /mysql/ for multiple instance.
-ed_volume   /mysql/ /etc/mysql/
+ed_volume   /mysql/ /etc/mysql/ /var/run/mysql
 
 ed_bocker() {
   ed_group \
