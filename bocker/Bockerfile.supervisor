@@ -23,7 +23,8 @@ ed_ship --later \
   ed_supervisor_execute_generators \
   ed_supervisor_daemonize \
   ed_supervisor_config_template \
-  ed_supervisor_reset_all_environments
+  ed_supervisor_reset_all_environments \
+  ed_supervisor_generator
 
 ed_bocker() {
   ed_group \
@@ -297,4 +298,15 @@ ed_supervisor_reset_all_environments() {
       | grep -v '^LANG$' \
       | grep -v '^LC_NAME$'
     )
+}
+
+ed_supervisor_generator() {
+  local _name="${1:-}"
+  [[ -n "${_name}" ]] || return 0
+
+  {
+    echo "#!/bin/bash"
+    echo "/bocker.sh $_name"
+  } \
+  > /etc/s.supervisor/$_name.sh
 }
