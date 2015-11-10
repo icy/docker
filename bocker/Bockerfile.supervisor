@@ -23,7 +23,9 @@ ed_ship --later \
   ed_supervisor_execute_generators \
   ed_supervisor_daemonize \
   ed_supervisor_config_template \
-  ed_supervisor_reset_all_environments \
+  ed_supervisor_reset_all_environments
+
+ed_ship \
   ed_supervisor_generator
 
 ed_bocker() {
