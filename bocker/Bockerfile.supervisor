@@ -272,8 +272,8 @@ stopsignal=$_stop_signal
 stopwaitsecs=10
 user=$_user
 redirect_stderr=false
-stdout_logfile=fluent:$_name.stdout:x:0:/supervisor/$_logname.log
-stderr_logfile=fluent:$_name.stderr:x:0:/supervisor/$_logname.log
+stdout_logfile=fluent:$_name.stdout:x:0:/supervisor/$_logname.stdout.log
+stderr_logfile=fluent:$_name.stderr:x:0:/supervisor/$_logname.stderr.log
 environment=${_env%,*}
 serverurl=AUTO
 EOF
