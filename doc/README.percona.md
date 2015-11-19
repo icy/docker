@@ -9,6 +9,9 @@ The result daemon will be launched by `supervisor`.
 * `MYSQL_GID`: The `guid` of `mysql` account. Default: `10003`.
 * `MYSQL_ROOT_PASSWD`: The password of `root` account which is used
     when the `/mysql/` is empty.
+* `MYSQL_foo`: Any variable setting under `[mysqld]` section in `my.cnf`
+    file. for example, `MYSQL_key_buffer_size=16M` is to specify that
+    `key_buffer_size` is `16MB`.
 
 ## Volumes
 
