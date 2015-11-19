@@ -103,7 +103,7 @@ ed_percona_set_datadir() {
   fi
 
   echo >&2 ":: $FUNCNAME: Checking configuration file..."
-  mysqld --verbose --help >/dev/null || return 1
+  /usr/sbin/mysqld --verbose --help >/dev/null || return 1
 
   echo "$_D_DATA"
 }
@@ -165,7 +165,7 @@ EOSQL
 
 ed_percona_daemonize() {
   echo >&2 ":: $FUNCNAME: Checking configuration file..."
-  mysqld --verbose --help >/dev/null || return 1
+  /usr/sbin/mysqld --verbose --help >/dev/null || return 1
 
   echo >&2 ":: $FUNCNAME: Starting main daemon..."
   if [[ -f "/mysql/docker-init.sql" ]]; then
