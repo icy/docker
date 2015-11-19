@@ -77,13 +77,21 @@ ed_percona_set_datadir() {
       cp -vf /mysql/my.cnf /etc/mysql/my.cnf || return 1
     fi
 
-    echo >&2 ":: MySQL: Fix bind-address..."
-    sed -ri 's/^(bind-address|skip-networking)/;\1/' /etc/mysql/my.cnf
+    # Override all user environments!!!
+    export MYSQL_bind__address='*'
+    export MYSQL_skip__networking='false'
+    export MYSQL_datadir="/mysql/"
 
-    echo >&2 ":: MySQL: Fix datadir setting in /etc/mysql/my.cnf"
-    sed -i \
-      -e 's#datadir[[:space:]]*=.*$#datadir = /mysql/#g' \
-      /etc/mysql/my.cnf
+    while read _line; do
+      _var_name="$(sed -r -e 's#MYSQL_(.+)=.*#\1#' -e 's#__#-#g' <<< $_line)"
+      _var_value="$(sed -r -e 's#MYSQL_.+=(.*)$#\1#'             <<< $_line)"
+
+      sed -r -i -e "/#?[[:space:]]*$_var_name\d/d"         /etc/mysql/my.cnf
+      sed -r -i -e "/\[mysqld]/a $_var_name = $_var_value" /etc/mysql/my.cnf
+    done < <(
+      env \
+      | grep -E "^MYSQL_[a-z]" \
+    )
   fi
 
   _D_DATA="$(/usr/sbin/mysqld --verbose --help 2>/dev/null | awk '$1 == "datadir" { print $2; exit }')"
@@ -91,6 +99,9 @@ ed_percona_set_datadir() {
     echo >&2 ":: MySQL: data directory must be /mysql/. Current value: $_D_DATA."
     return 1
   fi
+
+  echo >&2 ":: $FUNCNAME: Checking configuration file..."
+  mysqld --verbose --help >/dev/null || return 1
 
   echo "$_D_DATA"
 }
@@ -151,12 +162,16 @@ EOSQL
 }
 
 ed_percona_daemonize() {
+  echo >&2 ":: $FUNCNAME: Checking configuration file..."
+  mysqld --verbose --help >/dev/null || return 1
+
+  echo >&2 ":: $FUNCNAME: Starting main daemon..."
   if [[ -f "/mysql/docker-init.sql" ]]; then
     exec /usr/sbin/mysqld \
         --init-file=/mysql/docker-init.sql
   fi
 
-  exec /usr/sbin/mysqld;
+  exec /usr/sbin/mysqld
 }
 
 ########################################################################
