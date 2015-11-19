@@ -89,6 +89,8 @@ ed_percona_set_datadir() {
       sed -r -i -e "/#?[[:space:]]*$_var_name=/d "               /etc/mysql/my.cnf
       sed -r -i -e "/#?[[:space:]]*$_var_name\$/d"               /etc/mysql/my.cnf
       sed -r -i -e "/#?[[:space:]]*$_var_name[[:space:]]*/d"     /etc/mysql/my.cnf
+
+      echo >&2 ":: $FUNCNAME: Updating my.cnf: $_var_name => $_var_value"
       sed -r -i -e "/\[mysqld]/a $_var_name = $_var_value"       /etc/mysql/my.cnf
     done < <(
       env \
