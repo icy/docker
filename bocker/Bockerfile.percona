@@ -86,8 +86,10 @@ ed_percona_set_datadir() {
       _var_name="$(sed -r -e 's#MYSQL_(.+)=.*#\1#' -e 's#__#-#g' <<< $_line)"
       _var_value="$(sed -r -e 's#MYSQL_.+=(.*)$#\1#'             <<< $_line)"
 
-      sed -r -i -e "/#?[[:space:]]*$_var_name\d/d"         /etc/mysql/my.cnf
-      sed -r -i -e "/\[mysqld]/a $_var_name = $_var_value" /etc/mysql/my.cnf
+      sed -r -i -e "/#?[[:space:]]*$_var_name=/d "               /etc/mysql/my.cnf
+      sed -r -i -e "/#?[[:space:]]*$_var_name\$/d"               /etc/mysql/my.cnf
+      sed -r -i -e "/#?[[:space:]]*$_var_name[[:space:]]*/d"     /etc/mysql/my.cnf
+      sed -r -i -e "/\[mysqld]/a $_var_name = $_var_value"       /etc/mysql/my.cnf
     done < <(
       env \
       | grep -E "^MYSQL_[a-z]" \
