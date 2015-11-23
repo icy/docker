@@ -22,7 +22,7 @@ ed_fluentd_default_config() {
 
   {
     # Avoid some issues with fluentd starting up
-    mkdir -pv /var/log/nginx /var/log/exim4/ /tomcat/logs/
+    mkdir -pv /var/log/nginx /var/log/exim4/ /tomcat/logs/ /var/log/apache2/
 
     mkdir -pv$_dirs
     chown fluentd: $_dirs
