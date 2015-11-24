@@ -68,7 +68,6 @@ ed_supervisor_env()  {
 ed_supervisor_install_base() {
   ed_apt_install \
       cron exim4-daemon-light \
-      logrotate \
       curl ca-certificates
 
   ed_apt_clean
