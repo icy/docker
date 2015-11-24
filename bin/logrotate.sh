@@ -75,8 +75,8 @@ while read CONTAINER; do
       _has_process tomcat && {
         _reg_dir /tomcat/logs/
 
-        find /tomcat/logs/ -type f -iname "catalina*.log"  -exec gzip {} \;
-        find /tomcat/logs/ -type f -iname "localhost*.log" -exec gzip {} \;
+        find /tomcat/logs/ -type f -iname "catalina*.log"  -mtime +1 -exec gzip {} \;
+        find /tomcat/logs/ -type f -iname "localhost*.log" -mtime +1 -exec gzip {} \;
       }
 
       for _dir in $DIRS; do
