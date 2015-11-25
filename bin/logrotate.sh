@@ -61,6 +61,11 @@ while read CONTAINER; do
         for FILE in mainlog rejectlog paniclog; do
           [[ -f /var/log/exim4/$FILE ]] \
             && mv /var/log/exim4/$FILE /var/log/exim4/$FILE-$SUFFIX
+
+          # Make sure future file is readable by fluentd ~~~
+          touch /var/log/exim4/$FILE
+          chown Debian-exim /var/log/exim4/$FILE
+          chmod 644 /var/log/exim4/$FILE
         done
 
         find /var/log/exim4/ -type f -iname "*.log-*" -mtime +1 -exec gzip {} \;
