@@ -50,7 +50,7 @@ while read CONTAINER; do
         _reg_dir /var/log/nginx/
 
         _rotate_files \
-          /var/log/nginx/error.log
+          /var/log/nginx/error.log \
           /var/log/nginx/acces.log
 
         kill -USR1 $(s pid nginx)
