@@ -27,14 +27,31 @@ while read CONTAINER; do
         DIRS="$DIRS $@"
       }
 
+      _rotate_files() {
+        local _file
+
+        while (( $# )); do
+          _file="$1"; shift
+
+          if [[ ! -f "$_file" ]]; then
+            continue
+          fi
+
+          # If the file is less than 1024 bytes
+          if [[ "$(stat -c %s "$_file")" -le 1024 ]]; then
+            continue
+          fi
+
+          mv -v "$_file" "$_file-$SUFFIX"
+        done
+      }
+
       _has_process nginx && {
         _reg_dir /var/log/nginx/
 
-        [[ -f /var/log/nginx/error.log ]] \
-          && mv /var/log/nginx/error.log /var/log/nginx/error.log-$SUFFIX
-
-        [[ -f /var/log/nginx/acces.log ]] \
-          && mv /var/log/nginx/acces.log /var/log/nginx/acces.log-$SUFFIX
+        _rotate_files \
+          /var/log/nginx/error.log
+          /var/log/nginx/acces.log
 
         kill -USR1 $(s pid nginx)
 
@@ -44,11 +61,9 @@ while read CONTAINER; do
       _has_process apache && {
         _reg_dir /var/log/apache2/
 
-        [[ -f /var/log/apache2/error.log ]] \
-          && mv /var/log/apache2/error.log /var/log/apache2/error.log-$SUFFIX
-
-        [[ -f /var/log/apache2/acces.log ]] \
-          && mv /var/log/apache2/acces.log /var/log/apache2/acces.log-$SUFFIX
+        _rotate_files \
+          /var/log/apache2/error.log \
+          /var/log/apache2/acces.log
 
         kill -USR1 $(s pid apache)
 
@@ -59,8 +74,7 @@ while read CONTAINER; do
         _reg_dir /var/log/exim4/
 
         for FILE in mainlog rejectlog paniclog; do
-          [[ -f /var/log/exim4/$FILE ]] \
-            && mv /var/log/exim4/$FILE /var/log/exim4/$FILE-$SUFFIX
+          _rotate_files /var/log/exim4/$FILE
 
           # Make sure future file is readable by fluentd ~~~
           touch /var/log/exim4/$FILE
