@@ -20,6 +20,13 @@ ed_bocker() {
 #   https://td-toolbelt.herokuapp.com/sh/install-debian-squeeze-td-agent2.sh
 #
 ed_fluentd_install() {
+  local _gems=
+
+  _gems=" \
+          fluent-plugin-mysqlslowquery
+          fluent-plugin-elasticsearch
+        "
+
   curl -LsSo- \
     https://packages.treasuredata.com/GPG-KEY-td-agent \
   | apt-key add -
@@ -29,6 +36,8 @@ ed_fluentd_install() {
 
   ed_apt_install td-agent
   ed_apt_clean
+
+  /opt/td-agent/embedded/bin/gem install --no-ri --no-rdoc $_gems
 
   # Inialize a userid
   useradd -K UID_MIN=1009 fluentd
