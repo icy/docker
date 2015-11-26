@@ -22,7 +22,12 @@ ed_fluentd_default_config() {
 
   {
     # Avoid some issues with fluentd starting up
-    mkdir -pv /var/log/nginx /var/log/exim4/ /tomcat/logs/ /var/log/apache2/
+    mkdir -pv \
+      /var/log/nginx \
+      /var/log/exim4/ \
+      /tomcat/logs/ \
+      /var/log/apache2/ \
+      /var/log/mysql/
 
     mkdir -pv$_dirs
     chown fluentd: $_dirs
@@ -32,16 +37,22 @@ ed_fluentd_default_config() {
       cp -fv /etc/td-agent/conf.d/* /fluentd/conf.d/
     fi
 
+    # Generate ident information, which is the "hostname" by default
     rm -f /fluentd/conf.d/49_add_ident.conf
     if [[ -f "/fluentd/conf.d/49_add_ident.conf.sh" ]]; then
       bash /fluentd/conf.d/49_add_ident.conf.sh \
         > /fluentd/conf.d/49_add_ident.conf
     fi
 
+    # If this Monster is in testing mode (default), all messages are
+    # written to stdout, and finally delivered to /fluentd/td-agent.log
     if [[ "${FLUENTD_MONSTER_TESTING:-1}" == "1" ]]; then
-      echo '<match **>'   >  $_last_dest
-      echo 'type stdout'  >> $_last_dest
-      echo '</match>'     >> $_last_dest
+      {
+        echo '<match **>'
+        echo 'type stdout'
+        echo '</match>'
+      } \
+        >  $_last_dest
     fi
   } \
     1>&2

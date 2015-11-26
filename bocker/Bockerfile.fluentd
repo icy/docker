@@ -61,6 +61,9 @@ ed_fluentd_generate_config() {
     ed_fluentd_default_config > /fluentd/agent.conf
   fi
 
+  # td-agent is running as "fluentd" user, or "td-agent" on default
+  # installation on host machine. This is tough problem, as sometimes
+  # "fluentd" needs to read files from other services, e.g, mysql.
   ed_supervisor_config_template \
     --name "fluentd" \
     --command "/bocker.sh ed_fluentd_daemonize" \
