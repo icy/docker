@@ -187,7 +187,10 @@ ed_percona_generate_config() {
 
   # These directories are removed at the Installation process
   mkdir -pv /var/run/mysqld/ /var/log/mysql/
-  chown -R mysql:mysql /mysql/ /var/run/mysqld/ /var/log/mysql/
+  chown -R mysql:mysql /mysql/ /var/run/mysqld/
+  chown mysql:adm /var/log/mysql/
+  chmod 750 /var/log/mysql/
+
 
   # Initialize the database if necessary
   # NOTE: mysqld is from /usr/sbin/ directory. If "su -" is used,
