@@ -22,10 +22,7 @@ ed_bocker() {
 ed_fluentd_install() {
   local _gems=
 
-  _gems=" \
-          fluent-plugin-mysqlslowquery
-          fluent-plugin-elasticsearch
-        "
+  _gems=""
 
   curl -LsSo- \
     https://packages.treasuredata.com/GPG-KEY-td-agent \
@@ -37,7 +34,9 @@ ed_fluentd_install() {
   ed_apt_install td-agent
   ed_apt_clean
 
-  /opt/td-agent/embedded/bin/gem install --no-ri --no-rdoc $_gems
+  for _gem in $_gems; do
+    /opt/td-agent/embedded/bin/gem install --no-ri --no-rdoc $_gem
+  done
 
   # Inialize a userid
   useradd -K UID_MIN=1009 fluentd
