@@ -42,12 +42,7 @@ ed_fluentd_install() {
   useradd -K UID_MIN=1009 fluentd
   mkdir -pv /etc/td-agent/plugin/ /etc/td-agent/conf.d/
 
-  # Give a generator to Supervisor
-  {
-    echo "#!/bin/bash"
-    echo "/bocker.sh ed_fluentd_generate_config"
-  } \
-  > /etc/s.supervisor/fluentd.sh
+  ed_supervisor_generator ed_fluentd_generate_config
 }
 
 ed_fluentd_generate_config() {
