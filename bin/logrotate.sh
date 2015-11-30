@@ -55,7 +55,7 @@ while read CONTAINER; do
 
         kill -USR1 $(s pid nginx)
 
-        find /var/log/nginx/ -type f -iname "*.log-*" -mtime +1 -exec gzip {} \;
+        find /var/log/nginx/ -type f -iname "*.log-*" -mmin 1440 -exec gzip {} \;
       }
 
       _has_process apache && {
@@ -67,7 +67,7 @@ while read CONTAINER; do
 
         kill -USR1 $(s pid apache)
 
-        find /var/log/apache2/ -type f -iname "*.log-*" -mtime +1 -exec gzip {} \;
+        find /var/log/apache2/ -type f -iname "*.log-*" -mmin 1440 -exec gzip {} \;
       }
 
       _has_process exim4 && {
@@ -82,20 +82,20 @@ while read CONTAINER; do
           chmod 644 /var/log/exim4/$FILE
         done
 
-        find /var/log/exim4/ -type f -iname "*.log-*" -mtime +1 -exec gzip {} \;
+        find /var/log/exim4/ -type f -iname "*.log-*" -mmin 1441 -exec gzip {} \;
       }
 
       _has_process solr && {
         _reg_dir /opt/solor/example/logs/
 
-        find /opt/solr/example/logs/ -type f -iname "*.log" -mtime +1 -exec gzip {} \;
+        find /opt/solr/example/logs/ -type f -iname "*.log" -mmin 1440 -exec gzip {} \;
       }
 
       _has_process tomcat && {
         _reg_dir /tomcat/logs/
 
-        find /tomcat/logs/ -type f -iname "catalina*.log"  -mtime +1 -exec gzip {} \;
-        find /tomcat/logs/ -type f -iname "localhost*.log" -mtime +1 -exec gzip {} \;
+        find /tomcat/logs/ -type f -iname "catalina*.log"  -mmin 1440 -exec gzip {} \;
+        find /tomcat/logs/ -type f -iname "localhost*.log" -mmin 1440 -exec gzip {} \;
       }
 
       for _dir in $DIRS; do
