@@ -82,7 +82,16 @@ while read CONTAINER; do
           chmod 644 /var/log/exim4/$FILE
         done
 
-        find /var/log/exim4/ -type f -iname "*.log-*" -mmin 1441 -exec gzip {} \;
+        # Rotate any mail files under /var/mail/.
+        # NOTE: Email daemon will create new file automatically
+        find /var/mail/ -type f ! -iname "*.gz " -a ! -iname "*[0-9][0-9][0-9][0-9]" \
+        | while read MBOX; do
+            [[ -L "$MBOX"]] \
+            || mv "$MBOX" "$MBOX-$SUFFIX"
+          done
+
+        find /var/log/exim4/ -type f -iname "*.log-*" -mmin 1440 -exec gzip {} \;
+        find /var/mail/ -type f -mmin 1440 -iname "*[0-9][0-9][0-9][0-9]" -exec gzip {} \;
       }
 
       _has_process solr && {
