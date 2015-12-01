@@ -190,7 +190,12 @@ ed_percona_generate_config() {
   chown -R mysql:mysql /mysql/ /var/run/mysqld/
   chown mysql:adm /var/log/mysql/
   chmod 750 /var/log/mysql/
-
+  # On the host machine
+  #   - mysqld creates files for     mysql:mysql, permission = 0600
+  #   - logoratate creates files for mysql:adm,   permission = 0644
+  # Inside Docker container
+  #   - mysqld creates files for     mysql:mysql, permission = 0600
+  #   - ./bin/logoratate.sh would fix that ...
 
   # Initialize the database if necessary
   # NOTE: mysqld is from /usr/sbin/ directory. If "su -" is used,
