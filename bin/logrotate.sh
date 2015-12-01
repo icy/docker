@@ -115,13 +115,14 @@ while read CONTAINER; do
 
         mysql -B -e \
           " select @@global.long_query_time into @lqt_save;
+            select @@global.slow_query_log  into @sql_save;
             set global long_query_time=2000;
             set global slow_query_log = 0;
             select sleep(2);
             FLUSH LOGS;
             select sleep(2);
             set global long_query_time=@lqt_save;
-            set global slow_query_log = 1;
+            set global slow_query_log=@sql_save;
           "
 
         find /var/log/mysql/ -type f -iname "*.log-*" -a ! -iname "*.gz" -mmin 1440 -exec gzip {} \;
