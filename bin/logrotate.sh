@@ -37,6 +37,10 @@ while read CONTAINER; do
             continue
           fi
 
+          if [[ -L "$_file" ]]; then
+            continue
+          fi
+
           # If the file is less than 1024 bytes
           if [[ "$(stat -c %s "$_file")" -le 1024 ]]; then
             continue
@@ -55,7 +59,7 @@ while read CONTAINER; do
 
         kill -USR1 $(s pid nginx)
 
-        find /var/log/nginx/ -type f -iname "*.log-*" -mmin 1440 -exec gzip {} \;
+        find /var/log/nginx/ -type f -iname "*.log-*" -a ! -iname "*.gz" -mmin 1440 -exec gzip {} \;
       }
 
       _has_process apache && {
@@ -67,7 +71,7 @@ while read CONTAINER; do
 
         kill -USR1 $(s pid apache)
 
-        find /var/log/apache2/ -type f -iname "*.log-*" -mmin 1440 -exec gzip {} \;
+        find /var/log/apache2/ -type f -iname "*.log-*" -a ! -iname "*.gz" -mmin 1440 -exec gzip {} \;
       }
 
       _has_process exim4 && {
@@ -85,13 +89,42 @@ while read CONTAINER; do
         # Rotate any mail files under /var/mail/.
         # NOTE: Email daemon will create new file automatically
         find /var/mail/ -type f ! -iname "*.gz " -a ! -iname "*[0-9][0-9][0-9][0-9]" \
-        | while read MBOX; do
-            [[ -L "$MBOX"]] \
-            || mv "$MBOX" "$MBOX-$SUFFIX"
+        | while read FILE; do
+            _rotate_files "$FILE"
           done
 
-        find /var/log/exim4/ -type f -iname "*.log-*" -mmin 1440 -exec gzip {} \;
-        find /var/mail/ -type f -mmin 1440 -iname "*[0-9][0-9][0-9][0-9]" -exec gzip {} \;
+        find /var/log/exim4/ -type f -iname "*.log-*" -a ! -iname "*.gz" -mmin 1440 -exec gzip {} \;
+        find /var/mail/ -type f -iname "*[0-9][0-9][0-9][0-9]" -mmin 1440 -exec gzip {} \;
+      }
+
+      # MySQL just makes life harder
+      # https://www.percona.com/blog/2014/11/12/log-rotate-and-the-deleted-mysql-log-file-mystery/
+
+      _has_process mysql && {
+        _reg_dir /var/log/mysql/
+
+        find /var/log/mysql/ -type f -iname "*.log" \
+        | while read FILE; do
+            _rotate_files "$FILE"
+
+            #
+            touch "$FILE"
+            chown mysql:adm "$FILE"
+            chmod 640 "$FILE"
+          done
+
+        mysql -B -e \
+          " select @@global.long_query_time into @lqt_save;
+            set global long_query_time=2000;
+            set global slow_query_log = 0;
+            select sleep(2);
+            FLUSH LOGS;
+            select sleep(2);
+            set global long_query_time=@lqt_save;
+            set global slow_query_log = 1;
+          "
+
+        find /var/log/mysql/ -type f -iname "*.log-*" -a ! -iname "*.gz" -mmin 1440 -exec gzip {} \;
       }
 
       _has_process solr && {
@@ -103,8 +136,8 @@ while read CONTAINER; do
       _has_process tomcat && {
         _reg_dir /tomcat/logs/
 
-        find /tomcat/logs/ -type f -iname "catalina*.log"  -mmin 1440 -exec gzip {} \;
-        find /tomcat/logs/ -type f -iname "localhost*.log" -mmin 1440 -exec gzip {} \;
+        find /tomcat/logs/ -type f -iname "catalina*.log" -mmin 1440 -exec gzip {} \;
+        find /tomcat/logs/ -type f -iname "localhos*.log" -mmin 1440 -exec gzip {} \;
       }
 
       for _dir in $DIRS; do
