@@ -233,6 +233,7 @@ ed_supervisor_config_template() {
   local _user="nobody"
   local _env=""
   local _logname=
+  local _stop_waitsecs=10
 
   while (( $# )); do
     case "$1" in
@@ -243,6 +244,7 @@ ed_supervisor_config_template() {
     "-u"|"--user")    shift; _user="$1" ;;
     "-e"|"--env")     shift; _env="$1,$_env" ;;
     "-l"|"--log")     shift; _logname="$1" ;;
+    "--stopwaitsecs") shift; _stop_waitsecs="$1" ;;
     esac
     shift
   done
@@ -270,7 +272,7 @@ startsecs=1
 startretries=3
 exitcodes=0,2
 stopsignal=$_stop_signal
-stopwaitsecs=10
+stopwaitsecs=$_stop_waitsecs
 user=$_user
 redirect_stderr=false
 stdout_logfile=fluent:$_name.stdout:x:0:/supervisor/$_logname.stdout.log
