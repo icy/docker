@@ -16,6 +16,8 @@ ed_bocker() {
   ed_copy ./etc/td-agent/ /etc/td-agent/
 }
 
+# This is to overwrite the default configuration from `fluentd`
+# by using context files.!!!
 ed_fluentd_default_config() {
   local _dirs="/fluentd/forward-buffer/ /fluentd/forward-failed/"
   local _last_dest="/fluentd/conf.d/98_forward_all_to_parent.conf"
@@ -27,10 +29,22 @@ ed_fluentd_default_config() {
       /var/log/exim4/ \
       /tomcat/logs/ \
       /var/log/apache2/ \
-      /var/log/mysql/
+      /var/log/mysql/ \
+      /var/mail/
 
-    mkdir -pv$_dirs
+    mkdir -pv $_dirs
     chown fluentd: $_dirs
+
+    # Fix permission!!!!
+    gpasswd -a fluentd adm
+    gpsaswd -a fluentd mail
+
+    # # Fix mysql permission. Sometimes, /var/log/*.log belongs to
+    # # mysql:adm, sometimes they belong to mysql:mysql. Please note that
+    # # uid/gid of mysql account may vary (depend on user's customization.)
+    # if [[ -f /var/log/mysql/* ]]; then
+    #   : "Allow fluentd to access MySQL log files"
+    # fi
 
     if [[ ! -f /fluentd/conf.d/__.skip ]]; then
       echo ":: Transferring default files to /fluentd/conf.d/..."
