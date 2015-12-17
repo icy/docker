@@ -83,8 +83,8 @@ ed_percona_set_datadir() {
     export MYSQL_datadir="/mysql/"
 
     while read _line; do
-      _var_name="$(sed -r -e 's#MYSQL_([^=]+)=.*#\1#' -e 's#__#-#g' <<< $_line)"
-      _var_value="$(sed -r -e 's#MYSQL_[^=]+=(.*)$#\1#'             <<< $_line)"
+      _var_name="$(sed -r -e 's#MYSQL_([^=]+)=.*#\1#' -e 's#__#-#g' <<< "$_line")"
+      _var_value="$(sed -r -e 's#MYSQL_[^=]+=(.*)$#\1#'             <<< "$_line")"
 
       sed -r -i -e "/#?[[:space:]]*$_var_name=/d "               /etc/mysql/my.cnf
       sed -r -i -e "/#?[[:space:]]*$_var_name\$/d"               /etc/mysql/my.cnf
