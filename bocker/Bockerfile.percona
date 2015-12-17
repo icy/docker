@@ -82,7 +82,7 @@ ed_percona_set_datadir() {
     export MYSQL_skip__networking='false'
     export MYSQL_datadir="/mysql/"
 
-    {
+    OLDIFS=$IFS
     IFS=''
     while read _line; do
       _var_name="$(sed -r -e 's#MYSQL_([^=]+)=.*#\1#' -e 's#__#-#g' <<< "$_line")"
@@ -98,7 +98,7 @@ ed_percona_set_datadir() {
       env \
       | grep -E "^MYSQL_[a-z]" \
     )
-    }
+    IFS=$OLDIFS
   fi
 
   _D_DATA="$(/usr/sbin/mysqld --verbose --help 2>/dev/null | awk '$1 == "datadir" { print $2; exit }')"
