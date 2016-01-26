@@ -42,10 +42,10 @@ ed_nginx_download_source() {
   cd /usr/src/build/
 
   # Download all necessary files
-  curl -Lso- https://github.com/openresty/echo-nginx-module/archive/v0.57.tar.gz \
+  curl -Lso- https://github.com/openresty/echo-nginx-module/archive/v0.58.tar.gz \
   | tar -xzf - -C /usr/src/build/modules/
 
-  curl -Lso- https://github.com/openresty/headers-more-nginx-module/archive/v0.25.tar.gz \
+  curl -Lso- https://github.com/openresty/headers-more-nginx-module/archive/v0.29.tar.gz \
   | tar -xzf - -C /usr/src/build/modules/
 
   curl -Lso /usr/src/build/nginx.tar.gz \
