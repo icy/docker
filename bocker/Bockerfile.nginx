@@ -77,7 +77,7 @@ ed_nginx_build() {
   _NGINX_FLAGS="
       --prefix=/usr/ \
       --conf-path=/etc/nginx/nginx.conf
-      --http-log-path=/var/log/nginx/access.log
+      --http-log-path=/var/log/nginx/acces.log
       --error-log-path=/var/log/nginx/error.log
       --lock-path=/var/lock/nginx.lock
       --pid-path=/run/nginx.pid
