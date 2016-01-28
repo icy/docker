@@ -88,7 +88,7 @@ while read CONTAINER; do
 
         # Rotate any mail files under /var/mail/.
         # NOTE: Email daemon will create new file automatically
-        find /var/mail/ -type f ! -iname "*.gz " -a ! -iname "*[0-9][0-9][0-9][0-9]" \
+        find /var/mail/ -type f ! -iname "*.gz" -a ! -iname "*[0-9][0-9][0-9][0-9]" \
         | while read FILE; do
             _rotate_files "$FILE"
           done
