@@ -20,8 +20,10 @@ ed_bocker() {
     ed_nginx_env \
     ed_nginx_install_packages \
     ed_nginx_download_source \
+    ed_nginx_hook_before_build \
     ed_nginx_build \
     ed_nginx_clean_up \
+    ed_nginx_hook_after_build \
     ed_nginx_create_generator
 }
 
@@ -30,6 +32,15 @@ ed_bocker() {
 ed_nginx_env() {
   export NGINX_VERSION=1.8.1
   export NGINX_CHECKSUM=a99dc2ee4c60e3134891cd13c111f42901252c2b
+}
+
+# Allow arbitary custom in another layer
+ed_nginx_hook_before_build() {
+  :
+}
+
+ed_nginx_hook_after_build() {
+  :
 }
 
 ed_nginx_install_packages() {
@@ -64,12 +75,7 @@ ed_nginx_clean_up() {
 }
 
 ed_nginx_create_generator() {
-  # Give a generator to Supervisor
-  {
-    echo "#!/bin/bash"
-    echo "/bocker.sh ed_nginx_generate_config"
-  } \
-  > /etc/s.supervisor/nginx.sh
+  ed_supervisor_generator ed_nginx_generate_config
 }
 
 ed_nginx_build() {
