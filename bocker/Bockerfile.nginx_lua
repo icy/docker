@@ -44,5 +44,5 @@ ed_nginx_hook_before_build() {
 
   export LUA_LIB=/usr/local/lib/
   export LUA_INC=/usr/local/include/luajit-2.0/
-  export _NGINX_FLAGS='--with-ld-opt="-Wl,-rpath,/usr/local/lib/"'
+  export _NGINX_FLAGS="--with-ld-opt=\"-Wl,-rpath,/usr/local/lib/\""
 }
