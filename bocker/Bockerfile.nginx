@@ -81,7 +81,8 @@ ed_nginx_create_generator() {
 ed_nginx_build() {
   _NGINX_NAME="nginx-${NGINX_VERSION}"
   _NGINX_FLAGS="
-      --prefix=/usr/ \
+      ${_NGINX_FLAGS:-}
+      --prefix=/usr/
       --conf-path=/etc/nginx/nginx.conf
       --http-log-path=/var/log/nginx/acces.log
       --error-log-path=/var/log/nginx/error.log
