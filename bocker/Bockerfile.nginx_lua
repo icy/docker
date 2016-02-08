@@ -29,6 +29,9 @@ ed_nginx_hook_before_build() {
     cd LuaJIT-${LUAJIT_VERSION}
     make
     make install
+
+    # Damn it.
+    ln -s /usr/local/lib/libluajit-5.1.so /usr/local/lib/liblua.so
   )
 
   # Some custom modules: nginx_devel_kit, lua-nginx-module
