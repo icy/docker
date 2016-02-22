@@ -33,14 +33,24 @@ ed_tomcat_install() {
 }
 
 ed_tomcat_prepare_user() {
+  local _tomcat_version=7
 
   mkdir -pv /tomcat/webapps/ /tomcat/work/ /tomcat/logs/
 
-  ln -s /usr/share/tomcat7-admin/manager/ /tomcat/webapps/
-  ln -s /usr/share/tomcat7-admin/host-manager/ /tomcat/webapps/
-  ln -s /usr/share/tomcat7/lib/ /tomcat/lib
+  if [[ -d "/usr/share/tomcat7/lib/" ]]; then
+    _tomcat_version=7
+  elif [[ "/usr/share/tomcat8/lib/" ]]; then
+    _tomcat_version=8
+  fi
 
-  mv /etc/tomcat7/ /tomcat/conf
+  ln -s /usr/share/tomcat${_tomcat_version}-admin/manager/ /tomcat/webapps/
+  ln -s /usr/share//tomcat${_tomcat_version}-admin/host-manager/ /tomcat/webapps/
+  ln -s /usr/share//tomcat${_tomcat_version}/lib/ /tomcat/lib
+
+  mv /etc//tomcat${_tomcat_version}/ /tomcat/conf
+  sed -i \
+    's/redirectPort="8443"/redirectPort="8443" maxPostSize="-1" maxSavePostSize="-1" maxSwallowSize="-1"/g' \
+    /tomcat/conf/server.xml
 
   useradd -K UID_MIN=10000 tomcat
 
