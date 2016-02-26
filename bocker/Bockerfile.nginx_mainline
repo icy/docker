@@ -5,6 +5,7 @@
 # Date   : 2015 May 28
 
 ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.nginx"
+ed_from  "ubuntu:14.04"
 
 ed_nginx_env() {
   export NGINX_VERSION=1.9.1
@@ -12,4 +13,7 @@ ed_nginx_env() {
 
   export NGINX_VERSION=1.9.2
   export NGINX_CHECKSUM=814855ab98d6b0900207a6e5307252b130af61a2
+
+  export NGINX_VERSION=1.9.12
+  export NGINX_CHECKSUM=5945a0701f0ee0755fd20643f755507996a3f7f3
 }
