@@ -44,6 +44,8 @@ ed_phpfpm_daemonize() {
 }
 
 ed_phpfpm_generate_nginx_config() {
+  touch /etc/nginx/misc/phpfpm.custom.txt;
+
   cat \
 <<-EOF
   server {
@@ -51,12 +53,10 @@ ed_phpfpm_generate_nginx_config() {
     server_name  ${PHPFPM_DOMAIN} ${PHPFPM_OTHER_DOMAINS:-};
     root         /phpfpm/www/;
 
-    index index.php index.html;
+    index        index.php index.html;
 
-    error_log   /var/log/nginx/${PHPFPM_DOMAIN}.error.log;
-    access_log  /var/log/nginx/${PHPFPM_DOMAIN}.acces.log main;
-
-    include /etc/nginx/misc/security.conf;
+    include      /etc/nginx/misc/security.conf;
+    include      /etc/nginx/misc/phpfpm.custom.txt;
 
     location ~ \.php$ {
       fastcgi_pass     unix:/phpfpm/var/phpfpm.sock;
