@@ -136,7 +136,7 @@ ed_phpfpm_generate_config() {
 
       _file="$_d_config"/${_order}-${_mod}.ini
       {
-        echo "${_prefix}_extension=${_mod}.so"
+        echo "${_prefix}extension=${_mod}.so"
       } > "$_file"
 
     done
