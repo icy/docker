@@ -34,12 +34,7 @@ ed_phpfpm_install() {
 
   mkdir -p /phpfpm/www/ /phpfpm/var/ /phpfpm/logs/
 
-  # Give a generator to Supervisor
-  {
-    echo "#!/bin/bash"
-    echo "/bocker.sh ed_phpfpm_generate_config"
-  } \
-  > /etc/s.supervisor/phpfpm.sh
+  ed_supervisor_generator ed_phpfpm_generate_config
 }
 
 ed_phpfpm_daemonize() {
