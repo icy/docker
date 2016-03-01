@@ -96,6 +96,54 @@ ed_phpfpm_generate_config() {
   chown -c www-data:www-data /phpfpm/var/ /phpfpm/logs/
   chmod -c 750 /phpfpm/var/ /phpfpm/logs/
 
+  # Support modules loading from environment
+  #   -e PHP_zend=
+  #   -e PHP_mods=
+
+  local _d_config="/etc/php5/fpm/conf.d/"
+  echo >&2 ":: Removing all files from $_d_config..."
+  rm -fv "$_d_config"/*
+
+  PHP_mods="${PHP_mods:-gd,readline,json,curl,mysql,mysqli,pdo_mysql,pdo@30}"
+  PHP_zend="${PHP_zend:-opache}"
+
+  while read _line; do
+    _mods="${_line/PHP_/}"
+    _type="${_mods%%=*}"
+    _mods="${_mods##*=}"
+
+    if [[ -z "$_mods" || -z "$_type" ]]; then
+      echo >&2 ":: Empty module settings or wrong type"
+      exit 1
+    fi
+
+    case "$_type" in
+    "mods") _order_default=50 ; _prefix="";;
+    "zend") _order_default=10 ; _prefix="zend_";;
+    *)
+      echo >&2 ":: Unknown type '$_type'";
+      exit 1
+      ;;
+    esac
+
+    for _mod in $(sed -e 's#,# #g' <<<$_mods); do
+      _order="${_mod##*@}"
+      if [[ "$_order" == "$_mod" ]]; then
+        _order="$_order_default"
+      else
+        _mod="${_mod%%@*}"
+      fi
+
+      _file="$_d_config"/${_order}-${_mod}.ini
+      {
+        echo "${_prefix}_extension=${_mod}.so"
+      } > "$_file"
+
+    done
+  done < <(end | grep -E "^PHP_[a-z]")
+
+  echo >&2 ":: List of installed modules"
+  php5-fpm -m || exit 1
 
   ed_supervisor_config_template \
     --name "phpfpm" \
