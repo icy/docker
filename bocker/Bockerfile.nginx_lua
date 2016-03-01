@@ -6,7 +6,6 @@
 # Link   : https://github.com/openresty/lua-nginx-module/#installation
 
 ed_source "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.nginx
-ed_from   "ubuntu:14.04"
 
 ed_nginx_hook_before_build() {
   # Custom here
