@@ -29,6 +29,8 @@ ed_phpfpm_install() {
     php5-cgi \
     php-mail \
     php5-fpm
+    php5-readline \
+    php5-json
 
   ed_apt_clean
 
@@ -105,7 +107,7 @@ ed_phpfpm_generate_config() {
   rm -fv "$_d_config"/*
 
   export PHP_mods="${PHP_mods:-gd,readline,json,curl,mysql,mysqli,pdo_mysql,pdo@30}"
-  export PHP_zend="${PHP_zend:-opache}"
+  export PHP_zend="${PHP_zend:-opcache}"
 
   while read _line; do
     _mods="${_line/PHP_/}"
