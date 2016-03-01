@@ -140,7 +140,7 @@ ed_phpfpm_generate_config() {
       } > "$_file"
 
     done
-  done < <(end | grep -E "^PHP_[a-z]")
+  done < <(env | grep -E "^PHP_[a-z]")
 
   echo >&2 ":: List of installed modules"
   php5-fpm -m || exit 1
