@@ -104,8 +104,8 @@ ed_phpfpm_generate_config() {
   echo >&2 ":: Removing all files from $_d_config..."
   rm -fv "$_d_config"/*
 
-  PHP_mods="${PHP_mods:-gd,readline,json,curl,mysql,mysqli,pdo_mysql,pdo@30}"
-  PHP_zend="${PHP_zend:-opache}"
+  export PHP_mods="${PHP_mods:-gd,readline,json,curl,mysql,mysqli,pdo_mysql,pdo@30}"
+  export PHP_zend="${PHP_zend:-opache}"
 
   while read _line; do
     _mods="${_line/PHP_/}"
