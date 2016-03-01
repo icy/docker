@@ -28,7 +28,7 @@ ed_phpfpm_install() {
     php5-gd \
     php5-cgi \
     php-mail \
-    php5-fpm
+    php5-fpm \
     php5-readline \
     php5-json
 
