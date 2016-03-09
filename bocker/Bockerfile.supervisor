@@ -51,8 +51,7 @@ ed_supervisor_daemonize() {
   ed_exim4_generate_config
   ed_msyslog_generate_config
 
-  ed_supervisor_reset_all_environments
-  exec /usr/bin/supervisord --configuration /etc/supervisord.conf
+  exec env -i /usr/bin/supervisord --configuration /etc/supervisord.conf
 }
 
 ########################################################################
@@ -277,30 +276,13 @@ user=$_user
 redirect_stderr=false
 stdout_logfile=fluent:$_name.stdout:x:0:/supervisor/$_logname.stdout.log
 stderr_logfile=fluent:$_name.stderr:x:0:/supervisor/$_logname.stderr.log
-environment=${_env%,*}
+environment=PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/sbin:/usr/local/bin/,${_env%,*}
 serverurl=AUTO
 EOF
 }
 
 ed_supervisor_reset_all_environments() {
-  while read env; do
-    unset $env
-  done < \
-    <( \
-      env \
-      | grep -E '^[^ ]' \
-      | awk -F= '{print $1}' \
-      | grep -v '^_$' \
-      | grep -v '^PATH$' \
-      | grep -v '^HOME$' \
-      | grep -v '^HOSTNAME$' \
-      | grep -v '^PWD$' \
-      | grep -v '^LOGNAME$' \
-      | grep -v '^SHELL$' \
-      | grep -v '^USER$' \
-      | grep -v '^LANG$' \
-      | grep -v '^LC_NAME$'
-    )
+  :
 }
 
 ed_supervisor_generator() {
