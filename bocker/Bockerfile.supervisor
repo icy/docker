@@ -51,7 +51,7 @@ ed_supervisor_daemonize() {
   ed_exim4_generate_config
   ed_msyslog_generate_config
 
-  exec env -i /usr/bin/supervisord --configuration /etc/supervisord.conf
+  exec -c /usr/bin/supervisord --configuration /etc/supervisord.conf
 }
 
 ########################################################################
