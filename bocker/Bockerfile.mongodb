@@ -30,7 +30,7 @@ ed_mongodb_install() {
   apt-key adv --keyserver keys.gnupg.net \
     --recv-keys 492EAFE8CD016A07919F1D2B9ECBEC467F0CEB10
 
-  echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/${MONGODB_MAJOR_VERSION} main" \
+  echo "deb http://repo.mongodb.org/apt/debian trusty/mongodb-org/${MONGODB_MAJOR_VERSION} main" \
     > /etc/apt/sources.list.d/mongodb.list
 
   ed_apt_install numactl mongodb-org

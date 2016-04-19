@@ -5,7 +5,6 @@
 # Date   : 2015 May 19th
 # Note   : phantomjs must use `debian:jessie` to fix font rendering issue
 
-ed_from  "debian:jessie"
 ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.supervisor
 
 ed_expose 8190

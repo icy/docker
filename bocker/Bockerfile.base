@@ -4,7 +4,7 @@
 # Author : Anh K. Huynh
 # Date   : 2015 May 15th
 
-ed_from debian:wheezy
+ed_from "ubuntu:14.04"
 ed_maintainer "Anh K. Huynh <kyanh@theslinux.org>"
 
 ed_ship   ed_apt_clean ed_apt_purge ed_apt_install ed_apt_remove
