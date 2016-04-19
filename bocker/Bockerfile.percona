@@ -41,7 +41,7 @@ ed_percona_env() {
 ed_percona_install() {
 
   curl -Lso percona.deb https://repo.percona.com/apt/percona-release_0.1-3.$(lsb_release -sc)_all.deb
-  pacma -Su percona.deb
+  dpkg -i percona.deb
   rm -fv percona.deb
 
   ed_apt_install percona-server-server-$PERCONA_MAJOR
