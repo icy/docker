@@ -104,35 +104,7 @@ ed_supervisor_install_supervisor() {
   cd /
   rm -rf /usr/src/pip/
 
-  # Fluent module is required!!!
-  pip install fluent-logger
-
-  # Special patch of #supervisord with #fluentd support
-  mkdir -p /tmp/src/
-  cd /tmp/src/
-
-  curl -sSL "$SUPERVISOR_URL" -o "supervisord.tar.gz"
-  echo "$SUPERVISOR_SHA1 *supervisord.tar.gz" \
-  | sha1sum -c -
-
-  # FIXME: Remove the system package !!!!
-  rm -rf \
-    /usr/lib/python*/dist-packages/supervisor/ \
-    /usr/share/pyshared/supervisor \
-    /usr/share/pyshared/supervisor-*
-
-  tar -xzf supervisord.tar.gz --strip-components=1
-  python2 setup.py install
-  # FIXME: This is due to very old version of python-setuptools :(
-  # FIXME: When we move to a new version of OS, this will change a lot!!!
-  mv /usr/local/bin/* /usr/bin/ -fv
-
-  cd /tmp/
-  rm -rf /tmp/src/
-
   ed_apt_purge $_packages
-
-  test "$(supervisord --version)" = "$SUPERVISOR_VERSION"
 }
 
 ed_supervisor_install_init_script() {
@@ -203,7 +175,7 @@ chmod=0700                      ; sockef file mode (default 0700)
 
 [supervisord]
 nodaemon=true
-logfile=fluent:${SUPERVISOR_FLUENT_TAG_HOST_PORT:-docker:parent:24224}:/supervisor/${HOSTNAME}_main.log
+logfile=/supervisor/${HOSTNAME}_main.log
 pidfile=/var/run/supervisord.pid ; (supervisord pidfile;default supervisord.pid)
 childlogdir=/supervisor/         ; ('AUTO' child log dir, default $TEMP)
 logfile_maxbytes=50MB            ; (max main logfile bytes b4 rotation;default 50MB)
@@ -274,8 +246,8 @@ stopsignal=$_stop_signal
 stopwaitsecs=$_stop_waitsecs
 user=$_user
 redirect_stderr=false
-stdout_logfile=fluent:$_name.stdout:x:0:/supervisor/$_logname.stdout.log
-stderr_logfile=fluent:$_name.stderr:x:0:/supervisor/$_logname.stderr.log
+stdout_logfile=/supervisor/$_logname.stdout.log
+stderr_logfile=/supervisor/$_logname.stderr.log
 environment=PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/sbin:/usr/local/bin/,${_env%,*}
 serverurl=AUTO
 EOF
