@@ -58,12 +58,7 @@ ed_redis_prepare_user() {
   chown redis:redis /redis
   ln -s /redis /home/redis
 
-  # Give a generator to Supervisor
-  {
-    echo "#!/bin/bash"
-    echo "/bocker.sh ed_redis_generate_config"
-  } \
-  > /etc/s.supervisor/redis.sh
+  ed_supervisor_generator ed_redis_generate_config
 }
 
 ed_redis_daemonize() {

@@ -28,18 +28,15 @@ ed_phpfpm_install() {
     php5-gd \
     php5-cgi \
     php-mail \
-    php5-fpm
+    php5-fpm \
+    php5-readline \
+    php5-json
 
   ed_apt_clean
 
   mkdir -p /phpfpm/www/ /phpfpm/var/ /phpfpm/logs/
 
-  # Give a generator to Supervisor
-  {
-    echo "#!/bin/bash"
-    echo "/bocker.sh ed_phpfpm_generate_config"
-  } \
-  > /etc/s.supervisor/phpfpm.sh
+  ed_supervisor_generator ed_phpfpm_generate_config
 }
 
 ed_phpfpm_daemonize() {
@@ -47,6 +44,8 @@ ed_phpfpm_daemonize() {
 }
 
 ed_phpfpm_generate_nginx_config() {
+  touch /etc/nginx/misc/phpfpm.custom.txt;
+
   cat \
 <<-EOF
   server {
@@ -54,12 +53,10 @@ ed_phpfpm_generate_nginx_config() {
     server_name  ${PHPFPM_DOMAIN} ${PHPFPM_OTHER_DOMAINS:-};
     root         /phpfpm/www/;
 
-    index index.php index.html;
+    index        index.php index.html;
 
-    error_log   /var/log/nginx/${PHPFPM_DOMAIN}.error.log;
-    access_log  /var/log/nginx/${PHPFPM_DOMAIN}.acces.log main;
-
-    include /etc/nginx/misc/security.conf;
+    include      /etc/nginx/misc/security.conf;
+    include      /etc/nginx/misc/phpfpm.custom.txt;
 
     location ~ \.php$ {
       fastcgi_pass     unix:/phpfpm/var/phpfpm.sock;
@@ -101,6 +98,54 @@ ed_phpfpm_generate_config() {
   chown -c www-data:www-data /phpfpm/var/ /phpfpm/logs/
   chmod -c 750 /phpfpm/var/ /phpfpm/logs/
 
+  # Support modules loading from environment
+  #   -e PHP_zend=
+  #   -e PHP_mods=
+
+  local _d_config="/etc/php5/fpm/conf.d/"
+  echo >&2 ":: Removing all files from $_d_config..."
+  rm -fv "$_d_config"/*
+
+  export PHP_mods="${PHP_mods:-gd,readline,json,curl,mysql,mysqli,pdo_mysql,pdo@30}"
+  export PHP_zend="${PHP_zend:-opcache}"
+
+  while read _line; do
+    _mods="${_line/PHP_/}"
+    _type="${_mods%%=*}"
+    _mods="${_mods##*=}"
+
+    if [[ -z "$_mods" || -z "$_type" ]]; then
+      echo >&2 ":: Empty module settings or wrong type"
+      exit 1
+    fi
+
+    case "$_type" in
+    "mods") _order_default=50 ; _prefix="";;
+    "zend") _order_default=10 ; _prefix="zend_";;
+    *)
+      echo >&2 ":: Unknown type '$_type'";
+      exit 1
+      ;;
+    esac
+
+    for _mod in $(sed -e 's#,# #g' <<<$_mods); do
+      _order="${_mod##*@}"
+      if [[ "$_order" == "$_mod" ]]; then
+        _order="$_order_default"
+      else
+        _mod="${_mod%%@*}"
+      fi
+
+      _file="$_d_config"/${_order}-${_mod}.ini
+      {
+        echo "${_prefix}extension=${_mod}.so"
+      } > "$_file"
+
+    done
+  done < <(env | grep -E "^PHP_[a-z]")
+
+  echo >&2 ":: List of installed modules"
+  php5-fpm -m || exit 1
 
   ed_supervisor_config_template \
     --name "phpfpm" \

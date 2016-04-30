@@ -20,6 +20,10 @@ ed_bocker() {
 #   https://td-toolbelt.herokuapp.com/sh/install-debian-squeeze-td-agent2.sh
 #
 ed_fluentd_install() {
+  local _gems=
+
+  _gems=""
+
   curl -LsSo- \
     https://packages.treasuredata.com/GPG-KEY-td-agent \
   | apt-key add -
@@ -30,16 +34,15 @@ ed_fluentd_install() {
   ed_apt_install td-agent
   ed_apt_clean
 
+  for _gem in $_gems; do
+    /opt/td-agent/embedded/bin/gem install --no-ri --no-rdoc $_gem
+  done
+
   # Inialize a userid
   useradd -K UID_MIN=1009 fluentd
   mkdir -pv /etc/td-agent/plugin/ /etc/td-agent/conf.d/
 
-  # Give a generator to Supervisor
-  {
-    echo "#!/bin/bash"
-    echo "/bocker.sh ed_fluentd_generate_config"
-  } \
-  > /etc/s.supervisor/fluentd.sh
+  ed_supervisor_generator ed_fluentd_generate_config
 }
 
 ed_fluentd_generate_config() {
@@ -48,13 +51,13 @@ ed_fluentd_generate_config() {
   chown root:fluentd -Rc /etc/td-agent/
   chown fluentd:fluentd -Rc /fluentd/
 
-  if [[ -f "/fluentd/agent.conf" ]]; then
-    cat /fluentd/agent.conf > /etc/td-agent/agent.conf
-  else
-    ed_fluentd_default_config > /etc/td-agent/agent.conf
-    cp /etc/td-agent/agent.conf /fluentd/agent.conf
+  if [[ ! -f "/fluentd/__.skip" ]]; then
+    ed_fluentd_default_config > /fluentd/agent.conf
   fi
 
+  # td-agent is running as "fluentd" user, or "td-agent" on default
+  # installation on host machine. This is tough problem, as sometimes
+  # "fluentd" needs to read files from other services, e.g, mysql.
   ed_supervisor_config_template \
     --name "fluentd" \
     --command "/bocker.sh ed_fluentd_daemonize" \
@@ -65,7 +68,7 @@ ed_fluentd_generate_config() {
 ed_fluentd_daemonize() {
   exec /opt/td-agent/embedded/bin/ruby \
     /usr/sbin/td-agent \
-    -c /etc/td-agent/agent.conf \
+    -c /fluentd/agent.conf \
     --log /fluentd/td-agent.log
 }
 

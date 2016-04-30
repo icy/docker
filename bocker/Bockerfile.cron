@@ -22,6 +22,10 @@ ed_cron_generate_config() {
     return 0
   fi
 
+  if [[ ! -f /etc/default/locale ]]; then
+    echo 'LANG="en_US.UTF-8"' > /etc/default/locale
+  fi
+
   ed_supervisor_config_template \
     --name "cron" \
     --command "/bocker.sh ed_cron_daemonize" \

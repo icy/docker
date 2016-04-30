@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Purpose: nginx + lua
+# Author : Anh K. Huynh
+# Date   : 2016 Feb 08th
+# Link   : https://github.com/openresty/lua-nginx-module/#installation
+
+ed_source "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.nginx
+
+ed_nginx_hook_before_build() {
+  # Custom here
+  LUAJIT_VERSION=2.0.4
+  LUAJIT_CHECKSUM=6e533675180300e85d12c4bbeea2d0e41ad21172
+  # /Custom here
+
+  # Install LuaJIT from source
+  (
+    mkdir -pv /usr/src/build/luajit/
+    cd /usr/src/build/luajit
+
+    curl -Lso "luajit.tgz" http://luajit.org/download/LuaJIT-${LUAJIT_VERSION}.tar.gz
+
+    echo "$LUAJIT_CHECKSUM *luajit.tgz" \
+    | sha1sum -c -
+
+    tar xfz luajit.tgz
+
+    cd LuaJIT-${LUAJIT_VERSION}
+    make
+    make install
+
+    # Damn it.
+    ln -s /usr/local/lib/libluajit-5.1.so /usr/local/lib/liblua.so
+  )
+
+  # Some custom modules: nginx_devel_kit, lua-nginx-module
+  (
+    cd /usr/src/build/
+
+    curl -Lso- https://github.com/simpl/ngx_devel_kit/archive/v0.2.19.tar.gz \
+    | tar -xzf - -C /usr/src/build/modules/
+
+    curl -Lso- https://github.com/openresty/lua-nginx-module/archive/v0.10.0.tar.gz \
+    | tar -xzf - -C /usr/src/build/modules/
+  )
+
+  export LUA_LIB=/usr/local/lib/
+  export LUA_INC=/usr/local/include/luajit-2.0/
+  export _NGINX_FLAGS=--with-ld-opt=-Wl,-rpath,/usr/local/lib/
+}

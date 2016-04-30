@@ -24,18 +24,22 @@ ed_msyslog_generate_config() {
 
   cat > /etc/s.supervisor/msyslog.s \
 <<-EOF
-[eventlistener:stdout]
-command = supervisor_stdout
-buffer_size = 100
-events = PROCESS_LOG
-result_handler = supervisor_stdout:event_handler
-priority = 1
+; [eventlistener:stdout]
+; command = supervisor_stdout
+; buffer_size = 100
+; events = PROCESS_LOG
+; result_handler = supervisor_stdout:event_handler
+; priority = 1
+; stdout_logfile=/dev/null
+; stderr_logfile=/dev/null
 
 [program:msyslog]
 command=/bocker.sh ed_msyslog_damonize
-stdout_events_enabled = true
-stderr_events_enabled = true
+; stdout_events_enabled = true
+; stderr_events_enabled = true
 priority = 10
+stdout_logfile=fluent:fluentd.stdout:x:0:/supervisor/${HOSTNAME}_msyslog.stdout.log
+stderr_logfile=fluent:fluentd.stderr:x:0:/supervisor/${HOSTNAME}_msyslog.stderr.log
 EOF
 
 }

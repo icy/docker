@@ -25,7 +25,7 @@ ed_ship   --later \
 # By exporting these volumes, backup program can use them.
 # (See for example, https://www.percona.com/doc/percona-xtrabackup/2.2/.)
 # It isn't a good idea to use the same /mysql/ for multiple instance.
-ed_volume   /mysql/ /etc/mysql/
+ed_volume   /mysql/ /etc/mysql/ /var/run/mysqld/
 
 ed_bocker() {
   ed_group \
@@ -40,12 +40,9 @@ ed_percona_env() {
 
 ed_percona_install() {
 
-  apt-key adv \
-      --keyserver keys.gnupg.net \
-      --recv-keys 1C4CBDCDCD2EFD2A
-
-  echo 'deb http://repo.percona.com/apt wheezy main' \
-      > /etc/apt/sources.list.d/percona.list
+  curl -Lso percona.deb https://repo.percona.com/apt/percona-release_0.1-3.$(lsb_release -sc)_all.deb
+  dpkg -i percona.deb
+  rm -fv percona.deb
 
   ed_apt_install percona-server-server-$PERCONA_MAJOR
   ed_apt_clean
@@ -77,13 +74,28 @@ ed_percona_set_datadir() {
       cp -vf /mysql/my.cnf /etc/mysql/my.cnf || return 1
     fi
 
-    echo >&2 ":: MySQL: Fix bind-address..."
-    sed -ri 's/^(bind-address|skip-networking)/;\1/' /etc/mysql/my.cnf
+    # Override all user environments!!!
+    export MYSQL_bind__address='*'
+    export MYSQL_skip__networking='false'
+    export MYSQL_datadir="/mysql/"
 
-    echo >&2 ":: MySQL: Fix datadir setting in /etc/mysql/my.cnf"
-    sed -i \
-      -e 's#datadir[[:space:]]*=.*$#datadir = /mysql/#g' \
-      /etc/mysql/my.cnf
+    OLDIFS=$IFS
+    IFS=''
+    while read _line; do
+      _var_name="$(sed -r -e 's#MYSQL_([^=]+)=.*#\1#' -e 's#__#-#g' <<< "$_line")"
+      _var_value="$(sed -r -e 's#MYSQL_[^=]+=(.*)$#\1#'             <<< "$_line")"
+
+      sed -r -i -e "/#?[[:space:]]*$_var_name=/d "               /etc/mysql/my.cnf
+      sed -r -i -e "/#?[[:space:]]*$_var_name\$/d"               /etc/mysql/my.cnf
+      sed -r -i -e "/#?[[:space:]]*$_var_name[[:space:]]*/d"     /etc/mysql/my.cnf
+
+      echo >&2 ":: $FUNCNAME: Updating my.cnf: '$_var_name' => '$_var_value'"
+      sed -r -i -e "/\[mysqld]/a $_var_name = $_var_value"       /etc/mysql/my.cnf
+    done < <(
+      env \
+      | grep -E "^MYSQL_[a-z]" \
+    )
+    IFS=$OLDIFS
   fi
 
   _D_DATA="$(/usr/sbin/mysqld --verbose --help 2>/dev/null | awk '$1 == "datadir" { print $2; exit }')"
@@ -91,6 +103,9 @@ ed_percona_set_datadir() {
     echo >&2 ":: MySQL: data directory must be /mysql/. Current value: $_D_DATA."
     return 1
   fi
+
+  echo >&2 ":: $FUNCNAME: Checking configuration file..."
+  /usr/sbin/mysqld --verbose --help >/dev/null || return 1
 
   echo "$_D_DATA"
 }
@@ -151,12 +166,16 @@ EOSQL
 }
 
 ed_percona_daemonize() {
+  echo >&2 ":: $FUNCNAME: Checking configuration file..."
+  /usr/sbin/mysqld --verbose --help >/dev/null || return 1
+
+  echo >&2 ":: $FUNCNAME: Starting main daemon..."
   if [[ -f "/mysql/docker-init.sql" ]]; then
     exec /usr/sbin/mysqld \
         --init-file=/mysql/docker-init.sql
   fi
 
-  exec /usr/sbin/mysqld;
+  exec /usr/sbin/mysqld
 }
 
 ########################################################################
@@ -168,7 +187,15 @@ ed_percona_generate_config() {
 
   # These directories are removed at the Installation process
   mkdir -pv /var/run/mysqld/ /var/log/mysql/
-  chown -R mysql:mysql /mysql/ /var/run/mysqld/ /var/log/mysql/
+  chown -R mysql:mysql /mysql/ /var/run/mysqld/
+  chown mysql:adm /var/log/mysql/
+  chmod 750 /var/log/mysql/
+  # On the host machine
+  #   - mysqld creates files for     mysql:mysql, permission = 0600
+  #   - logoratate creates files for mysql:adm,   permission = 0644
+  # Inside Docker container
+  #   - mysqld creates files for     mysql:mysql, permission = 0600
+  #   - ./bin/logoratate.sh would fix that ...
 
   # Initialize the database if necessary
   # NOTE: mysqld is from /usr/sbin/ directory. If "su -" is used,

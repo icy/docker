@@ -66,6 +66,13 @@ ed_openvpn_generate_config() {
 #   - OPENVPN_GATEWAY : Gateway address
 #
 ed_openvpn_gen_cert_template() {
+  local _mobile="no"
+
+  if [[ "${1:-}" == "--mobile" ]]; then
+    shift
+    _mobile="yes"
+  fi
+
   cat \
 <<-EOF
 client
@@ -74,11 +81,19 @@ proto         udp
 remote        $OPENVPN_GATEWAY 1194
 resolv-retry  infinite
 cipher        BF-CBC
+EOF
 
+  if [[ "$_mobile" != "yes" ]]; then
+    cat <<-EOF
 ca            ca.crt
 cert          $CN.crt
 key           $CN.key
 tls-auth      ta.key 1
+EOF
+
+  fi
+
+  cat <<-EOF
 key-direction 1
 
 nobind
@@ -145,10 +160,11 @@ ed_openvpn_gen_cert() {
     > "$_archive/$CN/$CN-PC.ovpn"
 
   {
-    ed_openvpn_gen_cert_template "redirect-gateway def1"
+    ed_openvpn_gen_cert_template --mobile "redirect-gateway def1"
+
     echo "<ca>"
     cat keys/ca.crt
-    echo "<ca>"
+    echo "</ca>"
 
     echo "<cert>"
     cat "keys/$CN.crt" \

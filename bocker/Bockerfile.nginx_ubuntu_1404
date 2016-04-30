@@ -4,5 +4,5 @@
 # Author : Anh K. Huynh
 # Date   : 2015 Oct 19th
 
-ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.nginx
-ed_from  "ubuntu:14.04"
+# nginx is now using Ubuntu 14:04
+ed_source "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.nginx
