@@ -30,11 +30,8 @@ ed_bocker() {
 ########################################################################
 
 ed_nginx_env() {
-  export NGINX_VERSION=1.8.1
-  export NGINX_CHECKSUM=a99dc2ee4c60e3134891cd13c111f42901252c2b
-
-  export NGINX_VERSION=1.10.0
-  export NGINX_CHECKSUM=7a452cfe37e4134481442dbfa3fbdac6f484c5bc
+  export NGINX_VERSION=1.10.1
+  export NGINX_CHECKSUM=9c5d4e06d309bbe2efa41f09dd53912e3c3d3a75
 }
 
 # Allow arbitary custom in another layer
