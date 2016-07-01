@@ -6,7 +6,6 @@
 # Ref.   : http://mezzanine.jupo.org/docs/deployment.html
 
 ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.nginx
-ed_expose 80
 ed_ship   --later \
             ed_mezzanine_generate_config \
             ed_mezzanine_daemonize \
