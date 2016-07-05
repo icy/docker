@@ -4,26 +4,14 @@
 # Author : Anh K. Huynh
 # Date   : 2015 May 15th
 
-__SUPERVISOR_DIR="$(dirname ${BASH_SOURCE[0]:-.})"
-
-ed_reuse $__SUPERVISOR_DIR/Bockerfile.base
-# FIXME: Supervisor requires three components `cron`, `exim4`, `msyslog`.
-# FIXME: If any of them is dropped, please modify the init script
-# FIXME:  (`ed_supervisor_install_init_script`)
-ed_reuse $__SUPERVISOR_DIR/Bockerfile.cron
-ed_reuse $__SUPERVISOR_DIR/Bockerfile.exim4
-ed_reuse $__SUPERVISOR_DIR/Bockerfile.msyslog
-
-# ed_onbuild COPY "supervisor/*.sh supervisor/*.s /etc/s.supervisor/"
-# ed_onbuild COPY "cron.d/* /etc/cron.d/"
+ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.base
 
 ed_ship --later \
   ed_supervisor_generate_base_config \
   ed_supervisor_fix_uid_gid \
   ed_supervisor_execute_generators \
   ed_supervisor_daemonize \
-  ed_supervisor_config_template \
-  ed_supervisor_reset_all_environments
+  ed_supervisor_config_template
 
 ed_ship \
   ed_supervisor_generator
@@ -43,14 +31,7 @@ ed_bocker() {
 ed_supervisor_daemonize() {
   ed_supervisor_generate_base_config
   ed_supervisor_fix_uid_gid
-
   ed_supervisor_execute_generators
-
-  # Built-in generators
-  ed_cron_generate_config
-  ed_exim4_generate_config
-  ed_msyslog_generate_config
-
   exec -c /usr/bin/supervisord --configuration /etc/supervisord.conf
 }
 
@@ -65,49 +46,22 @@ ed_supervisor_env()  {
 }
 
 ed_supervisor_install_base() {
-  ed_apt_install \
-      cron exim4-daemon-light \
-      curl ca-certificates
-
-  ed_apt_clean
+  pacman -Sy
+  pacman -S curl ca-certificates
+  pacman -Sccc
 
   rm -rf /etc/supervisor/
   mkdir -pv /etc/s.supervisor/ /supervisor/
   ln -s /usr/bin/supervisorctl /usr/bin/s
-  rm -rf /var/log/exim4/ /var/spool/exim4/
 }
 
 ed_supervisor_install_supervisor() {
   local _packages="python-setuptools python-pip gcc libc6-dev make g++ python-dev"
 
-  ed_apt_install supervisor $_packages
+  pacman -Sy
+  pacman -S py-pip
+  pacman -Sccc
 
-  # Minimalistic syslog which just prints all messages received from
-  # /dev/log to standard out. This is useful in docker containers
-  # where you don't want to install a full blown syslog daemon,
-  # in combination with supervisord/supervisor-stdout.
-  curl -Lso /usr/bin/syslog-stdout.py \
-    https://raw.githubusercontent.com/icyfork/syslog-stdout/master/syslog-stdout.py#b1fb623f9aaaef83411d3821dc014bbbc983e622
-
-  mkdir -pv /usr/src/pip/
-  cd /usr/src/pip/
-
-  # A simple supervisord event listener to relay process output to
-  # supervisor's stdout. This is useful in situations where the output
-  # will be collected and set to external logging framework, such as Heroku.
-  curl -Lso - \
-    https://github.com/icyfork/supervisor-stdout/archive/master.tar.gz \
-    | tar -xzf - -C /usr/src/pip/ --strip-components=1
-
-  python2 setup.py install
-
-  cd /
-  rm -rf /usr/src/pip/
-
-  # Fluent module is required!!!
-  pip install fluent-logger
-
-  # Special patch of #supervisord with #fluentd support
   mkdir -p /tmp/src/
   cd /tmp/src/
 
@@ -115,22 +69,13 @@ ed_supervisor_install_supervisor() {
   echo "$SUPERVISOR_SHA1 *supervisord.tar.gz" \
   | sha1sum -c -
 
-  # FIXME: Remove the system package !!!!
-  rm -rf \
-    /usr/lib/python*/dist-packages/supervisor/ \
-    /usr/share/pyshared/supervisor \
-    /usr/share/pyshared/supervisor-*
+  tar xzf supervisord.tar.gz
+  cd supervisor-$SUPERVISOR_VERSION*
 
-  tar -xzf supervisord.tar.gz --strip-components=1
   python2 setup.py install
-  # FIXME: This is due to very old version of python-setuptools :(
-  # FIXME: When we move to a new version of OS, this will change a lot!!!
-  mv /usr/local/bin/* /usr/bin/ -fv
 
   cd /tmp/
   rm -rf /tmp/src/
-
-  ed_apt_purge $_packages
 
   test "$(supervisord --version)" = "$SUPERVISOR_VERSION"
 }
@@ -149,31 +94,96 @@ ed_supervisor_install_init_script() {
 # Container utils
 ########################################################################
 
+# Alpine may not have a `shadow` package, hence we need a tricky way
+# to modify the /etc/passwd and /etc/group.
+#
+# * If user doesn't exist, create them, with specific UID
+# * If group doesn't exit, create them, with specific GID
+#
 ed_supervisor_fix_uid_gid() {
-  env \
-  | grep -E '^[A-Z0-9]+_UID=[0-9]+$' \
-  | awk -F '_UID=' '{
-      name = tolower($1);
-      if (name == "exim4") { name = "Debian-exim" ;}
-      if (name == "www") { name = "www-data" ;}
-      id = $2;
-      if (id == 0) { id = 6000; }
-      printf("groupmod -g %s %s || groupadd -g %s %s\n", id, name, id, name);
-      printf("usermod -u %s -g %s %s || useradd -s /bin/true -u %s -g %s %s\n", id, id, name, id, id, name);
-    }' \
-  | bash -x
+  # User modification
+  while read _line; do
+    read uname uid _ <<< $_line
 
-  env \
-  | grep -E '^[A-Z0-9]+_GID=[0-9]+$' \
-  | awk -F '_GID=' '{
-      name = tolower($1);
-      if (name == "exim4") { name = "Debian-exim" ;}
-      if (name == "www") { name = "www-data" ;}
-      id = $2;
-      if (id == 0) { id = 6000; }
-      printf("groupmod -g %s %s || groupadd -g %s %s\n", id, name, id, name);
-    }' \
-  | bash -x
+    grep -qE "^$uname:" /etc/passwd
+    if [[ $? -ge 1 ]]; then
+      echo >&2 ":: Adding new user '$uname' (uid: $uid)"
+      addgroup -g "$uid" "$uname" || true
+      adduser -G "$uname" -u "$uid" -s /sbin/nologin "$uname"
+    else
+      # FIXME: Skip updating if the current UID is expected.
+      echo >&2 ":: Updating known user '$uname' (uid: $uid)"
+      sed -i -r -e "s#^$uname:([^:]+):[0-9]+:(.+)#$uname:\1:$uid:\2#g" /etc/passwd
+    fi
+
+    echo >&2 ":: '$uname' field in /etc/passwd"
+    grep "^$uname:" /etc/passwd
+  done < <( \
+    env \
+    | grep -E '^[A-Z0-9]+_UID=[0-9]+$' \
+    | awk -F '_UID=' '{
+        printf("%s %s\n", tolower($1), $2);
+      }'
+  )
+
+  # Group modification. Please note that we also need to modify
+  # the `gid` of entries in /etc/passwd, too :)
+  while read _line; do
+    read gname gid _ <<< $_line
+
+    grep -qE "^$gname:" /etc/group
+    if [[ $? -ge 1 ]]; then
+      echo >&2 ":: Adding new group '$gname' (gid: $gid)"
+      adduser -g "$uid" "$gname"
+      continue
+    fi
+
+    # Fetch the current `gid` of current group
+    cgid="$(\
+      < /etc/group \
+      awk -vGNAME="$gname" -F: '{ if ($1 == GNAME) {print $3}}' \
+      | tail -1 \
+      )"
+
+    if [[ "$cgid" == "$gid" ]]; then
+      echo >&2 ":: Current group '$gname' already has gid '$gid'."
+      continue
+    fi
+
+    echo >&2 ":: Updating known group '$uname' ($cgid => $gid)"
+    sed -i -r -e "s#^$gname:([^:]+):$cgid:(.+)#$gname:\1:$gid:\2#g" /etc/group
+
+    echo >&2 ":: New '$gname' field in /etc/group"
+    grep "^$gname:" /etc/group
+
+    echo >&2 ":: ($gid) Updating /etc/passwd..."
+
+    < /etc/passwd \
+    > /etc/passwd.new \
+    awk -F: -v "GID=$gid" -v "CGID=$cgid" \
+      '{
+        if ($4 == CGID) {
+          printf("%s:%s:%s:%s:%s:%s:%s\n", $1, $2, $3, GID, $5, $6, $7);
+        }
+        else {
+          print $0;
+        }
+      }
+      '
+    diff /etc/passwd /etc/passwd.new >/dev/null
+    if [[ $? -ge 1 ]]; then
+      chmod 644 /etc/passwd.new
+      mv -fv /etc/passwd.new /etc/passwd
+    else
+      rm -fv /etc/passwd.new
+    fi
+  done < <( \
+    env \
+    | grep -E '^[A-Z0-9]+_GID=[0-9]+$' \
+    | awk -F '_GID=' '{
+        printf("%s %s\n", tolower($1), $2);
+      }'
+  )
 }
 
 ed_supervisor_execute_generators() {
@@ -279,10 +289,6 @@ stderr_logfile=fluent:$_name.stderr:x:0:/supervisor/$_logname.stderr.log
 environment=PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/sbin:/usr/local/bin/,${_env%,*}
 serverurl=AUTO
 EOF
-}
-
-ed_supervisor_reset_all_environments() {
-  :
 }
 
 ed_supervisor_generator() {
