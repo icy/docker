@@ -2,53 +2,15 @@
 
 # Purpose: Bocker base support for Debian-base images
 # Author : Anh K. Huynh
-# Date   : 2015 May 15th
+# Date   : 2016 July 5th
 
-ed_from "ubuntu:14.04"
+ed_from       "alpine"
 ed_maintainer "Anh K. Huynh <kyanh@theslinux.org>"
 
-ed_ship   ed_apt_clean ed_apt_purge ed_apt_install ed_apt_remove
 ed_cmd    '["/supervisor.sh"]'
 
-ed_apt_clean() {
-  rm -fv /var/cache/apt/*.bin
-  rm -fv /var/cache/apt/archives/*.*
-  rm -fv /var/lib/apt/lists/*.*
-  apt-get autoclean
-}
-
-ed_apt_purge() {
-  apt-get purge -y --auto-remove $@
-  ed_apt_clean
-}
-
-ed_apt_install() {
-  apt-get update
-  DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y --no-install-recommends $@
-}
-
-ed_apt_remove() {
-  DEBIAN_FRONTEND=noninteractive \
-    apt-get remove -y $@
-}
-
-ed_bocker_min_version() {
-  echo "${BOCKER_VERSION:-0.0.0}" \
-  | awk \
-    -vMIN_VERSION="${1:-0.0.0}" \
-    -F. \
-    '
-      {
-        version = 100 * $1 + 10 * $2 + $3;
-
-        if (version >= MIN_VERSION) {
-          exit(0);
-        }
-        else {
-          printf("Bocker version >= %d is required. Your version = %d\n", MIN_VERSION, version) > "/dev/stderr";
-          exit(127);
-        }
-      }
-    '
+__ed_before_ship() {
+  echo ""
+  echo "RUN apk add --update bash && rm -rf /var/cache/apk/*"
+  echo "ADD pacman /usr/bin/"
 }
