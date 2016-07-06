@@ -34,10 +34,10 @@ ed_ruby187_install() {
   cd /root/ && ruby-install ruby-1.8.7-p374
 
   set +u #; required by `chruby.sh`
-
   source /etc/profile.d/chruby.sh
-
   chruby ruby-1.8.7
+  set -u #; ruby is now 1.8.7
+
   cd /root/rubygems-$rubygems/ && ruby setup.rb install
 
   cd / && rm -rf /root/ && mkdir /root/ && chmod 700 /root/
