@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Purpose: Ruby-187
+# Author : Anh K. Huynh
+# Date   : 2016 July 6th
+
+ed_reuse   "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.base
+
+ed_bocker() {
+  ed_group \
+    ed_ruby187_install
+}
+
+ed_ruby187_install() {
+  local chruby="0.3.9"
+  local rubyinstall="0.6.0"
+  local rubygem="2.6.6"
+
+  ed_apt_install make curl ca-certificates
+
+  cd /root/
+  curl -Lo chruby.tgz https://github.com/postmodern/chruby/archive/v$chruby.tar.gz
+  curl -Lo ruby-install.tgz https://github.com/postmodern/ruby-install/archive/v$rubyinstall.tar.gz
+  curl -Lo rubygems.tgz https://rubygems.org/rubygems/rubygems-$rubygem.tgz
+
+  tar xfvz chruby.tgz
+  tar xfvz ruby-install.tgz
+
+  cd /root/chruby-$chruby/ && make install
+  cd /root/ruby-install-$rubyinstall && make install
+  ln -s /usr/local/share/chruby/chruby.sh /etc/profile.d/chruby.sh
+
+  cd /root/ && ruby-install ruby-1.8.7-p374
+
+  set +u #; required by `chruby.sh`
+
+  source /etc/profile.d/chruby.sh
+
+  chruby ruby-1.8.7
+  cd /root/rubygems-$rubygems/ && ruby setup.rb install
+
+  cd / && rm -rf /root/ && mkdir /root/ && chmod 700 /root/
+  echo "gem: --no-ri --no-rdoc -V" > /root/.gemrc
+
+  # Clean up
+  rm -rf /usr/local/src/
+
+  ed_apt_purge \
+    make git gcc python3.4 gcc-4.8 iproute2 cpp-4.8 \
+    manpages manpages-dev \
+    $(pacman -Qa |grep -- "-dev")
+
+  ruby --version | grep '1.8.7'
+  ruby -ryaml -rjson -e 'puts "Ruby 1.8.7 is ready."'
+
+  set -u
+}
