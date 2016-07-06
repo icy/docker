@@ -51,7 +51,7 @@ ed_ruby187_install() {
     $(pacman -Qa |grep -- "-dev")
 
   ruby --version | grep '1.8.7'
-  ruby -ryaml -rjson -e 'puts "Ruby 1.8.7 is ready."'
+  ruby -ryaml -e 'puts "Ruby 1.8.7 is ready."'
 
   set -u
 }
