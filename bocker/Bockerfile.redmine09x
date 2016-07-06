@@ -3,6 +3,10 @@
 # Purpose: Redmine 0.9.x
 # Author : Anh K. Huynh
 # Date   : 2016 July 6th
+# Notes  : This is a special Redmine installation that uses MySQL,
+#          `opensocial` bla bla. This may not be useful for your
+#          custom installation, but it gives you and idea how to
+#          install new gems as you need.
 
 ed_reuse   "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.ruby187
 
@@ -49,7 +53,12 @@ ed_redmine09x_install() {
 EOF
     )
 
-  ed_apt_purge make gcc cpp libmysqlclient-dev
+  ed_apt_purge make gcc cpp
+  ed_apt_remove libmysqlclient-dev
+
+  ed_apt_install libmysqlclient18
+  ed_apt_purge
 
   gem list
+  ruby -rmysql -e 'puts "MySQL gem is ready."'
 }
