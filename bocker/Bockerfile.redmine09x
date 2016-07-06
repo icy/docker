@@ -60,5 +60,5 @@ EOF
   ed_apt_purge
 
   gem list
-  ruby -rmysql -e 'puts "MySQL gem is ready."'
+  ruby -rrubygems -e 'gem "mysql"; gem "json"; puts "MySQL gem is ready."'
 }
