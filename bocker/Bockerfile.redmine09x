@@ -49,7 +49,7 @@ ed_redmine09x_install() {
 EOF
     )
 
-  ed_apt_purge make gcc
+  ed_apt_purge make gcc cpp libmysqlclient-dev
 
   gem list
 }
