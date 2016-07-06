@@ -25,6 +25,7 @@ ed_ruby187_install() {
 
   tar xfvz chruby.tgz
   tar xfvz ruby-install.tgz
+  tar xfvz rubygems.tgz
 
   cd /root/chruby-$chruby/ && make install
   cd /root/ruby-install-$rubyinstall && make install
