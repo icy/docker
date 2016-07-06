@@ -21,7 +21,7 @@ ed_ruby187_install() {
   cd /root/
   curl -Lo chruby.tgz https://github.com/postmodern/chruby/archive/v$chruby.tar.gz
   curl -Lo ruby-install.tgz https://github.com/postmodern/ruby-install/archive/v$rubyinstall.tar.gz
-  curl -Lo rubygems.tgz https://rubygems.org/rubygems/rubygems-$rubygem.tgz
+  curl -Lo rubygems.tgz https://rubygems.org/rubygems/rubygems-$rubygems.tgz
 
   tar xfvz chruby.tgz
   tar xfvz ruby-install.tgz
@@ -52,6 +52,7 @@ ed_ruby187_install() {
     $(pacman -Qq |grep -- "-dev")
 
   ruby --version | grep '1.8.7'
+  gem list
   ruby -ryaml -e 'puts "Ruby 1.8.7 is ready."'
 
   set -u
