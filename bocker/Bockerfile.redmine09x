@@ -39,15 +39,6 @@ ed_bocker() {
 #   $ rake -T
 #   undefined method `source_index' for Gem:Module
 #
-
-# Final notes
-# ~~~~~~~~~~~
-#
-# After tears, I finally get the opensocial installed, with `-f` option.
-# See http://stackoverflow.com/questions/31533839/.
-#
-#   $ gem install opensocial --version 0.0.4 -f
-#
 ed_redmine09x_install() {
   set +u
   source /etc/profile.d/chruby.sh
@@ -96,7 +87,7 @@ ed_redmine09x_install() {
     rake (0.9.6)
     rubytree (0.5.2)
 
-    opensocial (0.0.4)
+    #opensocial (0.0.4)
 EOF
     )
 
