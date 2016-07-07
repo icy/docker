@@ -5,6 +5,7 @@
 # Date   : 2016 July 6th
 
 ed_reuse   "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.base
+ed_cmd     '["/usr/local/bin/chruby-exec", "1.8.7", "--", "irb"]'
 
 ed_bocker() {
   ed_ruby187_install
