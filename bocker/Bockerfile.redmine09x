@@ -14,6 +14,40 @@ ed_bocker() {
   ed_redmine09x_install
 }
 
+# rubygems-1.4.0, 1.8.7, 1.3.7
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+# OpenSocial 0.0.4 triggers an i18n=0.7.0 installation, though
+# OpenSocial doesn't rely on this gem. The gem i18n=0.7.0 requires
+# ruby>=1.9.3 :(
+#
+#   $ gem dependency opensocial
+#   json (>= 1.1.3, runtime)
+#   mocha (>= 0.9.2, runtime)
+#   oauth (>= 0.3.2, runtime)
+#   rails (>= 2.1.0, runtime)
+#
+# It's the only version (0.0.4) of opensocial. It's weird that
+# some newer rubygems can install this one, but rubygems-1.4.0
+# fails to install it.
+
+# rubygems-2.6.6
+# ~~~~~~~~~~~~~~
+#
+# Can install opensocial-0.0.4 without any problem. But this generates
+# new kind of error, e.g,
+#   $ rake -T
+#   undefined method `source_index' for Gem:Module
+#
+
+# Final notes
+# ~~~~~~~~~~~
+#
+# After tears, I finally get the opensocial installed, with `-f` option.
+# See http://stackoverflow.com/questions/31533839/.
+#
+#   $ gem install opensocial --version 0.0.4 -f
+#
 ed_redmine09x_install() {
   set +u
   source /etc/profile.d/chruby.sh
@@ -26,8 +60,15 @@ ed_redmine09x_install() {
   while read _line; do
     read _gem _version _ <<< $_line
 
+    [[ -n "$_gem" ]] || continue
+
     _version="${_version/(/}"
     _version="${_version/)/}"
+
+    # Avoid i18n installation issue.
+    if [[ "$_gem" == "opensocial" ]]; then
+      _gem="$_gem -f"
+    fi
 
     gem install --no-ri --no-rdoc -V $_gem --version "$_version" \
     || exit 1
@@ -38,18 +79,24 @@ ed_redmine09x_install() {
     activerecord (2.3.18)
     activeresource (2.3.18)
     activesupport (2.3.18)
+
     hoe (3.0.3)
     i18n (0.4.2)
+
     json (1.5.0)
+
     metaclass (0.0.4)
     mocha (1.1.0)
+
     mysql (2.9.1)
     oauth (0.4.5)
     rack (1.1.6)
+
     rails (2.3.18)
     rake (0.9.6)
     rubytree (0.5.2)
-    #opensocial (0.0.4)
+
+    opensocial (0.0.4)
 EOF
     )
 
