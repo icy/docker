@@ -38,7 +38,7 @@ ed_redmine09x_install() {
     activerecord (2.3.18)
     activeresource (2.3.18)
     activesupport (2.3.18)
-    hoe (3.13.1)
+    hoe (3.0.3)
     i18n (0.4.2)
     json (1.5.0)
     metaclass (0.0.4)
@@ -49,7 +49,7 @@ ed_redmine09x_install() {
     rails (2.3.18)
     rake (0.9.6)
     rubytree (0.5.2)
-    opensocial (0.0.4)
+    #opensocial (0.0.4)
 EOF
     )
 
