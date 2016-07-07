@@ -56,13 +56,19 @@ ed_redmine09x_install() {
     _version="${_version/(/}"
     _version="${_version/)/}"
 
-    # Avoid i18n installation issue.
-    if [[ "$_gem" == "opensocial" ]]; then
-      _gem="$_gem -f"
-    fi
+    # # The `-f` option will require other gems like nokogiri (fails...)
+    # if [[ "$_gem" == "opensocial" ]]; then
+    #   _gem="$_gem -f"
+    # fi
 
     gem install --no-ri --no-rdoc -V $_gem --version "$_version" \
-    || exit 1
+    || {
+      if [[ "$_gem" == "opensocial" ]]; then
+        continue
+      else
+        return 1
+      fi
+    }
   done < <( \
   cat <<"EOF" | grep -v '#'
     actionmailer (2.3.18)
@@ -87,7 +93,7 @@ ed_redmine09x_install() {
     rake (0.9.6)
     rubytree (0.5.2)
 
-    #opensocial (0.0.4)
+    opensocial (0.0.4)
 EOF
     )
 
