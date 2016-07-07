@@ -7,25 +7,43 @@
 ed_reuse   "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.base
 
 ed_bocker() {
-  ed_group \
-    ed_ruby187_install
+  ed_ruby187_install
+  ed_ruby187_install_rubygems
+}
+
+ed_ruby187_install_rubygems() {
+  local rubygems="1.4.0"
+
+  mkdir /tmp/rubygems/ && cd /tmp/rubygems/
+
+  curl -Lo rubygems.tgz https://rubygems.org/rubygems/rubygems-$rubygems.tgz
+  tar xfvz rubygems.tgz
+
+  set +u #; required by `chruby.sh`
+  source /etc/profile.d/chruby.sh
+  chruby ruby-1.8.7
+  set -u #; ruby is now 1.8.7
+  cd rubygems-$rubygems/ && ruby setup.rb install
+
+  echo "gem: --no-ri --no-rdoc -V" > /root/.gemrc
+
+  cd / && rm -rf /tmp/rubygems/
+
+  ruby -rrubygems -e 'puts "Ruby 1.8.7 and Rubygems are ready."'
 }
 
 ed_ruby187_install() {
   local chruby="0.3.9"
   local rubyinstall="0.6.0"
-  local rubygems="1.3.7"
 
   ed_apt_install make curl ca-certificates
 
   cd /root/
   curl -Lo chruby.tgz https://github.com/postmodern/chruby/archive/v$chruby.tar.gz
   curl -Lo ruby-install.tgz https://github.com/postmodern/ruby-install/archive/v$rubyinstall.tar.gz
-  curl -Lo rubygems.tgz https://rubygems.org/rubygems/rubygems-$rubygems.tgz
 
   tar xfvz chruby.tgz
   tar xfvz ruby-install.tgz
-  tar xfvz rubygems.tgz
 
   cd /root/chruby-$chruby/ && make install
   cd /root/ruby-install-$rubyinstall && make install
@@ -36,24 +54,18 @@ ed_ruby187_install() {
   set +u #; required by `chruby.sh`
   source /etc/profile.d/chruby.sh
   chruby ruby-1.8.7
+  ruby --version | grep '1.8.7'
   set -u #; ruby is now 1.8.7
-
-  cd /root/rubygems-$rubygems/ && ruby setup.rb install
-
-  cd / && rm -rf /root/ && mkdir /root/ && chmod 700 /root/
-  echo "gem: --no-ri --no-rdoc -V" > /root/.gemrc
 
   # Clean up
   rm -rf /usr/local/src/
+  cd / && rm -rf /root/ && mkdir /root/ && chmod 700 /root/
 
   ed_apt_purge \
     make git gcc python3.4 gcc-4.8 iproute2 cpp-4.8 \
     manpages manpages-dev \
-    $(pacman -Qq |grep -- "-dev")
-
-  ruby --version | grep '1.8.7'
-  gem list
-  ruby -ryaml -e 'puts "Ruby 1.8.7 is ready."'
-
-  set -u
+    $(dpkg -l \
+    | grep -E '^[hi]i' \
+    | awk '{print $2}' \
+    | grep -- "-dev")
 }
