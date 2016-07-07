@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# Purpose: Bocker library to generate Dockerfile for nginx image
-# Author : Anh K. Huynh
-# Date   : 2015 Oct 19th
-
-# nginx is now using Ubuntu 14:04
-ed_source "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.nginx
