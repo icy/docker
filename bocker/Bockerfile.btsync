@@ -7,6 +7,7 @@
 ed_reuse    "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.base"
 ed_expose   8888
 ed_volume   /btsync/
+ed_from     "icymatter/slitaz40-minimal:latest"
 
 ed_entrypoint '["/bocker.sh"]'
 ed_cmd        '["ed_btsync_daemonize"]'
@@ -25,12 +26,17 @@ ed_bocker() {
 }
 
 ed_btsync_env() {
-  export BTSYNC_URL="${BTSYNC_URL:-http://syncapp.bittorrent.com/1.3.109/btsync_x64-1.3.109.tar.gz}"
-  export BTSYNC_CHECKSUM="${BTSYNC_CHECKSUM:-321597f1411583a726451278433e9ef560ef91ca}"
+  # # 64-bit
+  # export BTSYNC_URL="${BTSYNC_URL:-http://syncapp.bittorrent.com/1.3.109/btsync_x64-1.3.109.tar.gz}"
+  # export BTSYNC_CHECKSUM="${BTSYNC_CHECKSUM:-321597f1411583a726451278433e9ef560ef91ca}"
+
+  # 32-bit
+  export BTSYNC_URL="${BTSYNC_URL:-http://syncapp.bittorrent.com/1.3.109/btsync_i386-1.3.109.tar.gz}"
+  export BTSYNC_CHECKSUM="${BTSYNC_CHECKSUM:-3c5b8cc02adc3e0c6038c6c826d912aeb0d9c3ee}"
 }
 
 ed_btsync_install() {
-  ed_apt_install curl ca-certificates
+  #ed_apt_install curl ca-certificates
 
   cd /tmp/
   curl -Ls "$BTSYNC_URL" -o /tmp/btsync.tar.gz
@@ -41,14 +47,17 @@ ed_btsync_install() {
   tar -xzf /tmp/btsync.tar.gz btsync
 
   rm -f /tmp/btsync.tar.gz
-  ed_apt_purge curl ca-certificates
+  #ed_apt_purge curl ca-certificates
 }
 
 ed_btsync_prepare() {
-  useradd -K UID_MIN=1000 btsync
-  mkdir -pv /btsync/var/ /btsync/sync/
+  # useradd -K UID_MIN=1000 btsync
+  adduser -H -u 1000 btsync
+
+  mkdir -p /btsync/var/ /btsync/sync/
   chown btsync:btsync -R /btsync
-  mkdir -pv /home/
+
+  mkdir -p /home/
   ln -s /btsync /home/btsync
 }
 
