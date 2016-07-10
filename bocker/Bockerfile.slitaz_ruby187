@@ -121,6 +121,8 @@ ed_ruby187_install() {
   [[ ! -f /var/lib/tazpkg/mirror ]] \
   || rm -fv /var/lib/tazpkg/mirror
 
+  rm -rf /root/.gem/
+
   # find /opt/rubies/ -type f \
   # | grep \.so$ \
 
