@@ -15,8 +15,6 @@ ed_reuse   "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.slitaz_base
 ed_cmd     '["/usr/local/bin/irb187"]'
 
 ed_bocker() {
-  echo "ARG SLITAZ_MIRROR"
-
   ed_ruby187_install
   ed_ruby187_install_rubygems
 }
@@ -117,7 +115,7 @@ ed_ruby187_install() {
 
   # FIXME: /usr/bin/ldd belongs to both `glibc-dev` and `slitaz-base-files`
   # FIXME: This is a bug of `tazpkg` program...
-  pacman -S slitaz-base-files
+  pacman -S -- --forced slitaz-base-files
 
   [[ ! -f /var/lib/tazpkg/mirror ]] \
   || rm -fv /var/lib/tazpkg/mirror
