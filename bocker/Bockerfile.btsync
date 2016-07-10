@@ -4,10 +4,9 @@
 # Author : Anh K. Huynh
 # Date   : 2015 May 21 (ported from the old Dockerfile)
 
-ed_reuse    "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.base"
+ed_reuse    "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.slitaz_base"
 ed_expose   8888
 ed_volume   /btsync/
-ed_from     "icymatter/slitaz40-minimal:latest"
 
 ed_entrypoint '["/bocker.sh"]'
 ed_cmd        '["ed_btsync_daemonize"]'
