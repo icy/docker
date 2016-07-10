@@ -78,7 +78,7 @@ ed_ruby187_install() {
   fi
 
   pacman -Sy
-  pacman -S make gcc wget linux-module-headers
+  pacman -S make gcc wget linux-module-headers zlib zlib-dev
 
   mkdir -p /usr/local/build/
   cd /usr/local/build/
@@ -112,7 +112,8 @@ ed_ruby187_install() {
     glibc-extra-samba \
     libobjc \
     elfkickers \
-    glibc-dev
+    glibc-dev \
+    zlib-dev
 
   # FIXME: /usr/bin/ldd belongs to both `glibc-dev` and `slitaz-base-files`
   # FIXME: This is a bug of `tazpkg` program...
