@@ -1,0 +1,96 @@
+#!/bin/bash
+
+# Purpose: Ruby-187
+# Author : Anh K. Huynh
+# Date   : 2016 July 6th
+
+ed_reuse   "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.slitaz_base
+ed_cmd     '["/usr/local/bin/chruby-exec", "1.8.7", "--", "irb"]'
+
+ed_bocker() {
+  echo "ARG SLITAZ_MIRROR"
+
+  ed_ruby187_install
+  ed_ruby187_install_rubygems
+}
+
+ed_ruby187_install_rubygems() {
+  local rubygems="1.4.0"
+
+  mkdir /tmp/rubygems/ && cd /tmp/rubygems/
+
+  curl -Lo rubygems.tgz https://rubygems.org/rubygems/rubygems-$rubygems.tgz
+  tar xfvz rubygems.tgz
+
+  set +u #; required by `chruby.sh`
+  source /etc/profile.d/chruby.sh
+  chruby ruby-1.8.7
+  set -u #; ruby is now 1.8.7
+  cd rubygems-$rubygems/ && ruby setup.rb install
+
+  echo "gem: --no-ri --no-rdoc -V" > /root/.gemrc
+
+  cd / && rm -rf /tmp/rubygems/
+
+  ruby -rrubygems -e 'puts "Ruby 1.8.7 and Rubygems are ready."'
+}
+
+ed_ruby187_install() {
+  local chruby="0.3.9"
+  local rubyinstall="0.6.0"
+
+  mkdir -p /var/lib/tazpkg/
+
+  if [[ "${SLITAZ_MIRROR:-}" == "archlinuxvn" ]]; then
+    echo "http://f.archlinuxvn.org/slitaz/packages/4.0/" > /var/lib/tazpkg/mirror
+  fi
+
+  pacman -Sy
+  pacman -S make gcc wget linux-module-headers
+
+  mkdir -p /usr/local/build/
+  cd /usr/local/build/
+  curl -Lo chruby.tgz https://github.com/postmodern/chruby/archive/v$chruby.tar.gz
+  curl -Lo ruby-install.tgz https://github.com/postmodern/ruby-install/archive/v$rubyinstall.tar.gz
+
+  tar xfvz chruby.tgz
+  tar xfvz ruby-install.tgz
+
+  cd /usr/local/build//chruby-$chruby/ && make install
+  cd /usr/local/build//ruby-install-$rubyinstall && make install
+  mkdir -p /etc/profile.d/
+  ln -s /usr/local/share/chruby/chruby.sh /etc/profile.d/chruby.sh
+
+  cd /usr/local/build// && ruby-install ruby-1.8.7-p374
+
+  set +u #; required by `chruby.sh`
+  source /etc/profile.d/chruby.sh
+  chruby ruby-1.8.7
+  ruby --version | grep '1.8.7'
+  set -u #; ruby is now 1.8.7
+
+  # Clean up
+  rm -rf /usr/local/src/
+  cd / && rm -rf /usr/local/build/
+
+  yes | \
+    pacman -R make gcc wget \
+    linux-module-headers slitaz-toolchain elfutils \
+    linux-api-headers \
+    glibc-extra-samba \
+    libobjc \
+    elfkickers \
+    glibc-dev
+
+  # FIXME: /usr/bin/ldd belongs to both `glibc-dev` and `slitaz-base-files`
+  # FIXME: This is a bug of `tazpkg` program...
+  pacman -S slitaz-base-files
+
+  [[ ! -f /var/lib/tazpkg/mirror ]] \
+  || rm -fv /var/lib/tazpkg/mirror
+
+  # find /opt/rubies/ -type f \
+  # | grep \.so$ \
+
+  pacman -Sc
+}
