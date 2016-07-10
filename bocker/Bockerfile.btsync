@@ -8,7 +8,7 @@ ed_reuse    "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.slitaz_base"
 ed_expose   8888
 ed_volume   /btsync/
 
-ed_cmd        '["ed_btsync_daemonize"]'
+ed_cmd      '["/bocker.sh", "ed_btsync_daemonize"]'
 
 ed_ship     --later \
               ed_btsync_generate_config \
