@@ -132,16 +132,18 @@ EOF
     )
 
   yes | \
-    pacman -R make gcc \
-    cpp mysql-dev \
-    linux-module-headers slitaz-toolchain elfutils \
+    pacman -R --nocofirm \
+    make gcc \
+    cpp \
+    linux-module-headers \
+    slitaz-toolchain \
+    elfutils \
     linux-api-headers \
     glibc-extra-samba \
     libobjc \
     elfkickers \
-    zlib-dev openssl-dev
+    $(pacman -Qq | grep -- "-dev$")
 
-  pacman -S -- --forced slitaz-base-files
   pacman -Sc
 
   [[ ! -f /var/lib/tazpkg/mirror ]] \

@@ -104,19 +104,16 @@ ed_ruby187_install() {
   cd / && rm -rf /usr/local/build/
 
   yes | \
-    pacman -R make gcc wget \
-    linux-module-headers slitaz-toolchain elfutils \
+    pacman -R --noconfirm \
+    make gcc wget \
+    linux-module-headers \
+    slitaz-toolchain \
+    elfutils \
     linux-api-headers \
     glibc-extra-samba \
     libobjc \
     elfkickers \
-    glibc-dev \
-    zlib-dev \
-    openssl-dev
-
-  # FIXME: /usr/bin/ldd belongs to both `glibc-dev` and `slitaz-base-files`
-  # FIXME: This is a bug of `tazpkg` program...
-  pacman -S -- --forced slitaz-base-files
+    $(pacman -Qq | grep -- "-dev$")
 
   [[ ! -f /var/lib/tazpkg/mirror ]] \
   || rm -fv /var/lib/tazpkg/mirror
