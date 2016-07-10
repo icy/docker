@@ -23,7 +23,7 @@ ed_redmine09x_start() {
 
   if [[ -d "/redmine/" ]]; then
     cd /redmine/
-    exec ./script/server start -e "${RAILS_ENV:-production}"
+    exec ./script/server start -e "${RAILS_ENV:-production}" >/dev/null
   else
     echo >&2 ":: Missing /redmine/ source directory"
     return 1
