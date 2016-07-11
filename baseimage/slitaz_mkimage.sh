@@ -366,8 +366,8 @@ _refresh_tazpkg() {
       pacman -Sy
       pacman -S -- --forced slitaz-base-files
       pacman -Su
-      pacman -Scc
       pacman -Q
+      pacman -Scc
       '
 }
 
@@ -387,7 +387,7 @@ _ensure_packages() {
     pacman -S wget
   elif [[ -x "/usr/bin/apt-get" ]]; then
     apt-get update
-    apt-get install wget
+    { echo y; echo y; } | apt-get install wget lzma
   fi
 
   if [[ ! -x /usr/sbin/chroot ]]; then
