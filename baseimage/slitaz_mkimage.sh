@@ -383,8 +383,11 @@ _ensure_root() {
 
 _ensure_packages() {
   if [[ -x "/usr/bin/pacman" ]]; then
-    pacman -Sy
-    pacman -S wget
+    which wget \
+    || {
+      pacman -Sy
+      { echo y; echo y; } | pacman -S wget xz
+    }
   elif [[ -x "/usr/bin/apt-get" ]]; then
     apt-get update
     { echo y; echo y; } | apt-get install wget lzma
