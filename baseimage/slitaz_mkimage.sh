@@ -30,7 +30,7 @@ USAGE
   Build local rootfs without importing them to Docker
 
     $ docker run -v $PWD:/build ubuntu:14.04 \
-        /build/$PWD/mkimage-slitaz.sh \
+        /build/mkimage-slitaz.sh \
         makefs \
         --version VERSION \
         [--mirror MIRROR] [--cached] [--chroot]
