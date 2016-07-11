@@ -15,30 +15,36 @@
 
 _help() {
   cat << 'EOF'
-Purpose
+PURPOSE
 
-  This script is to build a SliTaz base image
+  This script is to build a SliTaz base image.
 
-Usage
+USAGE
 
-  $ docker run -v $PWD:/build foobar/ \
-      /build/slitaz_mkimage.sh \
-      --version VERSION \
-      [--mirror MIRROR] [--cached] [--chroot]
+  Build an image and import to Docker
 
-Options
+    $ $PWD/mkimage-slitaz.sh build \
+        --version VERSION
+        --mirror MIRROR
+
+  Build local rootfs without importing them to Docker
+
+    $ docker run -v $PWD:/build ubuntu:14.04 \
+        /build/$PWD/mkimage-slitaz.sh \
+        makefs \
+        --version VERSION \
+        [--mirror MIRROR] [--cached] [--chroot]
+
+  (Running this command insider Docker container is just safe.)
+
+OPTIONS
 
   --version VERSION   SliTaz version. 4.0 or 5.0
-  --mirror  MIRROR    The nearest SliTaz mirror (Default: http://mirror.slitaz.org/)
+  --mirror  MIRROR    The nearest mirror (Default: http://mirror.slitaz.org/)
 
   --cached            Reuse local cached directory
-  --chroot            The script is running in `root` environment
-
-`--chroot` should be used to fixe `tazpkg` database.
-
-When the script finishes, the directory `./fs/` is ready to import into docker:
-
-  $ sudo tar -C ./fs/ -c . | docker import - image_name
+  --chroot            The script is running in `root` environment.
+                      It's required to fix `tazpkg` database.
 EOF
 }
 
@@ -241,7 +247,7 @@ _download_files() {
   done
 }
 
-_make_rootfs() {
+_make_rootfs_simple() {
   _require_fakeroot $FUNCNAME || return 1
 
   mkdir -p \
@@ -416,14 +422,14 @@ _clean_up_and_print_stats() {
 
 set -u
 
-_main() {
+_make_rootfs() {
   _warn "Command: $0 $*"
 
   _ensure_root || { _help; exit 1; }
   _parse_arguments "$@" || exit 1
 
   _ensure_packages || exit 1
-  _make_rootfs
+  _make_rootfs_simple
   _download_files "packages.desc"
   _download_files $(_list_packages) || exit 1
   _extract_files || exit 1
@@ -435,6 +441,23 @@ _main() {
   _clean_up_and_print_stats
 }
 
-if [[ "${1:-}" != ":magic" ]]; then
-  _main "$@"
-fi
+_build_and_import() {
+  set -ue
+
+  ROOTFS="$(mktemp -d ${TMPDIR:-/var/tmp}/rootfs-slitaz-XXXXXXXXXX)"
+  cd "$ROOTFS/"
+
+  _parse_arguments "$@"
+  _make_rootfs --version "$_VERSION" --mirror "$_MIRROR" --chroot --cached
+
+  tar -C "./fs/" -c . \
+  | docker import - slitaz"${_VERSION}"
+
+  cd / && rm -rf "$ROOTFS"
+}
+
+case "${1:-}" in
+"build")  shift; _build_and_import "$@" ;;
+"makefs") shift; _make_rootfs "$@" ;;
+*) _help; exit 1 ;;
+esac
