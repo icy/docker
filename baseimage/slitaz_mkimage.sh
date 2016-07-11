@@ -426,7 +426,7 @@ _parse_arguments "$@" || exit 1
 _ensure_packages || exit 1
 _make_rootfs
 _download_files "packages.desc"
-_download_files $(_list_packages)
+_download_files $(_list_packages) || exit 1
 _extract_files || exit 1
 _make_rootfs_before_refresh
 
