@@ -114,7 +114,7 @@ _parse_arguments() {
     esac
   done
 
-  if [[ -z "$_MIRROR" ]]; then
+  if [[ -z "${_MIRROR:-}" ]]; then
     _MIRROR="http://mirror.slitaz.org/"
     _warn "Mirror not set. Use default '$_MIRROR'."
   fi
