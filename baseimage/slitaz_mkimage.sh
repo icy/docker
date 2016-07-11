@@ -70,7 +70,6 @@ _list_packages() {
     libcurl \
     libidn \
     libssl \
-    libtaz \
     ncurses \
     ncurses-common \
     openssl \
@@ -81,10 +80,12 @@ _list_packages() {
 
   case "$_VERSION" in
   "4.0")
+    echo "libtaz"
     ;;
 
   "5.0")
     echo "cacerts"
+    echo "libtinfo"
     ;;
   esac
 }
@@ -418,7 +419,7 @@ _ensure_packages || exit 1
 _make_rootfs
 _download_files "packages.desc"
 _download_files $(_list_packages)
-_extract_files
+_extract_files || exit 1
 _make_rootfs_before_refresh
 
 unset FAKEROOTKEY
