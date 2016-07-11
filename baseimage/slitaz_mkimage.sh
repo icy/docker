@@ -442,10 +442,11 @@ _make_rootfs() {
 }
 
 _build_and_import() {
-  set -ue
+  set -eu
 
   ROOTFS="$(mktemp -d ${TMPDIR:-/var/tmp}/rootfs-slitaz-XXXXXXXXXX)"
   cd "$ROOTFS/"
+  export __WDIR="$ROOTFS/"
 
   _parse_arguments "$@"
   _make_rootfs --version "$_VERSION" --mirror "$_MIRROR" --chroot --cached
