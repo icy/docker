@@ -399,8 +399,7 @@ _ensure_packages() {
 
   which unlzma \
   && which curl \
-  && which cpio \
-  || return 1
+  && which cpio
 }
 
 _clean_up_and_print_stats() {
