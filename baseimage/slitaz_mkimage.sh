@@ -15,13 +15,18 @@
 
 _help() {
   cat << 'EOF'
-Usage:
+Purpose
+
+  This script is to build a SliTaz base image
+
+Usage
+
   $ docker run -v $PWD:/build foobar/ \
       /build/slitaz_mkimage.sh \
       --version VERSION \
       [--mirror MIRROR] [--cached] [--chroot]
 
-Options:
+Options
 
   --version VERSION   SliTaz version. 4.0 or 5.0
   --mirror  MIRROR    The nearest SliTaz mirror (Default: http://mirror.slitaz.org/)
@@ -403,6 +408,8 @@ _clean_up_and_print_stats() {
 }
 
 set -u
+
+_warn "Command: $0 $*"
 
 _ensure_root || { _help; exit 1; }
 _parse_arguments "$@" || exit 1
