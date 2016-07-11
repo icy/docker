@@ -394,6 +394,11 @@ _ensure_packages() {
     _err "chroot not found. Return(1)."
     return 1
   fi
+
+  which unlzma \
+  && which curl \
+  && which cpio \
+  || return 1
 }
 
 _clean_up_and_print_stats() {
