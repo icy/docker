@@ -159,17 +159,17 @@ _parse_arguments() {
       return 1
     fi
   else
-    _is_fakeroot && mkdir -p "$_DIR"
+    ! _is_fakeroot || mkdir -p "$_DIR"
   fi
 
   _CDIR="$_CDIR/$_VERSION"
   if [[ ! -d "$_CDIR" ]]; then
     _warn "Cache directory not exist. Creating."
-    _is_fakeroot && mkdir -p "$_CDIR"
+    ! _is_fakeroot || mkdir -p "$_CDIR"
   fi
 
   _FETCHED="$_CDIR/packages.desc.fetched"
-  _is_fakeroot && echo > "$_FETCHED"
+  ! _is_fakeroot || echo > "$_FETCHED"
 }
 
 _download_files() {
