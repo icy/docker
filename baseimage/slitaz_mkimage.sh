@@ -371,7 +371,7 @@ _refresh_tazpkg() {
       PATH="/sbin:/bin:/usr/sbin:/usr/bin/"
       pacman -Sy
       pacman -S -- --forced slitaz-base-files
-      pacman -Su
+      echo y | pacman -Su
       pacman -Q
       pacman -Scc
       '
