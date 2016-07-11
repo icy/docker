@@ -125,7 +125,7 @@ _parse_arguments() {
     return 1
   }
 
-  case "$_VERSION" in
+  case "${_VERSION:-}" in
   "4.0"|"5.0") ;;
   *)  _err "Unsupported version '$_VERSION'" || return 1;;
   esac
