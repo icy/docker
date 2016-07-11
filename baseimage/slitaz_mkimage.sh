@@ -127,7 +127,7 @@ _parse_arguments() {
 
   case "${_VERSION:-}" in
   "4.0"|"5.0") ;;
-  *)  _err "Unsupported version '$_VERSION'" || return 1;;
+  *)  _err "Unsupported version '${_VERSION:-}'" || return 1;;
   esac
 
   if [[ -z "${_DIR:-}" ]]; then
