@@ -385,11 +385,11 @@ _ensure_packages() {
     which wget \
     || {
       pacman -Sy
-      { echo y; echo y; } | pacman -S wget xz
+      { echo y; echo y; echo y; } | pacman -S curl wget xz
     }
   elif [[ -x "/usr/bin/apt-get" ]]; then
     apt-get update
-    { echo y; echo y; } | apt-get install wget lzma
+    { echo y; echo y; echo y; } | apt-get install curl wget lzma
   fi
 
   if [[ ! -x /usr/sbin/chroot ]]; then
