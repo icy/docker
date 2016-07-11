@@ -378,7 +378,6 @@ _ensure_root() {
   fi
 
   export FAKEROOTKEY=000000
-  cd /root/
 }
 
 _ensure_packages() {
@@ -418,19 +417,25 @@ _clean_up_and_print_stats() {
 
 set -u
 
-_warn "Command: $0 $*"
+_main() {
+  _warn "Command: $0 $*"
 
-_ensure_root || { _help; exit 1; }
-_parse_arguments "$@" || exit 1
+  _ensure_root || { _help; exit 1; }
+  _parse_arguments "$@" || exit 1
 
-_ensure_packages || exit 1
-_make_rootfs
-_download_files "packages.desc"
-_download_files $(_list_packages) || exit 1
-_extract_files || exit 1
-_make_rootfs_before_refresh
+  _ensure_packages || exit 1
+  _make_rootfs
+  _download_files "packages.desc"
+  _download_files $(_list_packages) || exit 1
+  _extract_files || exit 1
+  _make_rootfs_before_refresh
 
-unset FAKEROOTKEY
-_refresh_tazpkg
+  unset FAKEROOTKEY
+  _refresh_tazpkg
 
-_clean_up_and_print_stats
+  _clean_up_and_print_stats
+}
+
+if [[ "${1:-}" != ":magic" ]]; then
+  _main "$@"
+fi
