@@ -161,7 +161,7 @@ _parse_arguments() {
     if [[ "$_CACHED" == "1" ]]; then
       _warn "Re-use target directory '$_DIR'."
     else
-      _err "Target exists. Use '--cached' to avoid this. Exit(1)."
+      _err "Target exists. Use '--cached' to avoid this. Return(1)."
       return 1
     fi
   else
@@ -366,7 +366,7 @@ _refresh_tazpkg() {
   fi
 
   if _is_fakeroot; then
-    _err "$FUNCNAME: Fakeroot environment is being used. Exit(1)."
+    _err "$FUNCNAME: Fakeroot environment is being used. Return(1)."
     return 1
   fi
 
@@ -429,14 +429,14 @@ _clean_up_and_print_stats() {
 _make_rootfs() {
   _warn "Command: $0 $*"
 
-  _ensure_root || { _help; exit 1; }
-  _parse_arguments "$@" || exit 1
+  _ensure_root || { _help; return 1; }
+  _parse_arguments "$@" || return 1
 
-  _ensure_packages || exit 1
+  _ensure_packages || return 1
   _make_rootfs_simple
   _download_files "packages.desc"
-  _download_files $(_list_packages) || exit 1
-  _extract_files || exit 1
+  _download_files $(_list_packages) || return 1
+  _extract_files || return 1
   _make_rootfs_before_refresh
 
   unset FAKEROOTKEY
