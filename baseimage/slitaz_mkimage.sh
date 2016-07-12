@@ -426,8 +426,6 @@ _clean_up_and_print_stats() {
   du -hcs "$_DIR/" | grep 'total'
 }
 
-set -u
-
 _make_rootfs() {
   _warn "Command: $0 $*"
 
@@ -462,6 +460,8 @@ _build_and_import() {
 
   cd / && rm -rf "$ROOTFS"
 }
+
+set -u
 
 case "${1:-}" in
 "build")  shift; _build_and_import "$@" ;;
