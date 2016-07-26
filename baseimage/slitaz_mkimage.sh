@@ -43,6 +43,14 @@ USAGE
         --version VERSION \
         [--mirror MIRROR] [--cached] [--chroot]
 
+
+  Once a local `rootfs` is created, it can be imported into Docker
+
+    $ tar -C "./fs/" -c . \
+      | docker import - slitaz-my-version
+
+    $ sudo rm -rf ./fs/
+
 OPTIONS
 
   --version VERSION   SliTaz version. 4.0 or 5.0
