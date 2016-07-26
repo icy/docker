@@ -23,14 +23,14 @@ USAGE
 
   Build an image and import to Docker
 
-    $ $PWD/mkimage-slitaz.sh build \
+    $ $PWD/mkimage_slitaz.sh build \
         --version VERSION
         --mirror MIRROR
 
   Build local rootfs without importing them to Docker
 
     $ docker run --rm -ti -v $PWD:/build ubuntu:14.04 \
-        /build/mkimage-slitaz.sh \
+        /build/mkimage_slitaz.sh \
         makefs \
         --version VERSION \
         [--mirror MIRROR] [--cached] [--chroot]
@@ -38,7 +38,7 @@ USAGE
   Running this command inside Docker container is just safe.
   You can invoke the `makefs` without Docker:
 
-    $ $PWD/mkimage-slitaz.sh \
+    $ $PWD/mkimage_slitaz.sh \
         makefs \
         --version VERSION \
         [--mirror MIRROR] [--cached] [--chroot]
