@@ -46,7 +46,7 @@ USAGE
 
   Once a local `rootfs` is created, it can be imported into Docker
 
-    $ tar -C "./fs/" -c . \
+    $ sudo tar -C "./fs/" -c . \
       | docker import - slitaz-my-version
 
     $ sudo rm -rf ./fs/
