@@ -75,7 +75,7 @@ ed_btsync_generate_config() {
 {
   "device_name": "$_HOSTNAME",
   "listening_port" : 8889,
-  "storage_path" : "/home/btsync/var/",
+  "storage_path" : "/btsync/var/",
   "folder_rescan_interval": $_INTERVAL,
 
   "check_for_updates" : false,
@@ -85,7 +85,7 @@ ed_btsync_generate_config() {
 
   "webui" :
   {
-    "directory_root" : "/home/btsync/sync/",
+    "directory_root" : "/btsync/sync/",
     "listen" : "0.0.0.0:8888",
     "login" : "admin",
     "password" : "$_PASSWD"
