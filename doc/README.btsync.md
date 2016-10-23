@@ -58,7 +58,7 @@ After you build `Docker` image, you can launch it, for example
           my_btsync13
 
 When the container is started, it will listen on `8888` (`webui`)
-and `8881` (`data`) ports. A random password is generated and written
+and `8889` (`data`) ports. A random password is generated and written
 to the `docker` logs, unless you specify one with `BTSYNC_PASSWD`
 environment.
 
