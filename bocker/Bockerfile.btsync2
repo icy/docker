@@ -40,6 +40,7 @@ ed_btsync_generate_config() {
 
   sed -i -e "s#btsync:x:1000#btsync:x:$_GID#g" /etc/group
   sed -i -e "s#btsync:x:1000:1000#btsync:x:$_UID:$_GID#g" /etc/passwd
+  chown btsync -R /btsync/var/ btsync/sync/
 
   echo "$_DEBUG" > /btsync/var/debug.txt
 
