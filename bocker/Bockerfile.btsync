@@ -14,7 +14,8 @@ ed_ship     --later \
               ed_btsync_generate_config \
               ed_btsync_daemonize
 
-ed_user     --later btsync
+# We need to fix some stuff @
+#ed_user     --later btsync
 
 ed_bocker() {
   ed_group \
@@ -67,6 +68,7 @@ ed_btsync_generate_config() {
   export _GID="${BTSYNC_GID:-1000}"
   export _UID="${BTSYNC_UID:-1000}"
 
+  # Require root here
   sed -i -e "s#btsync:x:1000#btsync:x:$_GID#g" /etc/group
   sed -i -e "s#btsync:x:1000:1000#btsync:x:$_UID:$_GID#g" /etc/passwd
 
@@ -102,5 +104,5 @@ EOF
 
 ed_btsync_daemonize() {
   ed_btsync_generate_config
-  exec /usr/bin/btsync --config /btsync/var/btsync.conf --nodaemon
+  exec su btsync -c "/usr/bin/btsync --config /btsync/var/btsync.conf --nodaemon"
 }
