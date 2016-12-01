@@ -35,6 +35,12 @@ ed_btsync_generate_config() {
   export _INTERVAL="${BTSYNC_INTERVAL:-300}"
   export _PASSWD="${BTSYNC_PASSWD:-$RANDOM$RANDOM}"
   export _DEBUG="${BTSYNC_DEBUG:-FF}"
+  export _GID="${BTSYNC_GID:-1000}"
+  export _UID="${BTSYNC_UID:-1000}"
+
+  sed -i -e "s#btsync:x:1000#btsync:x:$_GID#g" /etc/group
+  sed -i -e "s#btsync:x:1000:1000#btsync:x:$_UID:$_GID#g" /etc/passwd
+
   echo "$_DEBUG" > /btsync/var/debug.txt
 
   cat \
