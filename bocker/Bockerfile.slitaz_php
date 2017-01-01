@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Purpose: Bocker library to generate Dockerfile for Apache
+# Author : Anh K. Huynh
+# Date   : 2017 Jan 1st
+
+ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.slitaz_base
+ed_from   "icymatter/slitaz50-minimal"
+
+ed_cmd    '["/bocker.sh", "ed_apache_start"]'
+#ed_env    --later WP_VERSION 4.2.2
+
+ed_ship   --later ed_apache_start
+
+ed_bocker() {
+  ed_wordpress_install
+}
+
+ed_wordpress_install() {
+  # gcc-lib-base is required by apache
+  pacman -S \
+    php \
+    php-apache \
+    php-mysql \
+    php-gd \
+    php-cli \
+    php-curl \
+    gcc-lib-base
+
+  pacman -Scc
+  rm -fv /var/log/apache/access_log
+  ln -s /dev/null /var/log/apache/access_log
+}
+
+ed_apache_start() {
+  # Fix problem with extension directory
+  mkdir -pv /usr/lib/php/extensions/
+  ln -s /usr/share/php /usr/lib/php/extensions/no-debug-zts-20121212
+
+  # Enable rewrite module
+  cd /etc/apache
+  sed -i \
+    -e 's|#LoadModule rewrite_module|LoadModule rewrite_module|g' \
+    /etc/apache/httpd.conf
+
+  cd /
+  exec -c /usr/bin/httpd -k start -X
+}
