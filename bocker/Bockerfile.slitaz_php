@@ -43,6 +43,28 @@ ed_apache_start() {
     -e 's|#LoadModule rewrite_module|LoadModule rewrite_module|g' \
     /etc/apache/httpd.conf
 
+  cat /etc/apache/httpd.conf \
+  | awk '
+      BEGIN { GOOD = 0 }
+      {
+        if ($0 ~ /var\/www/) {
+          GOOD = 1;
+          print $0;
+        }
+        else {
+          if (GOOD == 1 && $0 ~ /AllowOverride None/) {
+            print "AllowOverride All"
+            GOOD = 0
+          }
+          else {
+            print $0;
+          }
+        }
+      }
+    ' \
+  > /etc/apache/httpd.conf2
+  mv /etc/apache/httpd.conf2 /etc/apache/httpd.conf
+
   cd /
   exec -c /usr/bin/httpd -k start -X
 }
