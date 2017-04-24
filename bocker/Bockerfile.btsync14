@@ -11,6 +11,6 @@ ed_btsync_env() {
   # export BTSYNC_URL="http://syncapp.bittorrent.com/1.4.111/btsync_x64-1.4.111.tar.gz"
   # export BTSYNC_CHECKSUM="bb2dec020e5d8ec3a0ce18a38ae08ddabd2a7750"
 
-  export BTSYNC_URL="http://syncapp.bittorrent.com/1.4.111/btsync_i386-1.4.111.tar.gz"
+  export BTSYNC_URL="http://web.archive.org/web/20150801113643/http://syncapp.bittorrent.com/1.4.111/btsync_i386-1.4.111.tar.gz"
   export BTSYNC_CHECKSUM="5e09a31fab0cf5032e22df12e4d67651bfe9edfe"
 }
