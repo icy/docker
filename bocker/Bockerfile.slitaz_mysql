@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Purpose: Very old MySQL for my legacy blog...
+# Author : Anh K. Huynh
+# Date   : 2017 Aug 24th
+
+ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.slitaz_base
+ed_from   "icymatter/slitaz40-minimal"
+
+ed_cmd    '["/bocker.sh", "ed_mysqld_start"]'
+
+ed_ship   --later ed_mysqld_start
+
+ed_bocker() {
+  ed_mysqld_install
+}
+
+ed_mysqld_install() {
+  pacman -S \
+    mysql
+
+  pacman -Scc
+}
+
+ed_mysqld_start() {
+  sed -i -r -e 's#bind-address.+#bind-address = 0.0.0.0#g' /etc/mysql/my.cnf
+
+  # Copy from the original /etc/init.d/mysql script
+  if [ ! -d /var/lib/mysql/mysql ]; then
+    echo "Initializing $DESC: "
+    rm -rf /var/lib/mysql/* 2> /dev/null
+    mysql_install_db --user=mysql --datadir=/var/lib/mysql
+  fi
+  cd /
+  exec -c /usr/bin/mysqld_safe --pid-file=/var/run/mysqld/mysql.pid --datadir=/var/lib/mysql --user=mysql --socket=/var/run/mysqld/mysqld.sock
+}
