@@ -22,6 +22,7 @@ ed_wordpress_install() {
     php \
     php-apache \
     php-mysql \
+    php-mysqli \
     php-gd \
     php-cli \
     php-curl \
@@ -41,6 +42,12 @@ ed_apache_start() {
   cd /etc/apache
   sed -i \
     -e 's|#LoadModule rewrite_module|LoadModule rewrite_module|g' \
+    /etc/apache/httpd.conf
+
+ # In the latest slitaz, we have to disable SSL support
+  sed -i \
+    -e 's|LoadModule ssl_module|#LoadModule ssl_module|g' \
+    -e 's|Include /etc/apache/extra/httpd-ssl.conf|#Include /etc/apache/extra/httpd-ssl.conf|g' \
     /etc/apache/httpd.conf
 
   cat /etc/apache/httpd.conf \
