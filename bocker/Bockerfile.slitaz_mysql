@@ -23,7 +23,8 @@ ed_mysqld_install() {
 }
 
 ed_mysqld_start() {
-  sed -i -r -e 's#bind-address.+#bind-address = 0.0.0.0#g' /etc/mysql/my.cnf
+  sed -i -r -e 's|bind-address.+|bind-address = 0.0.0.0|g' /etc/mysql/my.cnf
+  sed -i -r -e 's|skip-networking|#skip-networking|g' /etc/mysql/my.cnf
 
   # Copy from the original /etc/init.d/mysql script
   if [ ! -d /var/lib/mysql/mysql ]; then
