@@ -47,9 +47,9 @@
 ed_reuse $(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.base
 ed_from "ubuntu:16.04"
 
-# Custom environment
-ed_env    PROXY_TO   "http://localhost:7777"
-ed_env    PROXY_NAME "My-Demo-Proxy"
+# Custom environment for later use
+ed_env  --later  PROXY_TO   "http://localhost:7777"
+ed_env  --later  PROXY_NAME "My-Demo-Proxy"
 
 # Some static configuration
 ed_expose 80
