@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+
+# Purpose : Bocker source for a Demo Proxy
+# Author  : Ky-Anh Huynh
+# License : MIT
+# Date    : 2018-06-27
+#
+# Documentation
+#
+# Purpose
+#
+#   We build a simple proxy that processes upstream request and response
+#   to the client adding our custom header `X-Proxied-By`.
+#
+#   We use `nginx-extras` package on `Ubuntu:16.04`. This package can help
+#   to use the module `headers-more-nginx-module` quickly. Please note that
+#   the `add_header` has some limitation.
+#
+# Preparation
+#
+#   $ git clone https://github.com/icy/docker.git
+#   $ cd docker/ && git submodule update --init
+#   $ cd context/
+#   $ ../compiler/bocker.sh ../bocker/Bockerfile.demo-proxy \
+#       > Dockerile.demo-proxy
+#   $ docker build -t demo-proxy  -f ./Dockerfile.demo-proxy .
+#
+# Prepare the environment
+#
+#   PROXY_TO    Argument to `proxy_pass`
+#   PROXY_NAME  The name of your proxy
+#
+# Start the container
+#
+#   $ docker run --rm --name test -e PROXY_TO=http://www.bbc.co.uk -e PROXY_NAME=Demo-Proxy -p 9090:80 demo-proxy
+#
+#   $ curl localhost:9090  -I
+#   HTTP/1.1 404 Not Found
+#   Server: nginx/1.10.3 (Ubuntu)
+#   Date: Wed, 27 Jun 2018 11:57:33 GMT
+#   Content-Type: text/html
+#   Content-Length: 50228
+#   Connection: keep-alive
+#   X-Proxied-By: Demo-Proxy
+#
+
+ed_reuse $(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.base
+ed_from "ubuntu:16.04"
+
+# Custom environment
+ed_env    PROXY_TO   "http://localhost:7777"
+ed_env    PROXY_NAME "My-Demo-Proxy"
+
+# Some static configuration
+ed_expose 80
+ed_cmd    '["/bocker.sh", "ed_demo_proxy_start_daemon"]'
+
+# Run time scripts
+ed_ship --later \
+  ed_demo_proxy_config \
+  ed_demo_proxy_start_daemon
+
+# Build scripts
+ed_bocker() {
+  ed_group \
+    ed_demo_proxy_install
+}
+
+## Main libraries
+
+ed_demo_proxy_install() {
+  ed_apt_install \
+    nginx-extras
+
+  ed_apt_clean
+}
+
+ed_demo_proxy_start_daemon() {
+  ed_demo_proxy_config
+
+  /usr/sbin/nginx -t \
+    && exec /usr/sbin/nginx -g "daemon off;"
+}
+
+ed_demo_proxy_config() {
+  rm -fv /etc/nginx/sites-enabled/default || true
+
+  PROXY_TO="${PROXY_TO:-http://localhost:7777}"
+  PROXY_NAME="${PROXY_NAME:-X-My-Demo-Proxy}"
+
+  cat > /etc/nginx/sites-enabled/demo-proxy.conf \
+<<EOF
+  server {
+    listen 80 default_server;
+    root        /var/www/html/;
+    access_log  /dev/null;
+    location / {
+      proxy_set_header Host \$host;
+      proxy_pass            ${PROXY_TO};
+      # add_header          "X-Proxied-By" "${PROXY_NAME}" always;
+      more_set_headers      "X-Proxied-By: ${PROXY_NAME}";
+    }
+  }
+EOF
+}
