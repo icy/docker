@@ -12,6 +12,8 @@ try {
   node {
     checkOut("clean")
 
+    buildInfo()
+
     stage("bocker-compiling") {
       sh '''
         make all
