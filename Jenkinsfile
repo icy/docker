@@ -18,10 +18,14 @@ try {
       '''
     }
 
+    // FIXME: Should define new method vars/fooBar.groovy instead :)
     stage("docker-build-demo-proxy") {
       sh """#!/usr/bin/env bash
-        cd context/ \
-        && docker build -t "icy-demo-proxy:${env.BUILD_NUMBER}" . \
+        cd context/ || exit
+
+        docker build \
+          -f "Dockerfile.demo-proxy" \
+          -t "icy-demo-proxy:${env.BUILD_NUMBER}" . \
         || exit
 
         docker images | grep demo-proxy
