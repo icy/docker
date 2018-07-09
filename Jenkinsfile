@@ -27,7 +27,7 @@ try {
 
         docker build \
           -f "Dockerfile.demo-proxy" \
-          -t "icy-demo-proxy:${env.BUILD_NUMBER}" . \
+          -t "icy-demo-proxy:${env.BRANCH_NAME}-${env.BUILD_NUMBER}" . \
         || exit
 
         docker images | grep demo-proxy
