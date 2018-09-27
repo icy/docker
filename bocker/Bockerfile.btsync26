@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Purpose: Bocker library to create image to start btsync-2.x daemon
+# Author : Anh K. Huynh
+# Date   : 2015 May 25
+# Link   : http://forum.bittorrent.com/topic/38938-latest-desktop-build-20120/
+# Note   : This script deesn't support btsync-2.x; it now becomes resilio
+
+ed_reuse "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.btsync2"
+
+ed_btsync_env() {
+  export BTSYNC_URL="https://web.archive.org/web/20180927050549/https://download-cdn.resilio.com/stable/linux-i386/resilio-sync_i386.tar.gz"
+  export BTSYNC_CHECKSUM="962324e068166b6f134023412a2ee482dd3c82dc"
+}
