@@ -25,6 +25,6 @@ for f in $FILES; do
   esac
 
   echo ":: -> $f"
-  ./compiler/bocker.sh $f \
-    > context/Dockerfile.$_name || exit 1
+  "${BOCKER}" "$f" \
+    > "context/Dockerfile.${_name}" || exit 1
 done
