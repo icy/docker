@@ -1,5 +1,6 @@
 BOCKER        = ./compiler/bocker.sh
 REMOTE_REPO   = some_host\:/some/path
+ITEMS         = "" # Compile all items
 
 default:
 	@echo "make all                # compile all Bockerfile files"
@@ -19,7 +20,7 @@ submodules::
 	git submodule update --checkout
 
 all: submodules bocker/* $(BOCKER)
-	@./bin/compile.sh
+	@BOCKER=$(BOCKER) ITEMS=$(ITEMS) ./bin/compile.sh
 
 clean:
 	@rm -fv context/Dockerfile*
