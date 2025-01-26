@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Purpose: Very old MySQL for my legacy blog...
+# Author : Anh K. Huynh
+# Date   : 2017 Aug 24th
+
+ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.slitaz_mysql
+ed_from   "icymatter/slitaz50-minimal"

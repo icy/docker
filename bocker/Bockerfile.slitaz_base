@@ -1,0 +1,10 @@
+#!/bin/bash
+
+ed_from       "icymatter/slitaz40-minimal"
+ed_maintainer "Anh K. Huynh <kyanh@theslinux.org>"
+
+ed_cmd        '["/bin/bash"]'
+
+ed_bocker() {
+  echo "ARG SLITAZ_MIRROR"
+}

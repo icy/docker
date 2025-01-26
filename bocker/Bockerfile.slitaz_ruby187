@@ -1,0 +1,127 @@
+#!/bin/bash
+
+# Purpose: Ruby-187
+# Author : Anh K. Huynh
+# Date   : 2016 July 6th
+
+ed_reuse   "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.slitaz_base
+
+# `chruby-exec 1.8.7 -- irb` doesn't work because in the later in the
+# script, `chruby-exec` call `exec 'chruby'`: For some reason, the
+# `/etc/profile.d/chruby.sh` isn't included by this `exec` session,
+# and `chruby` will not be defined.
+#
+# We have to create a custom script `/usr/local/bin/{ruby,irb}187`
+ed_cmd     '["/usr/local/bin/irb187"]'
+
+ed_bocker() {
+  ed_ruby187_install
+  ed_ruby187_install_rubygems
+}
+
+ed_ruby187_install_rubygems() {
+  # Install starting script
+  cat > /usr/local/bin/ruby187 <<'EOF'
+#!/bin/bash
+
+# Purpose: Start ruby187 or irb187.
+# Note   : The name must be ended with 187
+
+set +u #; required by `chruby.sh`
+source /etc/profile.d/chruby.sh
+chruby ruby-1.8.7
+set -u #; ruby is now 1.8.7
+
+if [[ "$(basename "$0")" == "irb187" ]]; then
+  exec irb "$@"
+else
+  exec ruby "$@"
+fi
+EOF
+
+  # Install rubygems
+
+  local rubygems="1.4.0"
+
+  set +u #; required by `chruby.sh`
+  source /etc/profile.d/chruby.sh
+  chruby ruby-1.8.7 || exit 1
+  set -u #; ruby is now 1.8.7
+
+  chmod 755 /usr/local/bin/ruby187
+  ln -s /usr/local/bin/ruby187 /usr/local/bin/irb187
+
+  mkdir /tmp/rubygems/ && cd /tmp/rubygems/
+
+  curl -Lo rubygems.tgz https://rubygems.org/rubygems/rubygems-$rubygems.tgz
+  tar xfvz rubygems.tgz
+
+  cd rubygems-$rubygems/ && ruby setup.rb install
+
+  echo "gem: --no-ri --no-rdoc -V" > /root/.gemrc
+
+  cd / && rm -rf /tmp/rubygems/
+
+  ruby -rrubygems -e 'puts "Ruby 1.8.7 and Rubygems are ready."'
+}
+
+ed_ruby187_install() {
+  local chruby="0.3.9"
+  local rubyinstall="0.6.0"
+
+  mkdir -p /var/lib/tazpkg/
+
+  if [[ "${SLITAZ_MIRROR:-}" == "archlinuxvn" ]]; then
+    echo "http://f.archlinuxvn.org/slitaz/packages/4.0/" > /var/lib/tazpkg/mirror
+  fi
+
+  pacman -Sy
+  pacman -S make gcc wget linux-module-headers zlib zlib-dev openssl-dev
+
+  mkdir -p /usr/local/build/
+  cd /usr/local/build/
+  curl -Lo chruby.tgz https://github.com/postmodern/chruby/archive/v$chruby.tar.gz
+  curl -Lo ruby-install.tgz https://github.com/postmodern/ruby-install/archive/v$rubyinstall.tar.gz
+
+  tar xfvz chruby.tgz
+  tar xfvz ruby-install.tgz
+
+  cd /usr/local/build//chruby-$chruby/ && make install
+  cd /usr/local/build//ruby-install-$rubyinstall && make install
+  mkdir -p /etc/profile.d/
+  ln -s /usr/local/share/chruby/chruby.sh /etc/profile.d/chruby.sh
+
+  cd /usr/local/build// && ruby-install ruby-1.8.7-p374
+
+  set +u #; required by `chruby.sh`
+  source /etc/profile.d/chruby.sh
+  chruby ruby-1.8.7
+  ruby --version | grep '1.8.7'
+  set -u #; ruby is now 1.8.7
+
+  # Clean up
+  rm -rf /usr/local/src/
+  cd / && rm -rf /usr/local/build/
+
+  yes | \
+    pacman -R --noconfirm \
+    make gcc wget \
+    linux-module-headers \
+    slitaz-toolchain \
+    elfutils \
+    linux-api-headers \
+    glibc-extra-samba \
+    libobjc \
+    elfkickers \
+    $(pacman -Qq | grep -- "-dev$")
+
+  [[ ! -f /var/lib/tazpkg/mirror ]] \
+  || rm -fv /var/lib/tazpkg/mirror
+
+  rm -rf /root/.gem/
+
+  # find /opt/rubies/ -type f \
+  # | grep \.so$ \
+
+  pacman -Sc
+}

@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Purpose: Ruby-187
+# Author : Anh K. Huynh
+# Date   : 2016 July 6th
+
+ed_reuse   "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.base
+ed_cmd     '["/usr/local/bin/chruby-exec", "1.8.7", "--", "irb"]'
+
+ed_bocker() {
+  ed_ruby187_install
+  ed_ruby187_install_rubygems
+}
+
+ed_ruby187_install_rubygems() {
+  local rubygems="1.4.0"
+
+  mkdir /tmp/rubygems/ && cd /tmp/rubygems/
+
+  curl -Lo rubygems.tgz https://rubygems.org/rubygems/rubygems-$rubygems.tgz
+  tar xfvz rubygems.tgz
+
+  set +u #; required by `chruby.sh`
+  source /etc/profile.d/chruby.sh
+  chruby ruby-1.8.7
+  set -u #; ruby is now 1.8.7
+  cd rubygems-$rubygems/ && ruby setup.rb install
+
+  echo "gem: --no-ri --no-rdoc -V" > /root/.gemrc
+
+  cd / && rm -rf /tmp/rubygems/
+
+  ruby -rrubygems -e 'puts "Ruby 1.8.7 and Rubygems are ready."'
+}
+
+ed_ruby187_install() {
+  local chruby="0.3.9"
+  local rubyinstall="0.6.0"
+
+  ed_apt_install make curl ca-certificates
+
+  cd /root/
+  curl -Lo chruby.tgz https://github.com/postmodern/chruby/archive/v$chruby.tar.gz
+  curl -Lo ruby-install.tgz https://github.com/postmodern/ruby-install/archive/v$rubyinstall.tar.gz
+
+  tar xfvz chruby.tgz
+  tar xfvz ruby-install.tgz
+
+  cd /root/chruby-$chruby/ && make install
+  cd /root/ruby-install-$rubyinstall && make install
+  ln -s /usr/local/share/chruby/chruby.sh /etc/profile.d/chruby.sh
+
+  cd /root/ && ruby-install ruby-1.8.7-p374
+
+  set +u #; required by `chruby.sh`
+  source /etc/profile.d/chruby.sh
+  chruby ruby-1.8.7
+  ruby --version | grep '1.8.7'
+  set -u #; ruby is now 1.8.7
+
+  # Clean up
+  rm -rf /usr/local/src/
+  cd / && rm -rf /root/ && mkdir /root/ && chmod 700 /root/
+
+  ed_apt_purge \
+    make git gcc python3.4 gcc-4.8 iproute2 cpp-4.8 \
+    manpages manpages-dev \
+    $(dpkg -l \
+    | grep -E '^[hi]i' \
+    | awk '{print $2}' \
+    | grep -- "-dev")
+}

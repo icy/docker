@@ -1,0 +1,74 @@
+#!/bin/bash
+
+# Purpose: Simple Mezzanine support
+# Author : Anh K. Huynh
+# Date   : 2016 July 1st
+# Ref.   : http://mezzanine.jupo.org/docs/deployment.html
+
+ed_reuse  "$(dirname ${BASH_SOURCE[0]:-.})"/Bockerfile.nginx
+ed_ship   --later \
+            ed_mezzanine_generate_config \
+            ed_mezzanine_daemonize \
+            ed_mezzanine_generate_nginx_config
+
+ed_bocker() {
+  ed_mezzanine_install
+}
+
+ed_mezzanine_install() {
+  ed_apt_install \
+    python-setuptools python-pip gcc libc6-dev make g++ python-dev \
+    libjpeg8 libjpeg8-dev python-imaging \
+
+  pip install mezzanine gunicorn
+
+  ed_apt_clean gcc libc6-dev make g++ python-dev
+
+  ed_supervisor_generator ed_mezzanine_generate_config
+}
+
+ed_mezzanine_daemonize() {
+  exec /usr/local/bin/gunicorn \
+    -b 127.0.0.1:8888 \
+    demo.wsgi:application \
+    --workers=3
+}
+
+ed_mezzanine_generate_config() {
+  ed_mezzanine_generate_nginx_config
+
+  if [[ ! -f /demo/manage.py ]]; then
+    cd /
+    mezzanine-project demo
+    chown www-data: -Rc /demo/
+  fi
+
+  chown -R www-data:www-data /demo/
+
+  ed_supervisor_config_template \
+    --name "mezzanine" \
+    --command "/bocker.sh ed_mezzanine_daemonize" \
+    --dir "/demo/" \
+    --user "www-data"
+}
+
+ed_mezzanine_generate_nginx_config() {
+  rm -fv /etc/nginx/sites/*.conf
+  mkdir -pv /static/
+
+  cat > /etc/nginx/sites/mezzanine.conf \
+<<EOF
+  server {
+    listen      80 default;
+    server_name _;
+
+    location /static/ {
+      root /static/;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:8888;
+    }
+  }
+EOF
+}

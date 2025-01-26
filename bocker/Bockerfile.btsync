@@ -4,18 +4,18 @@
 # Author : Anh K. Huynh
 # Date   : 2015 May 21 (ported from the old Dockerfile)
 
-ed_reuse    "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.base"
+ed_reuse    "$(dirname ${BASH_SOURCE[0]:-.})/Bockerfile.slitaz_base"
 ed_expose   8888
 ed_volume   /btsync/
 
-ed_entrypoint '["/bocker.sh"]'
-ed_cmd        '["ed_btsync_daemonize"]'
+ed_cmd      '["/bocker.sh", "ed_btsync_daemonize"]'
 
 ed_ship     --later \
               ed_btsync_generate_config \
               ed_btsync_daemonize
 
-ed_user     --later btsync
+# We need to fix some stuff @
+#ed_user     --later btsync
 
 ed_bocker() {
   ed_group \
@@ -25,12 +25,17 @@ ed_bocker() {
 }
 
 ed_btsync_env() {
-  export BTSYNC_URL="${BTSYNC_URL:-http://syncapp.bittorrent.com/1.3.109/btsync_x64-1.3.109.tar.gz}"
-  export BTSYNC_CHECKSUM="${BTSYNC_CHECKSUM:-321597f1411583a726451278433e9ef560ef91ca}"
+  # # 64-bit
+  # export BTSYNC_URL="${BTSYNC_URL:-http://syncapp.bittorrent.com/1.3.109/btsync_x64-1.3.109.tar.gz}"
+  # export BTSYNC_CHECKSUM="${BTSYNC_CHECKSUM:-321597f1411583a726451278433e9ef560ef91ca}"
+
+  # 32-bit
+  export BTSYNC_URL="${BTSYNC_URL:-http://syncapp.bittorrent.com/1.3.109/btsync_i386-1.3.109.tar.gz}"
+  export BTSYNC_CHECKSUM="${BTSYNC_CHECKSUM:-3c5b8cc02adc3e0c6038c6c826d912aeb0d9c3ee}"
 }
 
 ed_btsync_install() {
-  ed_apt_install curl ca-certificates
+  #ed_apt_install curl ca-certificates
 
   cd /tmp/
   curl -Ls "$BTSYNC_URL" -o /tmp/btsync.tar.gz
@@ -41,14 +46,17 @@ ed_btsync_install() {
   tar -xzf /tmp/btsync.tar.gz btsync
 
   rm -f /tmp/btsync.tar.gz
-  ed_apt_purge curl ca-certificates
+  #ed_apt_purge curl ca-certificates
 }
 
 ed_btsync_prepare() {
-  useradd -K UID_MIN=1000 btsync
-  mkdir -pv /btsync/var/ /btsync/sync/
+  # useradd -K UID_MIN=1000 btsync
+  adduser -H -u 1000 btsync
+
+  mkdir -p /btsync/var/ /btsync/sync/
   chown btsync:btsync -R /btsync
-  mkdir -pv /home/
+
+  mkdir -p /home/
   ln -s /btsync /home/btsync
 }
 
@@ -57,6 +65,15 @@ ed_btsync_generate_config() {
   export _INTERVAL="${BTSYNC_INTERVAL:-300}"
   export _PASSWD="${BTSYNC_PASSWD:-$RANDOM$RANDOM}"
   export _DEBUG="${BTSYNC_DEBUG:-FF}"
+  export _GID="${BTSYNC_GID:-1000}"
+  export _UID="${BTSYNC_UID:-1000}"
+
+  # Require root here
+  sed -i -e "s#btsync:x:1000#btsync:x:$_GID#g" /etc/group
+  sed -i -e "s#btsync:x:1000:1000#btsync:x:$_UID:$_GID#g" /etc/passwd
+  chown btsync -R /btsync/var/
+  # btsync/sync/
+
   echo "$_DEBUG" > /btsync/var/debug.txt
 
   cat \
@@ -68,7 +85,7 @@ ed_btsync_generate_config() {
 {
   "device_name": "$_HOSTNAME",
   "listening_port" : 8889,
-  "storage_path" : "/home/btsync/var/",
+  "storage_path" : "/btsync/var/",
   "folder_rescan_interval": $_INTERVAL,
 
   "check_for_updates" : false,
@@ -78,7 +95,7 @@ ed_btsync_generate_config() {
 
   "webui" :
   {
-    "directory_root" : "/home/btsync/sync/",
+    "directory_root" : "/btsync/sync/",
     "listen" : "0.0.0.0:8888",
     "login" : "admin",
     "password" : "$_PASSWD"
@@ -89,5 +106,5 @@ EOF
 
 ed_btsync_daemonize() {
   ed_btsync_generate_config
-  exec /usr/bin/btsync --config /btsync/var/btsync.conf --nodaemon
+  exec su btsync -c "/usr/bin/btsync --config /btsync/var/btsync.conf --nodaemon"
 }
